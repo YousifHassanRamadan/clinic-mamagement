@@ -3,9 +3,10 @@ import { SidebarGroupType } from "./types";
 
 interface Props {
   group: SidebarGroupType;
+  onNavigate?: () => void;
 }
 
-const SidebarGroup = ({ group }: Props) => {
+const SidebarGroup = ({ group, onNavigate }: Props) => {
   return (
     <div className="space-y-2">
       {group.title && (
@@ -15,7 +16,7 @@ const SidebarGroup = ({ group }: Props) => {
       )}
 
       {group.items.map((item) => (
-        <SidebarItem key={item.href} item={item} />
+        <SidebarItem key={item.href} item={item} onNavigate={onNavigate} />
       ))}
     </div>
   );

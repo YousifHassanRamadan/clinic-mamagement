@@ -35,6 +35,7 @@ import {
   ClipboardList,
   CalendarCheck2,
   Stethoscope,
+  User2Icon,
 } from "lucide-react";
 
 export const sidebarItems: SidebarGroupType[] = [
@@ -68,6 +69,12 @@ export const sidebarItems: SidebarGroupType[] = [
         title: "Appointments",
         href: "/dashboard/admin/appoinments",
         icon: CalendarCheck2,
+        roles: ["DOCTOR"],
+      },
+      {
+        title: "Users",
+        href: "/dashboard/admin/users",
+        icon: User2Icon,
         roles: ["DOCTOR"],
       },
       {

@@ -9,9 +9,10 @@ import { SidebarItemType } from "./types";
 
 interface Props {
   item: SidebarItemType;
+  onNavigate?: () => void;
 }
 
-const SidebarItem = ({ item }: Props) => {
+const SidebarItem = ({ item, onNavigate }: Props) => {
   const pathname = usePathname();
 
   const Icon = item.icon;
@@ -27,6 +28,7 @@ const SidebarItem = ({ item }: Props) => {
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-muted hover:text-foreground",
       )}
+      onClick={onNavigate}
     >
       <Icon className="h-5 w-5 shrink-0" />
 

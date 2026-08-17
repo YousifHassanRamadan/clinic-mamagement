@@ -1,7 +1,14 @@
-import React from "react";
+import { getUsers } from "@/app/actions/admin-actions/user/get-users";
+import UsersPage from "@/components/feature/dashboard/admin/users/UsersPage";
 
-const UsersPage = () => {
-  return <div>Users</div>;
+const Users = async () => {
+  const users = await getUsers();
+
+  return (
+    <div className="p-4 sm:p-6">
+      <UsersPage initialUsers={users} />
+    </div>
+  );
 };
 
-export default UsersPage;
+export default Users;

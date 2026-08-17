@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Menu } from "lucide-react";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -11,9 +12,11 @@ interface Props {
 }
 
 const MobileSidebar = ({ role }: Props) => {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="lg:hidden">
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger asChild>
           <button className="rounded-xl border p-2">
             <Menu className="h-5 w-5" />
@@ -21,7 +24,7 @@ const MobileSidebar = ({ role }: Props) => {
         </SheetTrigger>
 
         <SheetContent side="left" className="w-72 p-0">
-          <Sidebar role={role} />
+          <Sidebar role={role} mobile onNavigate={() => setOpen(false)} />
         </SheetContent>
       </Sheet>
     </div>

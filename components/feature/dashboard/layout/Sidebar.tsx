@@ -2,21 +2,27 @@
 
 import Link from "next/link";
 
-import SidebarFooter from "./SidebarFooter";
 import SidebarGroup from "./SidebarGroup";
 import { sidebarItems } from "@/constants/dashboard/dashboard";
 
 interface Props {
   role?: "PATIENT" | "DOCTOR" | "SECRETARY";
+  mobile?: boolean;
+  onNavigate?: () => void;
 }
 
-const Sidebar = ({ role = "PATIENT" }: Props) => {
-  console.log("role", role);
+const Sidebar = ({ role = "PATIENT", mobile = false, onNavigate }: Props) => {
   return (
-    <aside className="hidden h-screen w-72 shrink-0 border-r bg-background lg:flex lg:flex-col">
+    <aside
+      className={
+        mobile
+          ? "flex h-full w-full flex-col bg-background"
+          : "hidden h-screen w-72 shrink-0 border-r bg-background lg:flex lg:flex-col"
+      }
+    >
       <div className="border-b px-6 py-7">
         <Link href="/dashboard" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white font-bold">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary font-bold text-white">
             S
           </div>
 
@@ -37,13 +43,10 @@ const Sidebar = ({ role = "PATIENT" }: Props) => {
                 ...group,
                 items: group.items.filter((item) => item.roles.includes(role)),
               }}
+              onNavigate={onNavigate}
             />
           ))}
         </div>
-      </div>
-
-      <div className="p-4">
-        <SidebarFooter />
       </div>
     </aside>
   );
