@@ -1,7 +1,7 @@
-import React from "react";
+import AuthLayout from "@/components/feature/auth/AuthLayout";
 
-const AuthFormPage = () => {
-  return <div> AuthFormPage</div>;
+const AuthPage = () => {
+  return <AuthLayout />;
 };
 
-export default AuthFormPage;
+export default AuthPage;

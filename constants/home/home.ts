@@ -8,7 +8,12 @@ import {
   Mail,
   MapPin,
   Phone,
+  Clock3,
 } from "lucide-react";
+
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+
+import DoctorImage from "@/assets/Serene-Mind-Clinic/doctor.jpg";
 
 export const links = [
   { href: "/", label: "Home" },
@@ -196,5 +201,164 @@ export const contactInfo = [
   {
     icon: MapPin,
     text: "224 Harborview Ave, Suite 5, San Francisco, CA",
+  },
+];
+
+export const doctor = {
+  image: DoctorImage,
+  name: "Dr. Amara Lindqvist",
+  title: "Clinical Psychologist",
+  credentials: "PhD • PSY-48219 • California Board of Psychology",
+
+  description:
+    "For 14 years I have helped adults and adolescents move through anxiety, burnout, trauma and relationship strain. My work blends CBT, ACT and schema therapy with a simple belief: therapy should feel safe before it feels challenging.",
+};
+
+export const qualifications = [
+  {
+    degree: "PhD, Clinical Psychology",
+    university: "Stanford University",
+    year: "2011",
+  },
+  {
+    degree: "MSc, Cognitive Neuroscience",
+    university: "University of Copenhagen",
+    year: "2007",
+  },
+  {
+    degree: "Certified CBT Practitioner",
+    university: "Beck Institute",
+    year: "2013",
+  },
+  {
+    degree: "EMDR Level II Certification",
+    university: "EMDR International Association",
+    year: "2016",
+  },
+];
+
+export const certificates = [
+  "Schema Therapy — Advanced Practitioner",
+  "Acceptance & Commitment Therapy (ACT) — Peer Reviewed",
+  "Trauma Focused CBT for Adolescents",
+  "Mindfulness-Based Stress Reduction (MBSR) Teacher",
+];
+
+export const experiences = [
+  {
+    period: "2020 — Present",
+    title: "Founder & Lead Psychologist",
+    company: "Serene Mind Clinic",
+    description:
+      "Private practice supporting 400+ clients with individual, couples and family therapy.",
+  },
+  {
+    period: "2016 — 2020",
+    title: "Senior Clinical Psychologist",
+    company: "Bay Area Behavioral Health",
+    description:
+      "Led CBT and ACT treatment programmes and supervised junior clinicians.",
+  },
+  {
+    period: "2012 — 2016",
+    title: "Research Fellow",
+    company: "Stanford Mood & Anxiety Lab",
+    description:
+      "Published clinical research focused on evidence-based psychological interventions.",
+  },
+];
+
+export const expertise = [
+  "Anxiety Disorders",
+  "Depression",
+  "Burnout Recovery",
+  "Trauma",
+  "Relationship Counselling",
+  "Couples Therapy",
+  "Stress Management",
+  "Self-Esteem",
+  "Grief & Loss",
+  "Life Transitions",
+];
+
+export const therapyMethods = [
+  "Cognitive Behavioral Therapy (CBT)",
+  "Acceptance & Commitment Therapy (ACT)",
+  "Schema Therapy",
+  "Mindfulness-Based Therapy",
+  "EMDR",
+];
+
+export const languages = ["English", "Swedish", "Danish"];
+
+export const contactFormFields = [
+  {
+    name: "fullName",
+    label: "Full name",
+    placeholder: "Jane Anderson",
+    required: true,
+    type: "text",
+  },
+  {
+    name: "email",
+    label: "Email",
+    placeholder: "jane@mail.com",
+    required: true,
+    type: "email",
+  },
+  {
+    name: "phone",
+    label: "Phone",
+    placeholder: "+1 (415) 555-0100",
+    required: false,
+    type: "tel",
+  },
+  {
+    name: "subject",
+    label: "Subject",
+    placeholder: "New patient enquiry",
+    required: false,
+    type: "text",
+  },
+];
+
+export const clinicInfo = [
+  {
+    icon: Phone,
+    title: "Phone",
+    value: "+1 (415) 555-0128",
+  },
+  {
+    icon: Mail,
+    title: "Email",
+    value: "hello@serenemind.clinic",
+  },
+  {
+    icon: MapPin,
+    title: "Address",
+    value: "224 Harborview Ave, Suite 5, San Francisco, CA",
+  },
+  {
+    icon: Clock3,
+    title: "Opening hours",
+    value: "Mon – Fri • 9:00 – 18:00",
+  },
+];
+
+export const socialLinks = [
+  {
+    title: "Instagram",
+    href: "https://instagram.com",
+    icon: FaInstagram,
+  },
+  {
+    title: "Facebook",
+    href: "https://facebook.com",
+    icon: FaFacebook,
+  },
+  {
+    title: "LinkedIn",
+    href: "https://linkedin.com",
+    icon: FaLinkedin,
   },
 ];
