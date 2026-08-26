@@ -36,7 +36,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Clinic Management System",
+  title: "Dr.Yasmin Madeh",
   description: "Clinic Management System",
 };
 
