@@ -1,5 +1,3 @@
-// components/feature/layout/footer/footer-brand/footer-brand.tsx
-
 import logo from "@/assets/logo.png";
 import Image from "next/image";
 
