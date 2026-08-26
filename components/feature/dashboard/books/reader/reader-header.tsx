@@ -10,7 +10,7 @@ const ReaderHeader = ({ title }: Props) => {
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
         <Link
-          href="/dashboard/my-books"
+          href="/dashboard/patient/my-books"
           className="flex h-9 w-9 items-center justify-center rounded-lg transition-colors hover:bg-muted"
           aria-label="Back to my books"
         >

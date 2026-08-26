@@ -12,6 +12,10 @@ export async function updateBook(bookId: string, formData: FormData) {
   let newCoverPublicId: string | null = null;
 
   try {
+    // =========================
+    // VALIDATION
+    // =========================
+
     if (!bookId) {
       return {
         success: false,
@@ -53,6 +57,10 @@ export async function updateBook(bookId: string, formData: FormData) {
       };
     }
 
+    // =========================
+    // GET EXISTING BOOK
+    // =========================
+
     const existingBook = await prisma.book.findUnique({
       where: {
         id: bookId,
@@ -65,6 +73,10 @@ export async function updateBook(bookId: string, formData: FormData) {
         message: "Book not found.",
       };
     }
+
+    // =========================
+    // BOOK DATA
+    // =========================
 
     const data: {
       title: string;
@@ -115,12 +127,18 @@ export async function updateBook(bookId: string, formData: FormData) {
       }>((resolve, reject) => {
         const uploadStream = cloudinary.uploader.upload_stream(
           {
-            resource_type: "raw",
+            // IMPORTANT:
+            // PDF must be uploaded as an image resource
+            // so Cloudinary can generate individual pages.
+            resource_type: "image",
+
             folder: "clinic/books",
+
             use_filename: true,
             unique_filename: true,
             overwrite: false,
           },
+
           (error, result) => {
             if (error) {
               reject(error);
@@ -131,6 +149,14 @@ export async function updateBook(bookId: string, formData: FormData) {
               reject(new Error("PDF upload failed."));
               return;
             }
+
+            console.log("CLOUDINARY PDF UPLOAD:", {
+              publicId: result.public_id,
+              resourceType: result.resource_type,
+              format: result.format,
+              pages: result.pages,
+              secureUrl: result.secure_url,
+            });
 
             resolve({
               secure_url: result.secure_url,
@@ -144,6 +170,11 @@ export async function updateBook(bookId: string, formData: FormData) {
       });
 
       newFilePublicId = uploadedFile.public_id;
+
+      // Make sure Cloudinary actually detected the pages.
+      if (!uploadedFile.pages || uploadedFile.pages < 1) {
+        throw new Error("Cloudinary could not determine the PDF page count.");
+      }
 
       data.fileUrl = uploadedFile.secure_url;
       data.cloudinaryPublicId = uploadedFile.public_id;
@@ -187,6 +218,7 @@ export async function updateBook(bookId: string, formData: FormData) {
             unique_filename: true,
             overwrite: false,
           },
+
           (error, result) => {
             if (error) {
               reject(error);
@@ -230,10 +262,14 @@ export async function updateBook(bookId: string, formData: FormData) {
     // =========================
 
     if (newFilePublicId && existingBook.cloudinaryPublicId) {
-      await cloudinary.uploader.destroy(existingBook.cloudinaryPublicId, {
-        resource_type: "raw",
-        invalidate: true,
-      });
+      try {
+        await cloudinary.uploader.destroy(existingBook.cloudinaryPublicId, {
+          resource_type: "image",
+          invalidate: true,
+        });
+      } catch (error) {
+        console.error("OLD_PDF_DELETE_ERROR:", error);
+      }
     }
 
     // =========================
@@ -241,11 +277,19 @@ export async function updateBook(bookId: string, formData: FormData) {
     // =========================
 
     if (newCoverPublicId && existingBook.coverImagePublicId) {
-      await cloudinary.uploader.destroy(existingBook.coverImagePublicId, {
-        resource_type: "image",
-        invalidate: true,
-      });
+      try {
+        await cloudinary.uploader.destroy(existingBook.coverImagePublicId, {
+          resource_type: "image",
+          invalidate: true,
+        });
+      } catch (error) {
+        console.error("OLD_COVER_DELETE_ERROR:", error);
+      }
     }
+
+    // =========================
+    // REVALIDATE
+    // =========================
 
     revalidatePath("/dashboard/admin/books");
 
@@ -256,16 +300,24 @@ export async function updateBook(bookId: string, formData: FormData) {
   } catch (error) {
     console.error("UPDATE_BOOK_ERROR:", error);
 
+    // =========================
+    // CLEANUP NEW PDF
+    // =========================
+
     if (newFilePublicId) {
       try {
         await cloudinary.uploader.destroy(newFilePublicId, {
-          resource_type: "raw",
+          resource_type: "image",
           invalidate: true,
         });
       } catch (cleanupError) {
         console.error("PDF_CLEANUP_ERROR:", cleanupError);
       }
     }
+
+    // =========================
+    // CLEANUP NEW COVER
+    // =========================
 
     if (newCoverPublicId) {
       try {

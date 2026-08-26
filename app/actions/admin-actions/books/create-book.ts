@@ -107,7 +107,7 @@ export async function createBook(formData: FormData) {
     }>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          resource_type: "raw",
+          resource_type: "image",
           folder: "clinic/books",
           use_filename: true,
           unique_filename: true,
@@ -124,6 +124,14 @@ export async function createBook(formData: FormData) {
             return;
           }
 
+          console.log("CLOUDINARY PDF UPLOAD:", {
+            publicId: result.public_id,
+            resourceType: result.resource_type,
+            format: result.format,
+            pages: result.pages,
+            secureUrl: result.secure_url,
+          });
+
           resolve({
             secure_url: result.secure_url,
             public_id: result.public_id,
@@ -136,6 +144,10 @@ export async function createBook(formData: FormData) {
     });
 
     uploadedFilePublicId = uploadedFile.public_id;
+
+    if (!uploadedFile.pages || uploadedFile.pages < 1) {
+      throw new Error("Cloudinary could not determine the PDF page count.");
+    }
 
     // =========================
     // UPLOAD COVER
@@ -214,7 +226,7 @@ export async function createBook(formData: FormData) {
     if (uploadedFilePublicId) {
       try {
         await cloudinary.uploader.destroy(uploadedFilePublicId, {
-          resource_type: "raw",
+          resource_type: "image",
           invalidate: true,
         });
       } catch (cleanupError) {

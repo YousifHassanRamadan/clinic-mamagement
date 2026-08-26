@@ -1,3 +1,5 @@
+// app/api/books/[bookId]/pages/[page]/route.ts
+
 import { NextResponse } from "next/server";
 
 import cloudinary from "@/lib/cloudinary";
@@ -19,9 +21,14 @@ export async function GET(request: Request, { params }: RouteProps) {
 
     const session = await auth();
 
-    // console.log("BOOK API SESSION:", session);
+    // console.log("BOOK API SESSION:", {
+    //   userId: session?.user?.id ?? null,
+    //   authenticated: !!session?.user?.id,
+    // });
 
     if (!session?.user?.id) {
+      console.error("BOOK API ERROR: Unauthorized");
+
       return new NextResponse("Unauthorized", {
         status: 401,
       });
@@ -35,13 +42,26 @@ export async function GET(request: Request, { params }: RouteProps) {
 
     const pageNumber = Number(page);
 
+    // console.log("BOOK PAGE PARAMS:", {
+    //   bookId,
+    //   page,
+    //   pageNumber,
+    // });
+
     if (!bookId) {
+      console.error("BOOK API ERROR: Book ID is required");
+
       return new NextResponse("Book ID is required", {
         status: 400,
       });
     }
 
     if (!Number.isInteger(pageNumber) || pageNumber < 1) {
+      console.error("BOOK API ERROR: Invalid page number", {
+        page,
+        pageNumber,
+      });
+
       return new NextResponse("Invalid page number", {
         status: 400,
       });
@@ -73,19 +93,34 @@ export async function GET(request: Request, { params }: RouteProps) {
       },
     });
 
+    // console.log("BOOK ACCESS DEBUG:", {
+    //   accessFound: !!access,
+    //   approval: access?.approval ?? null,
+    //   bookFound: !!access?.book,
+    //   isActive: access?.book?.isActive ?? null,
+    //   pageCount: access?.book?.pageCount ?? null,
+    //   cloudinaryPublicId: access?.book?.cloudinaryPublicId ?? null,
+    // });
+
     if (!access) {
+      console.error("BOOK API ERROR: Access denied");
+
       return new NextResponse("Access denied", {
         status: 403,
       });
     }
 
     if (!access.approval) {
+      console.error("BOOK API ERROR: Book access is not approved");
+
       return new NextResponse("Book access is not approved", {
         status: 403,
       });
     }
 
     if (!access.book || !access.book.isActive) {
+      console.error("BOOK API ERROR: Book is not available");
+
       return new NextResponse("Book is not available", {
         status: 404,
       });
@@ -96,6 +131,11 @@ export async function GET(request: Request, { params }: RouteProps) {
     // ==========================================
 
     if (pageNumber > access.book.pageCount) {
+      console.error("BOOK API ERROR: Page does not exist", {
+        pageNumber,
+        pageCount: access.book.pageCount,
+      });
+
       return new NextResponse("Page does not exist", {
         status: 404,
       });
@@ -106,6 +146,8 @@ export async function GET(request: Request, { params }: RouteProps) {
     // ==========================================
 
     if (!access.book.cloudinaryPublicId) {
+      console.error("BOOK API ERROR: Cloudinary public ID is missing");
+
       return new NextResponse("Book file not found", {
         status: 404,
       });
@@ -135,6 +177,13 @@ export async function GET(request: Request, { params }: RouteProps) {
 
     // console.log("BOOK PAGE URL:", pageUrl);
 
+    // console.log("BOOK CLOUDINARY REQUEST:", {
+    //   publicId: access.book.cloudinaryPublicId,
+    //   resourceType: "image",
+    //   pageNumber,
+    //   format: "jpg",
+    // });
+
     // ==========================================
     // FETCH PAGE FROM CLOUDINARY
     // ==========================================
@@ -143,10 +192,21 @@ export async function GET(request: Request, { params }: RouteProps) {
       cache: "no-store",
     });
 
+    // console.log("CLOUDINARY RESPONSE:", {
+    //   status: response.status,
+    //   ok: response.ok,
+    //   contentType: response.headers.get("content-type"),
+    //   contentLength: response.headers.get("content-length"),
+    // });
+
     if (!response.ok) {
       const errorText = await response.text();
 
-      console.error("CLOUDINARY_PAGE_FETCH_ERROR:", response.status, errorText);
+      console.error("CLOUDINARY_PAGE_FETCH_ERROR:", {
+        status: response.status,
+        error: errorText,
+        url: pageUrl,
+      });
 
       return new NextResponse("Failed to load book page", {
         status: 502,
@@ -158,6 +218,12 @@ export async function GET(request: Request, { params }: RouteProps) {
     // ==========================================
 
     const imageBuffer = await response.arrayBuffer();
+
+    // console.log("BOOK PAGE SUCCESS:", {
+    //   bookId,
+    //   pageNumber,
+    //   bytes: imageBuffer.byteLength,
+    // });
 
     return new NextResponse(imageBuffer, {
       status: 200,

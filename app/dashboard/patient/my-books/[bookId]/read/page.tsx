@@ -16,7 +16,7 @@ const ReadBookPage = async ({ params }: Props) => {
   const result = await getMyBookReader(bookId);
 
   if (!result.success) {
-    redirect("/dashboard/my-books");
+    redirect("/dashboard/patient/my-books");
   }
 
   return (

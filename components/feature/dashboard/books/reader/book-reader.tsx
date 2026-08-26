@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 import ReaderHeader from "./reader-header";
 import ReaderToolbar from "./reader-toolbar";
@@ -19,18 +20,110 @@ interface Props {
 }
 
 const BookReader = ({ book }: Props) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [zoom, setZoom] = useState(1);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const totalPages = book.pageCount;
 
+  // ==========================================
+  // INITIAL PAGE
+  // ==========================================
+
+  const getInitialPage = () => {
+    const pageParam = Number(searchParams.get("page"));
+
+    if (
+      Number.isInteger(pageParam) &&
+      pageParam >= 1 &&
+      pageParam <= totalPages
+    ) {
+      return pageParam;
+    }
+
+    return 1;
+  };
+
+  const [currentPage, setCurrentPage] = useState(getInitialPage);
+  const [zoom, setZoom] = useState(1);
+
+  // ==========================================
+  // UPDATE PAGE IN URL
+  // ==========================================
+
+  const updatePageInUrl = useCallback(
+    (page: number) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      if (page === 1) {
+        params.delete("page");
+      } else {
+        params.set("page", String(page));
+      }
+
+      const query = params.toString();
+
+      router.replace(query ? `${pathname}?${query}` : pathname, {
+        scroll: false,
+      });
+    },
+    [pathname, router, searchParams],
+  );
+
+  // ==========================================
+  // NEXT PAGE
+  // ==========================================
+
   const goNext = useCallback(() => {
-    setCurrentPage((current) => Math.min(current + 1, totalPages));
-  }, [totalPages]);
+    if (currentPage >= totalPages) {
+      return;
+    }
+
+    const nextPage = currentPage + 1;
+
+    setCurrentPage(nextPage);
+    updatePageInUrl(nextPage);
+  }, [currentPage, totalPages, updatePageInUrl]);
+
+  // ==========================================
+  // PREVIOUS PAGE
+  // ==========================================
 
   const goPrevious = useCallback(() => {
-    setCurrentPage((current) => Math.max(current - 1, 1));
-  }, []);
+    if (currentPage <= 1) {
+      return;
+    }
+
+    const previousPage = currentPage - 1;
+
+    setCurrentPage(previousPage);
+    updatePageInUrl(previousPage);
+  }, [currentPage, updatePageInUrl]);
+
+  // ==========================================
+  // SYNC PAGE WITH URL
+  // ==========================================
+
+  useEffect(() => {
+    const pageParam = Number(searchParams.get("page"));
+
+    if (
+      Number.isInteger(pageParam) &&
+      pageParam >= 1 &&
+      pageParam <= totalPages
+    ) {
+      setCurrentPage(pageParam);
+      return;
+    }
+
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [searchParams, totalPages, currentPage]);
+
+  // ==========================================
+  // ZOOM
+  // ==========================================
 
   const zoomIn = () => {
     setZoom((value) => Math.min(value + 0.1, 1.8));
@@ -44,7 +137,10 @@ const BookReader = ({ book }: Props) => {
     setZoom(1);
   };
 
-  // Keyboard navigation
+  // ==========================================
+  // KEYBOARD NAVIGATION
+  // ==========================================
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "ArrowRight" || event.key === "ArrowDown") {
@@ -71,7 +167,10 @@ const BookReader = ({ book }: Props) => {
     };
   }, [goNext, goPrevious]);
 
-  // Disable some browser actions
+  // ==========================================
+  // DISABLE SOME BROWSER ACTIONS
+  // ==========================================
+
   useEffect(() => {
     const preventContextMenu = (event: MouseEvent) => {
       event.preventDefault();
@@ -82,15 +181,17 @@ const BookReader = ({ book }: Props) => {
     };
 
     document.addEventListener("contextmenu", preventContextMenu);
-
     document.addEventListener("copy", preventCopy);
 
     return () => {
       document.removeEventListener("contextmenu", preventContextMenu);
-
       document.removeEventListener("copy", preventCopy);
     };
   }, []);
+
+  // ==========================================
+  // EMPTY BOOK
+  // ==========================================
 
   if (!totalPages) {
     return (
@@ -101,6 +202,10 @@ const BookReader = ({ book }: Props) => {
       </div>
     );
   }
+
+  // ==========================================
+  // RENDER
+  // ==========================================
 
   return (
     <div className="min-h-screen bg-muted/30">
