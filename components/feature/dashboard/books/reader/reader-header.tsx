@@ -1,3 +1,5 @@
+// reader-header.tsx
+
 import Link from "next/link";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
@@ -7,7 +9,10 @@ interface Props {
 
 const ReaderHeader = ({ title }: Props) => {
   return (
-    <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <header
+      dir="rtl"
+      className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+    >
       <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
         <Link
           href="/dashboard/patient/my-books"
@@ -20,7 +25,10 @@ const ReaderHeader = ({ title }: Props) => {
         <div className="flex min-w-0 items-center gap-2">
           <BookOpen className="hidden h-5 w-5 shrink-0 text-primary sm:block" />
 
-          <h1 className="truncate text-sm font-semibold sm:text-base">
+          <h1
+            dir="auto"
+            className="truncate text-sm font-semibold sm:text-base"
+          >
             {title}
           </h1>
         </div>

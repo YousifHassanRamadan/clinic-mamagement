@@ -1,4 +1,5 @@
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 import BookReader from "@/components/feature/dashboard/books/reader/book-reader";
 
@@ -19,11 +20,19 @@ const ReadBookPage = async ({ params }: Props) => {
     redirect("/dashboard/patient/my-books");
   }
 
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value ?? "en";
+
+  const title =
+    locale === "ar"
+      ? (result.book.titleAr ?? result.book.title)
+      : result.book.title;
+
   return (
     <BookReader
       book={{
         id: result.book.id,
-        title: result.book.title,
+        title,
         pageCount: result.book.pageCount,
         watermark: result.reader.name,
       }}

@@ -1,3 +1,5 @@
+// book-reader.tsx
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -26,10 +28,6 @@ const BookReader = ({ book }: Props) => {
 
   const totalPages = book.pageCount;
 
-  // ==========================================
-  // INITIAL PAGE
-  // ==========================================
-
   const getInitialPage = () => {
     const pageParam = Number(searchParams.get("page"));
 
@@ -46,10 +44,6 @@ const BookReader = ({ book }: Props) => {
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
   const [zoom, setZoom] = useState(1);
-
-  // ==========================================
-  // UPDATE PAGE IN URL
-  // ==========================================
 
   const updatePageInUrl = useCallback(
     (page: number) => {
@@ -70,10 +64,6 @@ const BookReader = ({ book }: Props) => {
     [pathname, router, searchParams],
   );
 
-  // ==========================================
-  // NEXT PAGE
-  // ==========================================
-
   const goNext = useCallback(() => {
     if (currentPage >= totalPages) {
       return;
@@ -85,10 +75,6 @@ const BookReader = ({ book }: Props) => {
     updatePageInUrl(nextPage);
   }, [currentPage, totalPages, updatePageInUrl]);
 
-  // ==========================================
-  // PREVIOUS PAGE
-  // ==========================================
-
   const goPrevious = useCallback(() => {
     if (currentPage <= 1) {
       return;
@@ -99,10 +85,6 @@ const BookReader = ({ book }: Props) => {
     setCurrentPage(previousPage);
     updatePageInUrl(previousPage);
   }, [currentPage, updatePageInUrl]);
-
-  // ==========================================
-  // SYNC PAGE WITH URL
-  // ==========================================
 
   useEffect(() => {
     const pageParam = Number(searchParams.get("page"));
@@ -121,10 +103,6 @@ const BookReader = ({ book }: Props) => {
     }
   }, [searchParams, totalPages, currentPage]);
 
-  // ==========================================
-  // ZOOM
-  // ==========================================
-
   const zoomIn = () => {
     setZoom((value) => Math.min(value + 0.1, 1.8));
   };
@@ -136,10 +114,6 @@ const BookReader = ({ book }: Props) => {
   const resetZoom = () => {
     setZoom(1);
   };
-
-  // ==========================================
-  // KEYBOARD NAVIGATION
-  // ==========================================
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -167,10 +141,6 @@ const BookReader = ({ book }: Props) => {
     };
   }, [goNext, goPrevious]);
 
-  // ==========================================
-  // DISABLE SOME BROWSER ACTIONS
-  // ==========================================
-
   useEffect(() => {
     const preventContextMenu = (event: MouseEvent) => {
       event.preventDefault();
@@ -189,10 +159,6 @@ const BookReader = ({ book }: Props) => {
     };
   }, []);
 
-  // ==========================================
-  // EMPTY BOOK
-  // ==========================================
-
   if (!totalPages) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -202,10 +168,6 @@ const BookReader = ({ book }: Props) => {
       </div>
     );
   }
-
-  // ==========================================
-  // RENDER
-  // ==========================================
 
   return (
     <div className="min-h-screen bg-muted/30">

@@ -1,3 +1,5 @@
+// app/actions/patient-actions/books/get-my-book-reader.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -36,6 +38,7 @@ export async function getMyBookReader(bookId: string) {
           select: {
             id: true,
             title: true,
+            titleAr: true,
             description: true,
             isActive: true,
             pageCount: true,
@@ -64,6 +67,7 @@ export async function getMyBookReader(bookId: string) {
       book: {
         id: access.book.id,
         title: access.book.title,
+        titleAr: access.book.titleAr,
         description: access.book.description,
         pageCount: access.book.pageCount,
       },
