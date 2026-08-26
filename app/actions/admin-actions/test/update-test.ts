@@ -31,7 +31,16 @@ export async function updateTest(testId: string, input: unknown) {
     };
   }
 
-  const { title, description, categoryId, isActive, ranges } = validation.data;
+  const {
+    title,
+    titleAr,
+    description,
+    descriptionAr,
+    categoryId,
+    price,
+    isActive,
+    ranges,
+  } = validation.data;
 
   try {
     const test = await prisma.psychologicalTest.findUnique({
@@ -74,15 +83,23 @@ export async function updateTest(testId: string, input: unknown) {
 
         data: {
           title,
+          titleAr: titleAr || null,
+
           description: description || null,
+          descriptionAr: descriptionAr || null,
+
           categoryId,
+          price,
           isActive,
 
           resultRanges: {
             create: ranges.map((range, index) => ({
               minScore: range.minScore,
               maxScore: range.maxScore,
+
               result: range.result,
+              resultAr: range.resultAr || null,
+
               order: index + 1,
             })),
           },
@@ -101,7 +118,11 @@ export async function updateTest(testId: string, input: unknown) {
     return {
       success: true,
       message: "Test updated successfully",
-      data: updatedTest,
+
+      data: {
+        ...updatedTest,
+        price: Number(updatedTest.price),
+      },
     };
   } catch (error) {
     console.error("UPDATE_TEST_ERROR:", error);

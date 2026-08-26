@@ -183,24 +183,22 @@ export const faqItems = [
 
 export const exploreLinks = [
   { title: "Home", href: "/" },
-  { title: "About the doctor", href: "/about" },
-  { title: "Contact", href: "/contact" },
-  { title: "Patient sign in", href: "/sign-in" },
-  { title: "Create account", href: "/sign-up" },
+  { title: "Patient sign in", href: "/login" },
+  { title: "Create account", href: "/login" },
 ];
 
 export const contactInfo = [
   {
     icon: Phone,
-    text: "+1 (415) 555-0128",
+    text: "+20 10 14217564",
   },
   {
     icon: Mail,
-    text: "hello@serenemind.clinic",
+    text: "yasminmadeh@gmail.com",
   },
   {
     icon: MapPin,
-    text: "224 Harborview Ave, Suite 5, San Francisco, CA",
+    text: "Suez",
   },
 ];
 

@@ -1,3 +1,5 @@
+// delete-question.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -45,7 +47,6 @@ export async function deleteQuestion(questionId: string) {
       },
     });
 
-    // Re-order remaining questions
     await prisma.$transaction(async (tx) => {
       const remainingQuestions = await tx.question.findMany({
         where: {

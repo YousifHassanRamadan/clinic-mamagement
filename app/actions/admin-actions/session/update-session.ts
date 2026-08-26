@@ -39,17 +39,25 @@ export async function updateSession(input: unknown) {
       duration,
       sessionType,
       diagnosis,
+      diagnosisAr,
       mood,
       publicNotes,
+      publicNotesAr,
       privateClinicalNotes,
+      privateClinicalNotesAr,
       shareNotes,
       sendSummaryEmail,
       fee,
+      attachments,
     } = parsed.data;
 
     const existingSession = await prisma.clinicSession.findUnique({
       where: {
         id: sessionId,
+      },
+
+      select: {
+        id: true,
       },
     });
 
@@ -111,59 +119,91 @@ export async function updateSession(input: unknown) {
 
     const sessionDate = combineDateAndTime(date, time);
 
-    const updatedSession = await prisma.clinicSession.update({
-      where: {
-        id: sessionId,
-      },
+    const updatedSession = await prisma.$transaction(async (tx) => {
+      const updated = await tx.clinicSession.update({
+        where: {
+          id: sessionId,
+        },
 
-      data: {
-        patientId,
+        data: {
+          patientId,
 
-        appointmentId: appointmentId || null,
+          appointmentId: appointmentId || null,
 
-        sessionDate,
+          sessionDate,
 
-        duration,
+          duration,
 
-        sessionType,
+          sessionType,
 
-        diagnosis: diagnosis?.trim() || null,
+          diagnosis: diagnosis?.trim() || null,
 
-        mood: mood ?? null,
+          diagnosisAr: diagnosisAr?.trim() || null,
 
-        publicNotes: publicNotes?.trim() || null,
+          mood: mood ?? null,
 
-        privateClinicalNotes: privateClinicalNotes?.trim() || null,
+          publicNotes: publicNotes?.trim() || null,
 
-        shareNotes,
+          publicNotesAr: publicNotesAr?.trim() || null,
 
-        sendSummaryEmail,
+          privateClinicalNotes: privateClinicalNotes?.trim() || null,
 
-        fee,
-      },
+          privateClinicalNotesAr: privateClinicalNotesAr?.trim() || null,
 
-      include: {
-        patient: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            phone: true,
+          shareNotes,
+
+          sendSummaryEmail,
+
+          fee,
+
+          attachments: {
+            connect: attachments
+              .filter((attachment) => attachment.id)
+              .map((attachment) => ({
+                id: attachment.id!,
+              })),
+
+            create: attachments
+              .filter((attachment) => !attachment.id)
+              .map((attachment) => ({
+                name: attachment.name,
+                url: attachment.url,
+                size: attachment.size,
+                type: attachment.type,
+                publicId: attachment.publicId ?? null,
+                resourceType: attachment.resourceType ?? null,
+              })),
           },
         },
 
-        appointment: true,
+        include: {
+          patient: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
+          },
 
-        attachments: true,
-      },
+          appointment: true,
+
+          attachments: true,
+        },
+      });
+
+      return updated;
     });
 
     return {
       success: true,
+
       data: {
         ...updatedSession,
+
         fee: Number(updatedSession.fee),
       },
+
       message: "Session updated successfully",
     };
   } catch (error) {

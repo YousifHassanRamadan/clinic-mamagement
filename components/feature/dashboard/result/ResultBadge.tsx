@@ -1,6 +1,5 @@
+import { TestStatus } from "@/app/generated/prisma/enums";
 import { Badge } from "@/components/ui/badge";
-
-import type { TestStatus } from "./types";
 
 interface Props {
   status: TestStatus;

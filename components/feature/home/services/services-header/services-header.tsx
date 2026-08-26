@@ -1,17 +1,26 @@
-const ServicesHeader = () => {
+// components/feature/home/services/services-header/services-header.tsx
+
+interface ServicesHeaderProps {
+  translations: {
+    eyebrow: string;
+    title: string;
+    description: string;
+  };
+}
+
+const ServicesHeader = ({ translations }: ServicesHeaderProps) => {
   return (
     <div className="max-w-3xl">
       <span className="text-sm font-semibold uppercase tracking-[0.1em] text-primary">
-        Services
+        {translations.eyebrow}
       </span>
 
       <h2 className="mt-2 text-4xl font-semibold tracking-tight text-foreground">
-        Care that fits the shape of your life
+        {translations.title}
       </h2>
 
       <p className="mt-3 text-md leading-5 text-muted-foreground">
-        Every track begins with an 80-minute intake assessment, then settles
-        into a rhythm you <br /> choose.
+        {translations.description}
       </p>
     </div>
   );

@@ -2,24 +2,49 @@
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 import TestHeader from "./TestHeader";
 import TestProgress from "./TestProgress";
 import QuestionCard from "./QuestionCard";
 
 import { useTestStore } from "@/store/test-store";
-import { StartedTest } from "@/app/dashboard/tests/types";
 
 import { startTest } from "@/app/actions/patient-actions/tests/start-test";
 import { submitTest } from "@/app/actions/patient-actions/tests/submit-test";
-import { useRouter } from "next/navigation";
+import { StartedTest } from "@/app/dashboard/patient/tests/types";
 
 interface TestAnswer {
   questionId: string;
   optionId: string;
 }
 
-const TakeTestPage = () => {
+interface Translations {
+  noTestSelected: string;
+  answerAllQuestions: string;
+  patientTestIdMissing: string;
+  submitError: string;
+  unableToLoad: string;
+  defaultDescription: string;
+
+  question: string;
+  of: string;
+  complete: string;
+
+  navigation: {
+    previous: string;
+    next: string;
+    finish: string;
+    submitting: string;
+  };
+}
+
+interface Props {
+  locale: "en" | "ar";
+  translations: Translations;
+}
+
+const TakeTestPage = ({ locale, translations }: Props) => {
   const selectedTestId = useTestStore((state) => state.selectedTestId);
 
   const [test, setTest] = useState<StartedTest | null>(null);
@@ -30,18 +55,20 @@ const TakeTestPage = () => {
 
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
     const loadTest = async () => {
       if (!selectedTestId) {
-        toast.error("No test selected");
+        toast.error(translations.noTestSelected);
         setLoading(false);
         return;
       }
 
       const result = await startTest({
         testId: selectedTestId,
+        locale,
       });
 
       if (!result.success) {
@@ -56,7 +83,7 @@ const TakeTestPage = () => {
     };
 
     loadTest();
-  }, [selectedTestId]);
+  }, [selectedTestId, locale, translations.noTestSelected]);
 
   const handleSelectAnswer = (questionId: string, optionId: string) => {
     setAnswers((prev) => {
@@ -89,12 +116,12 @@ const TakeTestPage = () => {
     if (!test) return;
 
     if (answers.length !== test.questions.length) {
-      toast.error("Please answer all questions before finishing the test.");
+      toast.error(translations.answerAllQuestions);
       return;
     }
 
     if (!patientTestId) {
-      toast.error("Patient test ID is missing.");
+      toast.error(translations.patientTestIdMissing);
       return;
     }
 
@@ -113,10 +140,10 @@ const TakeTestPage = () => {
 
       toast.success(result.message);
 
-      router.push("/dashboard/tests/results");
+      router.push("/dashboard/patient/tests/results");
     } catch (error) {
       console.error("FINISH_TEST_ERROR:", error);
-      toast.error("Something went wrong while submitting the test.");
+      toast.error(translations.submitError);
     } finally {
       setSubmitting(false);
     }
@@ -138,7 +165,7 @@ const TakeTestPage = () => {
     return (
       <section className="mx-auto max-w-4xl py-10">
         <div className="rounded-3xl border p-8 text-center">
-          <p className="text-muted-foreground">Unable to load this test.</p>
+          <p className="text-muted-foreground">{translations.unableToLoad}</p>
         </div>
       </section>
     );
@@ -151,15 +178,23 @@ const TakeTestPage = () => {
   );
 
   return (
-    <section className="mx-auto max-w-4xl space-y-8 py-10">
+    <section
+      dir={locale === "ar" ? "rtl" : "ltr"}
+      className="mx-auto max-w-4xl space-y-8 py-10"
+    >
       <TestHeader
         title={test.title}
-        subtitle={test.description ?? "Please answer the following questions."}
+        subtitle={test.description ?? translations.defaultDescription}
       />
 
       <TestProgress
         current={currentQuestion + 1}
         total={test.questions.length}
+        translations={{
+          question: translations.question,
+          of: translations.of,
+          complete: translations.complete,
+        }}
       />
 
       <QuestionCard
@@ -169,6 +204,7 @@ const TakeTestPage = () => {
         total={test.questions.length}
         selected={currentAnswer?.optionId ?? null}
         submitting={submitting}
+        translations={translations.navigation}
         onSelect={(optionId) => {
           handleSelectAnswer(question.id, optionId);
         }}

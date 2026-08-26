@@ -1,3 +1,5 @@
+// get-test-questions.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -28,10 +30,13 @@ export async function getTestQuestions(testId: string) {
       select: {
         id: true,
         title: true,
+        titleAr: true,
+
         questions: {
           orderBy: {
             order: "asc",
           },
+
           include: {
             options: {
               orderBy: {

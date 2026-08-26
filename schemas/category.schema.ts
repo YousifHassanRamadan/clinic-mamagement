@@ -1,4 +1,5 @@
 import { z } from "zod";
+
 export const createCategorySchema = z.object({
   name: z
     .string()
@@ -6,10 +7,22 @@ export const createCategorySchema = z.object({
     .min(1, "Category name is required")
     .max(100, "Category name must be less than 100 characters"),
 
+  nameAr: z
+    .string()
+    .trim()
+    .max(100, "Arabic category name must be less than 100 characters")
+    .optional(),
+
   description: z
     .string()
     .trim()
     .max(500, "Description must be less than 500 characters")
+    .optional(),
+
+  descriptionAr: z
+    .string()
+    .trim()
+    .max(500, "Arabic description must be less than 500 characters")
     .optional(),
 });
 
@@ -23,10 +36,22 @@ export const categoryUpdateSchema = z.object({
     .max(100, "Category name must be less than 100 characters")
     .optional(),
 
+  nameAr: z
+    .string()
+    .trim()
+    .max(100, "Arabic category name must be less than 100 characters")
+    .optional(),
+
   description: z
     .string()
     .trim()
     .max(500, "Description must be less than 500 characters")
+    .optional(),
+
+  descriptionAr: z
+    .string()
+    .trim()
+    .max(500, "Arabic description must be less than 500 characters")
     .optional(),
 });
 

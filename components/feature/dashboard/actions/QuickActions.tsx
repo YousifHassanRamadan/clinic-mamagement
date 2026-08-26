@@ -1,17 +1,27 @@
-import { quickActions } from "@/constants/dashboard/dashboard";
+import { cookies } from "next/headers";
+
+import { getTranslations } from "@/i18n/getTranslations";
+
 import ActionCard from "./ActionCard";
+import { quickActions } from "@/constants/dashboard/dashboard";
 
-const QuickActions = () => {
+const QuickActions = async () => {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get("locale")?.value;
+
+  const t = await getTranslations(locale);
+
   return (
-    <section>
-      <h2 className="mb-5 text-2xl font-semibold">Quick Actions</h2>
-
-      <div className="grid gap-5 lg:grid-cols-3  sm:grid-cols-2">
-        {quickActions.map((action) => (
-          <ActionCard key={action.title} {...action} />
-        ))}
-      </div>
-    </section>
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {quickActions.map((action) => (
+        <ActionCard
+          key={action.href}
+          title={t(action.titleKey)}
+          icon={action.icon}
+          href={action.href}
+        />
+      ))}
+    </div>
   );
 };
 

@@ -16,7 +16,22 @@ const TestResultsPage = () => {
   const [results, setResults] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const [locale, setLocale] = useState<"en" | "ar">("en");
+
   useEffect(() => {
+    // AR: جلب اللغة من الكوكيز فقط
+    // EN: Get the locale from cookies only
+    const cookieLocale = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("locale="))
+      ?.split("=")[1];
+
+    if (cookieLocale === "ar") {
+      setLocale("ar");
+    } else {
+      setLocale("en");
+    }
+
     const loadResults = async () => {
       const response = await getTestResults();
 
@@ -32,6 +47,8 @@ const TestResultsPage = () => {
 
     loadResults();
   }, []);
+
+  const isArabic = locale === "ar";
 
   if (loading) {
     return (
@@ -58,33 +75,34 @@ const TestResultsPage = () => {
     <div className="space-y-8">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">Test Results</h1>
+          <h1 className="text-3xl font-bold">
+            {isArabic ? "نتائج الاختبارات" : "Test Results"}
+          </h1>
 
           <p className="mt-2 text-muted-foreground">
-            Every completed assessment, newest first.
+            {isArabic
+              ? "جميع التقييمات المكتملة، من الأحدث إلى الأقدم."
+              : "Every completed assessment, newest first."}
           </p>
         </div>
-
-        <Button variant="outline" className="rounded-xl">
-          <Download className="mr-2 h-4 w-4" />
-          Export PDF
-        </Button>
       </div>
 
       {results.length === 0 ? (
         <div className="rounded-3xl border p-8 text-center">
           <p className="text-muted-foreground">
-            You don't have any completed tests yet.
+            {isArabic
+              ? "ليس لديك أي اختبارات مكتملة حتى الآن."
+              : "You don't have any completed tests yet."}
           </p>
         </div>
       ) : (
         <>
-          <LatestResultCard result={latest} />
+          <LatestResultCard result={latest} locale={locale} />
 
           {previous.length > 0 && (
             <div className="grid gap-6 lg:grid-cols-2">
               {previous.map((result) => (
-                <ResultCard key={result.id} result={result} />
+                <ResultCard key={result.id} result={result} locale={locale} />
               ))}
             </div>
           )}

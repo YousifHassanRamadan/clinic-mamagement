@@ -1,19 +1,29 @@
+// components/feature/dashboard/admin/sessions/SessionActions.tsx
+
 "use client";
 
 import { useState } from "react";
-import { MoreHorizontal, Pencil, Eye, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { deleteSession } from "@/app/actions/admin-actions/session/delete-session";
 
+interface Translations {
+  edit: string;
+  delete: string;
+  deleteSuccess: string;
+  deleteFailed: string;
+}
+
 interface Props {
   sessionId: string;
   onDeleted?: () => void;
+  translations: Translations;
 }
 
-const SessionActions = ({ sessionId, onDeleted }: Props) => {
+const SessionActions = ({ sessionId, onDeleted, translations }: Props) => {
   const router = useRouter();
 
   const [deleting, setDeleting] = useState(false);
@@ -33,12 +43,12 @@ const SessionActions = ({ sessionId, onDeleted }: Props) => {
         return;
       }
 
-      toast.success("Session deleted successfully");
+      toast.success(translations.deleteSuccess);
 
       onDeleted?.();
       router.refresh();
     } catch {
-      toast.error("Failed to delete session");
+      toast.error(translations.deleteFailed);
     } finally {
       setDeleting(false);
     }
@@ -46,17 +56,10 @@ const SessionActions = ({ sessionId, onDeleted }: Props) => {
 
   return (
     <div className="flex items-center justify-end gap-2">
-      {/* <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => router.push(`/dashboard/admin/sessions/${sessionId}`)}
-      >
-        <Eye className="h-4 w-4" />
-      </Button> */}
-
       <Button
         variant="ghost"
         size="icon"
+        title={translations.edit}
         onClick={() =>
           router.push(`/dashboard/admin/sessions/${sessionId}/edit`)
         }
@@ -67,6 +70,7 @@ const SessionActions = ({ sessionId, onDeleted }: Props) => {
       <Button
         variant="ghost"
         size="icon"
+        title={translations.delete}
         disabled={deleting}
         onClick={handleDelete}
       >

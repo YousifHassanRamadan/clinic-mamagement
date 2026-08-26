@@ -1,6 +1,29 @@
 import { Mood, SessionType, SessionStatus } from "@/app/generated/prisma/enums";
-
 import { z } from "zod";
+
+// ========================================
+// Session Attachment Input
+// ========================================
+
+export const sessionAttachmentInputSchema = z.object({
+  id: z.string().optional(),
+
+  name: z.string().min(1, "File name is required"),
+
+  url: z.string().url("Invalid file URL"),
+
+  size: z.coerce.number().int().nonnegative("File size cannot be negative"),
+
+  type: z.string().min(1, "File type is required"),
+
+  publicId: z.string().optional(),
+
+  resourceType: z.enum(["image", "raw", "video"]).optional(),
+});
+
+// ========================================
+// Session
+// ========================================
 
 export const sessionFormSchema = z.object({
   patientId: z.string().min(1, "Patient is required"),
@@ -23,19 +46,27 @@ export const sessionFormSchema = z.object({
 
   diagnosis: z.string().trim().optional().or(z.literal("")),
 
+  diagnosisAr: z.string().trim().optional().or(z.literal("")),
+
   mood: z
     .enum([Mood.VERY_BAD, Mood.BAD, Mood.NEUTRAL, Mood.GOOD, Mood.VERY_GOOD])
     .optional(),
 
   publicNotes: z.string().trim().optional().or(z.literal("")),
 
+  publicNotesAr: z.string().trim().optional().or(z.literal("")),
+
   privateClinicalNotes: z.string().trim().optional().or(z.literal("")),
+
+  privateClinicalNotesAr: z.string().trim().optional().or(z.literal("")),
 
   shareNotes: z.boolean(),
 
   sendSummaryEmail: z.boolean(),
 
   fee: z.coerce.number().min(0, "Fee cannot be negative"),
+
+  attachments: z.array(sessionAttachmentInputSchema).default([]),
 });
 
 export const createSessionSchema = sessionFormSchema;
@@ -67,7 +98,7 @@ export const createAttachmentSchema = z.object({
 
   url: z.string().url("Invalid file URL"),
 
-  size: z.coerce.number().int().positive("File size must be greater than 0"),
+  size: z.coerce.number().int().nonnegative("File size cannot be negative"),
 
   type: z.string().min(1, "File type is required"),
 });
@@ -75,6 +106,10 @@ export const createAttachmentSchema = z.object({
 export const deleteAttachmentSchema = z.object({
   attachmentId: z.string().min(1, "Attachment ID is required"),
 });
+
+export type SessionAttachmentInput = z.infer<
+  typeof sessionAttachmentInputSchema
+>;
 
 export type SessionFormInput = z.infer<typeof sessionFormSchema>;
 

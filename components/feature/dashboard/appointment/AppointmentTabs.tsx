@@ -1,4 +1,13 @@
+// AppointmentTabs.tsx
+
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { cn } from "@/lib/utils";
+
+import enCommon from "@/locales/en/common.json";
+import arCommon from "@/locales/ar/common.json";
 
 type AppointmentTab = "upcoming" | "completed" | "cancelled";
 
@@ -17,17 +26,47 @@ const AppointmentTabs = ({
   completedCount,
   cancelledCount,
 }: Props) => {
+  const [locale, setLocale] = useState<"en" | "ar">("en");
+
+  useEffect(() => {
+    const updateLocale = () => {
+      setLocale(document.documentElement.lang.startsWith("ar") ? "ar" : "en");
+    };
+
+    updateLocale();
+
+    const observer = new MutationObserver(updateLocale);
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const translations = locale === "ar" ? arCommon : enCommon;
+
   const tabs = [
     {
-      title: `Upcoming (${upcomingCount})`,
+      title: translations.appointmentTabs.upcoming.replace(
+        "{{count}}",
+        String(upcomingCount),
+      ),
       value: "upcoming" as const,
     },
     {
-      title: `Completed (${completedCount})`,
+      title: translations.appointmentTabs.completed.replace(
+        "{{count}}",
+        String(completedCount),
+      ),
       value: "completed" as const,
     },
     {
-      title: `Cancelled (${cancelledCount})`,
+      title: translations.appointmentTabs.cancelled.replace(
+        "{{count}}",
+        String(cancelledCount),
+      ),
       value: "cancelled" as const,
     },
   ];

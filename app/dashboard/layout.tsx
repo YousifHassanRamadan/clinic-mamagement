@@ -17,7 +17,7 @@ export default async function Layout({
   const role = session.user.role;
 
   if (!role) {
-    redirect("/login");
+    redirect("/unauthorized");
   }
 
   return <DashboardLayout role={role}>{children}</DashboardLayout>;

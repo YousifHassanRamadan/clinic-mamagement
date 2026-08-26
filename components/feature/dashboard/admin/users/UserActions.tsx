@@ -1,3 +1,5 @@
+// components/feature/dashboard/admin/users/UserActions.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -28,9 +30,18 @@ interface Props {
   userId: string;
   approval: boolean;
   onUpdated: () => void;
+  translations: {
+    approve: string;
+    unapprove: string;
+    delete: string;
+    deleteUser: string;
+    deleteDescription: string;
+    cancel: string;
+    deleting: string;
+  };
 }
 
-const UserActions = ({ userId, approval, onUpdated }: Props) => {
+const UserActions = ({ userId, approval, onUpdated, translations }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUpdatingApproval, setIsUpdatingApproval] = useState(false);
 
@@ -84,11 +95,10 @@ const UserActions = ({ userId, approval, onUpdated }: Props) => {
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="font-semibold">Delete user?</p>
+              <p className="font-semibold">{translations.deleteUser}</p>
 
               <p className="mt-1 text-sm text-muted-foreground">
-                This action cannot be undone. All data associated with this user
-                may also be deleted.
+                {translations.deleteDescription}
               </p>
             </div>
           </div>
@@ -101,7 +111,7 @@ const UserActions = ({ userId, approval, onUpdated }: Props) => {
               disabled={isDeleting}
               onClick={() => toast.dismiss(toastId)}
             >
-              Cancel
+              {translations.cancel}
             </Button>
 
             <Button
@@ -114,12 +124,12 @@ const UserActions = ({ userId, approval, onUpdated }: Props) => {
               {isDeleting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Deleting...
+                  {translations.deleting}
                 </>
               ) : (
                 <>
                   <Trash2 className="mr-2 h-4 w-4" />
-                  Delete
+                  {translations.delete}
                 </>
               )}
             </Button>
@@ -153,7 +163,7 @@ const UserActions = ({ userId, approval, onUpdated }: Props) => {
             <CheckCircle className="mr-2 h-4 w-4" />
           )}
 
-          {approval ? "Unapprove" : "Approve"}
+          {approval ? translations.unapprove : translations.approve}
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -163,7 +173,7 @@ const UserActions = ({ userId, approval, onUpdated }: Props) => {
           className="text-destructive focus:text-destructive"
         >
           <Trash2 className="mr-2 h-4 w-4" />
-          Delete
+          {translations.delete}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

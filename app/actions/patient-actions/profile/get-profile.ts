@@ -1,3 +1,5 @@
+// get-profile.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -18,13 +20,22 @@ export async function getProfile() {
       where: {
         id: session.user.id,
       },
+
       select: {
         id: true,
+
         firstName: true,
+        firstNameAr: true,
+
         lastName: true,
+        lastNameAr: true,
+
         email: true,
         phone: true,
+
         address: true,
+        addressAr: true,
+
         gender: true,
         image: true,
         role: true,

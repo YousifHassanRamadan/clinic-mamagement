@@ -1,3 +1,5 @@
+// question.schema.ts
+
 import { z } from "zod";
 
 export const updateQuestionSchema = z.object({
@@ -5,11 +7,15 @@ export const updateQuestionSchema = z.object({
 
   question: z.string().trim().min(1, "Question is required"),
 
+  questionAr: z.string().trim(),
+
   options: z.array(
     z.object({
       id: z.string().optional(),
 
       text: z.string().trim().min(1, "Option text is required"),
+
+      textAr: z.string().trim(),
 
       points: z.number().int("Points must be a whole number"),
 
@@ -22,6 +28,8 @@ export const createQuestionOptionSchema = z.object({
   questionId: z.string().min(1, "Question ID is required"),
 
   text: z.string().trim(),
+
+  textAr: z.string().trim(),
 
   points: z.number().int("Points must be a whole number"),
 });

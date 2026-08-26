@@ -1,3 +1,5 @@
+// UpcomingAppointments.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import AppointmentItem from "./AppointmentItem";
+
 import { getDashboardStats } from "@/app/actions/admin-actions/dashboard/get-dashboard-stats";
 
 interface UpcomingAppointment {
@@ -17,7 +20,14 @@ interface UpcomingAppointment {
   duration: string;
 }
 
-const UpcomingAppointments = () => {
+interface Props {
+  translations: {
+    title: string;
+    empty: string;
+  };
+}
+
+const UpcomingAppointments = ({ translations }: Props) => {
   const [appointments, setAppointments] = useState<UpcomingAppointment[]>([]);
 
   useEffect(() => {
@@ -35,7 +45,7 @@ const UpcomingAppointments = () => {
   return (
     <Card className="h-fit rounded-2xl">
       <CardHeader>
-        <CardTitle>Upcoming Appointments</CardTitle>
+        <CardTitle>{translations.title}</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-3">
@@ -45,7 +55,7 @@ const UpcomingAppointments = () => {
           ))
         ) : (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            No upcoming appointments
+            {translations.empty}
           </p>
         )}
       </CardContent>

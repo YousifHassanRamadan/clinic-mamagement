@@ -1,3 +1,5 @@
+// components/feature/dashboard/admin/appointments/AppointmentActions.tsx
+
 "use client";
 
 import { CalendarClock, Check, MoreHorizontal, X } from "lucide-react";
@@ -18,6 +20,12 @@ interface Props {
   onConfirm: () => void;
   onReschedule: () => void;
   onCancel: () => void;
+
+  translations: {
+    confirm: string;
+    reschedule: string;
+    cancelAppointment: string;
+  };
 }
 
 const AppointmentActions = ({
@@ -25,6 +33,7 @@ const AppointmentActions = ({
   onConfirm,
   onReschedule,
   onCancel,
+  translations,
 }: Props) => {
   const isCancelled = appointment.status === "CANCELLED";
 
@@ -40,27 +49,25 @@ const AppointmentActions = ({
         {!isCancelled && appointment.status !== "CONFIRMED" && (
           <DropdownMenuItem onClick={onConfirm}>
             <Check className="mr-2 h-4 w-4 text-emerald-600" />
-            Confirm
+            {translations.confirm}
           </DropdownMenuItem>
         )}
 
-        {!isCancelled && (
+        {/* {!isCancelled && (
           <DropdownMenuItem onClick={onReschedule}>
             <CalendarClock className="mr-2 h-4 w-4 text-sky-600" />
-            Reschedule
+            {translations.reschedule}
           </DropdownMenuItem>
-        )}
+        )} */}
 
         {!isCancelled && (
           <>
-            <DropdownMenuSeparator />
-
             <DropdownMenuItem
               onClick={onCancel}
               className="text-red-600 focus:text-red-600"
             >
               <X className="mr-2 h-4 w-4" />
-              Cancel appointment
+              {translations.cancelAppointment}
             </DropdownMenuItem>
           </>
         )}

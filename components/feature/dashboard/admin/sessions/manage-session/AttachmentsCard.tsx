@@ -1,57 +1,92 @@
+// components/feature/dashboard/admin/sessions/manage-session/AttachmentsCard.tsx
+
 "use client";
 
 import { useRef, useState } from "react";
+import { useFormContext } from "react-hook-form";
 
-import { Paperclip, Upload, Loader2, X } from "lucide-react";
+import { Paperclip, Upload, Loader2, X, Download } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 import { toast } from "sonner";
+
+import type {
+  SessionAttachmentInput,
+  SessionFormInput,
+} from "@/schemas/session.schema";
+
+import { downloadSessionAttachment } from "@/app/actions/admin-actions/session/download-session-attachment";
+import { uploadSessionAttachment } from "@/app/actions/admin-actions/session/upload-session-attachment";
 import { deleteSessionAttachment } from "@/app/actions/admin-actions/session/delete-session-attachment";
-import { createSessionAttachment } from "@/app/actions/admin-actions/session/create-session-attachment";
 
-type Attachment = {
-  id: string;
-  sessionId: string;
-  name: string;
-  url: string;
-  size: number;
-  type: string;
-  createdAt: Date;
-};
+interface AttachmentsCardProps {
+  translations: {
+    title: string;
+    description: string;
+    processing: string;
+    dragDrop: string;
+    fileTypes: string;
+    browseFiles: string;
+    download: string;
+    delete: string;
+    attachmentNotSaved: string;
+    uploadSuccess: string;
+    uploadError: string;
+    deleteSuccess: string;
+    deleteError: string;
+    downloadError: string;
+  };
+}
 
-type AttachmentsCardProps = {
-  sessionId?: string;
-  mode: "new" | "edit";
-};
-
-const AttachmentsCard = ({ sessionId, mode }: AttachmentsCardProps) => {
+const AttachmentsCard = ({ translations }: AttachmentsCardProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const { watch, setValue } = useFormContext<SessionFormInput>();
 
-  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const attachments = watch("attachments") ?? [];
 
-  const handleRemove = async (id: string) => {
-    setDeletingId(id);
+  const [uploading, setUploading] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
-    const result = await deleteSessionAttachment({
-      attachmentId: id,
-    });
+  const handleRemove = async (attachment: SessionAttachmentInput) => {
+    try {
+      setUploading(true);
 
-    setDeletingId(null);
+      const result = await deleteSessionAttachment({
+        attachmentId: attachment.id,
+        url: attachment.url,
+        type: attachment.type,
+        publicId: attachment.publicId,
+        resourceType: attachment.resourceType,
+      });
 
-    if (!result.success) {
-      toast.error(result.message);
-      return;
+      if (!result.success) {
+        toast.error(result.message ?? translations.deleteError);
+        return;
+      }
+
+      setValue(
+        "attachments",
+        attachments.filter((item) =>
+          attachment.id
+            ? item.id !== attachment.id
+            : item.url !== attachment.url,
+        ),
+        {
+          shouldDirty: true,
+        },
+      );
+
+      toast.success(translations.deleteSuccess);
+    } catch (error) {
+      console.error("ATTACHMENT_DELETE_ERROR:", error);
+
+      toast.error(translations.deleteError);
+    } finally {
+      setUploading(false);
     }
-
-    setAttachments((current) =>
-      current.filter((attachment) => attachment.id !== id),
-    );
-
-    toast.success(result.message);
   };
 
   const handleFileSelect = async (
@@ -61,51 +96,111 @@ const AttachmentsCard = ({ sessionId, mode }: AttachmentsCardProps) => {
 
     if (!file) return;
 
-    if (!sessionId) {
-      toast.error("Save the session first before uploading attachments.");
+    try {
+      setUploading(true);
 
+      const formData = new FormData();
+
+      formData.append("file", file);
+
+      const result = await uploadSessionAttachment(formData);
+
+      if (!result.success || !result.data) {
+        toast.error(result.message ?? translations.uploadError);
+        return;
+      }
+
+      setValue(
+        "attachments",
+        [
+          ...attachments,
+          {
+            name: result.data.name,
+            url: result.data.url,
+            size: result.data.size,
+            type: result.data.type,
+            publicId: result.data.publicId,
+            resourceType: result.data.resourceType as "image" | "raw" | "video",
+          },
+        ],
+        {
+          shouldDirty: true,
+        },
+      );
+
+      toast.success(translations.uploadSuccess);
+    } catch (error) {
+      console.error("ATTACHMENT_UPLOAD_ERROR:", error);
+
+      toast.error(translations.uploadError);
+    } finally {
+      setUploading(false);
+
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleDownload = async (attachment: SessionAttachmentInput) => {
+    if (!attachment.id) {
+      toast.error(translations.attachmentNotSaved);
       return;
     }
 
-    // =====================================
-    // IMPORTANT:
-    // Upload file to UploadThing/S3 first.
-    // Then get the URL.
-    // =====================================
+    try {
+      setDownloadingId(attachment.id);
 
-    const uploadedUrl = "";
+      const result = await downloadSessionAttachment(attachment.id);
 
-    if (!uploadedUrl) {
-      toast.error("File upload provider is not connected yet.");
+      if (!result.success || !result.data) {
+        toast.error(result.message ?? translations.downloadError);
+        return;
+      }
 
-      return;
+      const byteCharacters = atob(result.data.file);
+      const byteNumbers = new Array(byteCharacters.length);
+
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], {
+        type: result.data.type,
+      });
+
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = result.data.name;
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("ATTACHMENT_DOWNLOAD_ERROR:", error);
+
+      toast.error(translations.downloadError);
+    } finally {
+      setDownloadingId(null);
     }
-
-    const result = await createSessionAttachment({
-      sessionId,
-      name: file.name,
-      url: uploadedUrl,
-      size: file.size,
-      type: file.type,
-    });
-
-    if (!result.data) {
-      toast.error("Attachment was created but no data was returned.");
-      return;
-    }
-
-    setAttachments((current) => [...current, result.data]);
-
-    toast.success(result.message);
   };
 
   return (
     <Card className="rounded-2xl p-6 shadow-sm">
       <div className="mb-8">
-        <h2 className="text-xl font-semibold">Attachments</h2>
+        <h2 className="text-xl font-semibold">{translations.title}</h2>
 
         <p className="mt-1 text-sm text-muted-foreground">
-          Upload documents, PDFs, images or voice notes for this session.
+          {translations.description}
         </p>
       </div>
 
@@ -119,58 +214,85 @@ const AttachmentsCard = ({ sessionId, mode }: AttachmentsCardProps) => {
 
       <div className="rounded-2xl border-2 border-dashed border-border bg-muted/20 p-10 text-center transition hover:border-primary">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-          <Upload className="h-8 w-8 text-primary" />
+          {uploading ? (
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          ) : (
+            <Upload className="h-8 w-8 text-primary" />
+          )}
         </div>
 
-        <h3 className="mt-5 text-lg font-semibold">Drag & Drop your files</h3>
+        <h3 className="mt-5 text-lg font-semibold">
+          {uploading ? translations.processing : translations.dragDrop}
+        </h3>
 
         <p className="mt-2 text-sm text-muted-foreground">
-          PNG, JPG, PDF, DOCX up to 10 MB
+          {translations.fileTypes}
         </p>
 
         <Button
           type="button"
           className="mt-6 rounded-xl"
+          disabled={uploading}
           onClick={() => inputRef.current?.click()}
         >
-          Browse Files
+          {uploading ? translations.processing : translations.browseFiles}
         </Button>
       </div>
 
       {attachments.length > 0 && (
         <div className="mt-6 space-y-3">
-          {attachments.map((attachment) => (
-            <div
-              key={attachment.id}
-              className="flex items-center justify-between rounded-xl border p-4"
-            >
-              <div className="flex items-center gap-3">
-                <Paperclip className="h-5 w-5 text-primary" />
+          {attachments.map((attachment) => {
+            const isDownloading = downloadingId === attachment.id;
 
-                <div>
-                  <p className="font-medium">{attachment.name}</p>
+            return (
+              <div
+                key={attachment.id ?? attachment.url}
+                className="flex items-center gap-4 rounded-xl border p-4"
+              >
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <Paperclip className="h-5 w-5 text-primary" />
+                  </div>
 
-                  <p className="text-sm text-muted-foreground">
-                    {(attachment.size / 1024 / 1024).toFixed(2)} MB
-                  </p>
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">{attachment.name}</p>
+
+                    <p className="text-sm text-muted-foreground">
+                      {(attachment.size / 1024 / 1024).toFixed(2)} MB
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex shrink-0 items-center gap-1">
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    disabled={uploading || isDownloading || !attachment.id}
+                    onClick={() => handleDownload(attachment)}
+                    title={translations.download}
+                  >
+                    {isDownloading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Download className="h-4 w-4" />
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    disabled={uploading || isDownloading}
+                    onClick={() => handleRemove(attachment)}
+                    title={translations.delete}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
               </div>
-
-              <Button
-                type="button"
-                size="sm"
-                variant="ghost"
-                disabled={deletingId === attachment.id}
-                onClick={() => handleRemove(attachment.id)}
-              >
-                {deletingId === attachment.id ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <X className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </Card>

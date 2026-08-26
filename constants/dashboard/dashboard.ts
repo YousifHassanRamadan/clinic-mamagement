@@ -36,6 +36,10 @@ import {
   CalendarCheck2,
   Stethoscope,
   User2Icon,
+  BookIcon,
+  TestTubeIcon,
+  BookAIcon,
+  TestTubesIcon,
 } from "lucide-react";
 
 export const sidebarItems: SidebarGroupType[] = [
@@ -43,7 +47,7 @@ export const sidebarItems: SidebarGroupType[] = [
     items: [
       {
         title: "Dashboard",
-        href: "/dashboard",
+        href: "/dashboard/",
         icon: Home,
         roles: ["PATIENT"],
       },
@@ -51,6 +55,12 @@ export const sidebarItems: SidebarGroupType[] = [
         title: "Doctor Dashboard",
         href: "/dashboard/admin/overview",
         icon: LayoutDashboard,
+        roles: ["DOCTOR"],
+      },
+      {
+        title: "Test Results",
+        href: "/dashboard/admin/test-results",
+        icon: TestTubesIcon,
         roles: ["DOCTOR"],
       },
       {
@@ -63,6 +73,24 @@ export const sidebarItems: SidebarGroupType[] = [
         title: "Tests",
         href: "/dashboard/admin/tests",
         icon: ClipboardList,
+        roles: ["DOCTOR"],
+      },
+      {
+        title: "Book Access",
+        href: "/dashboard/admin/book-access",
+        icon: BookIcon,
+        roles: ["DOCTOR"],
+      },
+      {
+        title: "Books",
+        href: "/dashboard/admin/books",
+        icon: BookIcon,
+        roles: ["DOCTOR"],
+      },
+      {
+        title: "Test Access",
+        href: "/dashboard/admin/test-access",
+        icon: TestTubeIcon,
         roles: ["DOCTOR"],
       },
       {
@@ -85,31 +113,43 @@ export const sidebarItems: SidebarGroupType[] = [
       },
       {
         title: "Book Appointment",
-        href: "/dashboard/appointments/new",
+        href: "/dashboard/patient/appointments/new",
         icon: CalendarPlus,
         roles: ["PATIENT"],
       },
       {
         title: "My Appointments",
-        href: "/dashboard/appointments",
+        href: "/dashboard/patient/appointments",
         icon: CalendarDays,
         roles: ["PATIENT"],
       },
       {
+        title: "Books",
+        href: "/dashboard/patient/books",
+        icon: BookIcon,
+        roles: ["PATIENT"],
+      },
+      {
+        title: "My Books",
+        href: "/dashboard/patient/my-books",
+        icon: BookAIcon,
+        roles: ["PATIENT"],
+      },
+      {
         title: "Psychological Tests",
-        href: "/dashboard/tests",
+        href: "/dashboard/patient/tests",
         icon: ClipboardCheck,
         roles: ["PATIENT"],
       },
       {
         title: "Test Results",
-        href: "/dashboard/tests/results",
+        href: "/dashboard/patient/tests/results",
         icon: FileText,
         roles: ["PATIENT"],
       },
       {
         title: "My Profile",
-        href: "/dashboard/profile",
+        href: "/dashboard/patient/profile",
         icon: User,
         roles: ["PATIENT"],
       },
@@ -191,21 +231,21 @@ export const recentSessions = [
 
 export const quickActions = [
   {
-    title: "Book Appointment",
+    titleKey: "appointment.book",
     icon: CalendarPlus,
     href: "/dashboard/appointments/new",
   },
   {
-    title: "Take Assessment",
+    titleKey: "assessment.take",
     icon: ClipboardCheck,
     href: "/dashboard/tests",
   },
   {
-    title: "Edit Profile",
+    titleKey: "profile.edit",
     icon: UserRound,
     href: "/dashboard/profile",
   },
-];
+] as const;
 
 export const timeSlots: TimeSlot[] = [
   { id: 1, time: "09:00", available: true },

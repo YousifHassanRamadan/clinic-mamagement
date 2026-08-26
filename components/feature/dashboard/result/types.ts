@@ -1,21 +1,23 @@
-export type TestStatus = "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
-
 export interface TestResult {
   id: string;
-  status: TestStatus;
+  status: string;
   score: number | null;
   result: string | null;
-  startedAt: string | Date | null;
-  completedAt: string | Date | null;
+  resultAr: string | null;
+  startedAt: Date | null;
+  completedAt: Date | null;
 
   test: {
     id: string;
     title: string;
+    titleAr: string | null;
     description: string | null;
+    descriptionAr: string | null;
 
     category: {
       id: string;
       name: string;
+      nameAr: string | null;
     } | null;
   };
 }

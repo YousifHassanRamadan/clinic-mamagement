@@ -1,3 +1,5 @@
+// components/feature/home/why-choose-us/feature-card/feature-card.tsx
+
 import { Card } from "@/components/ui/card";
 
 interface FeatureCardProps {
@@ -8,7 +10,7 @@ interface FeatureCardProps {
 
 const FeatureCard = ({ number, title, description }: FeatureCardProps) => {
   return (
-    <Card className=" block rounded-3xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+    <Card className="block rounded-3xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <span className="text-sm font-bold text-primary">{number}</span>
 
       <h3 className="mt-3 text-lg font-semibold text-foreground">{title}</h3>

@@ -1,3 +1,5 @@
+// AppointmentsPage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -7,6 +9,9 @@ import AppointmentList from "./AppointmentList";
 import AppointmentTabs from "./AppointmentTabs";
 
 import { getMyAppointments } from "@/app/actions/patient-actions/appoinments/get-my-appointments";
+
+import enCommon from "@/locales/en/common.json";
+import arCommon from "@/locales/ar/common.json";
 
 export interface PatientAppointment {
   id: string;
@@ -22,6 +27,8 @@ export interface PatientAppointment {
 }
 
 const AppointmentsPage = () => {
+  const [locale, setLocale] = useState<"en" | "ar">("en");
+
   const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
 
   const [activeTab, setActiveTab] = useState<
@@ -29,6 +36,25 @@ const AppointmentsPage = () => {
   >("upcoming");
 
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const updateLocale = () => {
+      setLocale(document.documentElement.lang.startsWith("ar") ? "ar" : "en");
+    };
+
+    updateLocale();
+
+    const observer = new MutationObserver(updateLocale);
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const translations = locale === "ar" ? arCommon : enCommon;
 
   useEffect(() => {
     const loadAppointments = async () => {
@@ -71,15 +97,17 @@ const AppointmentsPage = () => {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">My appointments</h1>
+          <h1 className="text-3xl font-bold">
+            {translations.appointmentsPage.title}
+          </h1>
 
           <p className="mt-2 text-muted-foreground">
-            Everything booked, attended and cancelled.
+            {translations.appointmentsPage.description}
           </p>
         </div>
 
         <div className="rounded-3xl border p-6 text-muted-foreground">
-          Loading appointments...
+          {translations.appointmentsPage.loading}
         </div>
       </div>
     );
@@ -89,10 +117,12 @@ const AppointmentsPage = () => {
     <div className="space-y-6">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-3xl font-bold">My appointments</h1>
+          <h1 className="text-3xl font-bold">
+            {translations.appointmentsPage.title}
+          </h1>
 
           <p className="mt-2 text-muted-foreground">
-            Everything booked, attended and cancelled.
+            {translations.appointmentsPage.description}
           </p>
         </div>
       </div>

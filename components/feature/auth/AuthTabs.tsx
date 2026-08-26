@@ -1,31 +1,41 @@
-interface Props {
+// components/feature/auth/AuthTabs.tsx
+
+"use client";
+
+interface AuthTabsProps {
   mode: "login" | "register";
   setMode: (mode: "login" | "register") => void;
+  translations: {
+    login: string;
+    register: string;
+  };
 }
 
-const AuthTabs = ({ mode, setMode }: Props) => {
+const AuthTabs = ({ mode, setMode, translations }: AuthTabsProps) => {
   return (
-    <div className="flex rounded-2xl bg-muted p-1">
+    <div className="grid grid-cols-2 rounded-xl bg-muted p-1">
       <button
+        type="button"
         onClick={() => setMode("login")}
-        className={`flex-1 rounded-xl py-3 text-sm font-medium transition-all ${
+        className={`rounded-lg py-2 text-sm font-medium transition ${
           mode === "login"
-            ? "bg-background shadow-sm text-foreground"
+            ? "bg-background text-foreground shadow-sm"
             : "text-muted-foreground"
         }`}
       >
-        Login
+        {translations.login}
       </button>
 
       <button
+        type="button"
         onClick={() => setMode("register")}
-        className={`flex-1 rounded-xl py-3 text-sm font-medium transition-all ${
+        className={`rounded-lg py-2 text-sm font-medium transition ${
           mode === "register"
-            ? "bg-background shadow-sm text-foreground"
+            ? "bg-background text-foreground shadow-sm"
             : "text-muted-foreground"
         }`}
       >
-        Sign Up
+        {translations.register}
       </button>
     </div>
   );

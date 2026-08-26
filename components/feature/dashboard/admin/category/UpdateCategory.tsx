@@ -1,3 +1,5 @@
+// UpdateCategory.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -11,9 +13,32 @@ import {
 
 import { useCategoryModalStore } from "@/store/category-modal.store";
 import CategoryForm from "./category-form/CategoryForm";
+
 import { getCategoryById } from "@/app/actions/admin-actions/handle-category/get-categories";
 
-const UpdateCategory = () => {
+interface Props {
+  translations: {
+    title: string;
+    form: {
+      name: string;
+      namePlaceholder: string;
+      nameAr: string;
+      nameArPlaceholder: string;
+      description: string;
+      descriptionPlaceholder: string;
+      descriptionAr: string;
+      descriptionArPlaceholder: string;
+      cancel: string;
+      creating: string;
+      saving: string;
+      createCategory: string;
+      saveChanges: string;
+      categoryIdRequired: string;
+    };
+  };
+}
+
+const UpdateCategory = ({ translations }: Props) => {
   const isEditOpen = useCategoryModalStore((state) => state.isEditOpen);
 
   const closeEdit = useCategoryModalStore((state) => state.closeEdit);
@@ -25,7 +50,9 @@ const UpdateCategory = () => {
   const [category, setCategory] = useState<{
     id: string;
     name: string;
+    nameAr: string | null;
     description: string | null;
+    descriptionAr: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -55,9 +82,23 @@ const UpdateCategory = () => {
         }
       }}
     >
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Edit Category</DialogTitle>
+      <DialogContent
+        className="
+          max-w-lg
+          [&>button]:right-4
+          [&>button]:left-auto
+          rtl:[&>button]:right-auto
+          rtl:[&>button]:left-4
+        "
+      >
+        <DialogHeader
+          className="
+            pr-10
+            rtl:pr-0
+            rtl:pl-10
+          "
+        >
+          <DialogTitle>{translations.title}</DialogTitle>
         </DialogHeader>
 
         {category && (
@@ -66,9 +107,15 @@ const UpdateCategory = () => {
             categoryId={category.id}
             defaultValues={{
               name: category.name,
+              nameAr: category.nameAr ?? "",
               description: category.description ?? "",
+              descriptionAr: category.descriptionAr ?? "",
             }}
-            onClose={closeEdit}
+            translations={translations.form}
+            onClose={() => {
+              closeEdit();
+              setCategory(null);
+            }}
           />
         )}
       </DialogContent>

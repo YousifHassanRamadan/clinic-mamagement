@@ -1,3 +1,5 @@
+// RecentSessions.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -5,6 +7,7 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import SessionItem from "./SessionItem";
+
 import { getDashboardStats } from "@/app/actions/admin-actions/dashboard/get-dashboard-stats";
 
 interface RecentSession {
@@ -23,7 +26,21 @@ interface RecentSession {
   };
 }
 
-const RecentSessions = () => {
+interface Props {
+  translations: {
+    title: string;
+    empty: string;
+    noDiagnosis: string;
+    minutes: string;
+    veryBad: string;
+    bad: string;
+    neutral: string;
+    good: string;
+    veryGood: string;
+  };
+}
+
+const RecentSessions = ({ translations }: Props) => {
   const [sessions, setSessions] = useState<RecentSession[]>([]);
 
   useEffect(() => {
@@ -41,17 +58,21 @@ const RecentSessions = () => {
   return (
     <Card className="rounded-2xl">
       <CardHeader>
-        <CardTitle>Recent Sessions</CardTitle>
+        <CardTitle>{translations.title}</CardTitle>
       </CardHeader>
 
       <CardContent className="space-y-3">
         {sessions.length > 0 ? (
           sessions.map((session) => (
-            <SessionItem key={session.id} session={session} />
+            <SessionItem
+              key={session.id}
+              session={session}
+              translations={translations}
+            />
           ))
         ) : (
           <p className="py-6 text-center text-sm text-muted-foreground">
-            No recent sessions
+            {translations.empty}
           </p>
         )}
       </CardContent>

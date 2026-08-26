@@ -1,8 +1,9 @@
+// components/feature/dashboard/admin/sessions/manage-session/SessionDetailsCard.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { CalendarDays, Clock3, User2, Stethoscope } from "lucide-react";
-
 import { useFormContext } from "react-hook-form";
 
 import { Card } from "@/components/ui/card";
@@ -28,30 +29,38 @@ import { getSessionPatients } from "@/app/actions/admin-actions/session/get-sess
 
 import { SessionType } from "@/app/generated/prisma/enums";
 
-const sessionTypes: { id: SessionType; name: string }[] = [
-  {
-    id: SessionType.INITIAL,
-    name: "Initial Session",
-  },
-  {
-    id: SessionType.FOLLOW_UP,
-    name: "Follow-up",
-  },
-  {
-    id: SessionType.INDIVIDUAL,
-    name: "Individual",
-  },
-  {
-    id: SessionType.EMERGENCY,
-    name: "Emergency",
-  },
-  {
-    id: SessionType.OTHER,
-    name: "Other",
-  },
-];
+type SessionDetailsCardProps = {
+  translations: {
+    sessionDetails: string;
+    sessionDetailsDescription: string;
+    patient: string;
+    choosePatient: string;
+    appointment: string;
+    chooseAppointment: string;
+    selectPatientFirst: string;
+    noAppointment: string;
+    walkIn: string;
+    sessionType: string;
+    selectType: string;
+    date: string;
+    time: string;
+    duration: string;
+    selectDuration: string;
+    diagnosisEnglish: string;
+    diagnosisArabic: string;
 
-const SessionDetailsCard = () => {
+    mood: {
+      title: string;
+      veryGood: string;
+      good: string;
+      neutral: string;
+      bad: string;
+      veryBad: string;
+    };
+  };
+};
+
+const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
   const {
     register,
     setValue,
@@ -83,7 +92,6 @@ const SessionDetailsCard = () => {
     }[]
   >([]);
 
-  // LOAD PATIENTS
   useEffect(() => {
     const loadPatients = async () => {
       const result = await getSessionPatients();
@@ -96,7 +104,6 @@ const SessionDetailsCard = () => {
     loadPatients();
   }, []);
 
-  // LOAD APPOINTMENTS
   useEffect(() => {
     if (!patientId) {
       setAppointments([]);
@@ -115,20 +122,45 @@ const SessionDetailsCard = () => {
     loadAppointments();
   }, [patientId, setValue]);
 
+  const sessionTypes: {
+    id: SessionType;
+    name: string;
+  }[] = [
+    {
+      id: SessionType.INITIAL,
+      name: "Initial Session",
+    },
+    {
+      id: SessionType.FOLLOW_UP,
+      name: "Follow-up",
+    },
+    {
+      id: SessionType.INDIVIDUAL,
+      name: "Individual",
+    },
+    {
+      id: SessionType.EMERGENCY,
+      name: "Emergency",
+    },
+    {
+      id: SessionType.OTHER,
+      name: "Other",
+    },
+  ];
+
   return (
     <Card className="rounded-2xl p-6 shadow-sm">
       <div className="mb-8">
-        <h2 className="text-xl font-semibold">Session Details</h2>
+        <h2 className="text-xl font-semibold">{translations.sessionDetails}</h2>
 
         <p className="mt-1 text-sm text-muted-foreground">
-          Basic information about this therapy session.
+          {translations.sessionDetailsDescription}
         </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {/* PATIENT */}
         <div className="space-y-2">
-          <Label>Patient</Label>
+          <Label>{translations.patient}</Label>
 
           <Select
             value={patientId}
@@ -141,7 +173,7 @@ const SessionDetailsCard = () => {
             <SelectTrigger className="h-11 rounded-xl p-3">
               <User2 className="mr-2 h-4 w-4 text-muted-foreground" />
 
-              <SelectValue placeholder="Choose patient" />
+              <SelectValue placeholder={translations.choosePatient} />
             </SelectTrigger>
 
             <SelectContent>
@@ -160,9 +192,8 @@ const SessionDetailsCard = () => {
           )}
         </div>
 
-        {/* APPOINTMENT */}
         <div className="space-y-2">
-          <Label>Appointment (Optional)</Label>
+          <Label>{translations.appointment}</Label>
 
           <Select
             value={appointmentId || "none"}
@@ -176,13 +207,17 @@ const SessionDetailsCard = () => {
             <SelectTrigger className="h-11 rounded-xl p-3">
               <SelectValue
                 placeholder={
-                  patientId ? "Choose appointment" : "Select patient first"
+                  patientId
+                    ? translations.chooseAppointment
+                    : translations.selectPatientFirst
                 }
               />
             </SelectTrigger>
 
             <SelectContent>
-              <SelectItem value="none">No Appointment — Walk-in</SelectItem>
+              <SelectItem value="none">
+                {translations.noAppointment} — {translations.walkIn}
+              </SelectItem>
 
               {appointments.map((appointment) => (
                 <SelectItem key={appointment.id} value={appointment.id}>
@@ -193,9 +228,8 @@ const SessionDetailsCard = () => {
           </Select>
         </div>
 
-        {/* SESSION TYPE */}
         <div className="space-y-2">
-          <Label>Session Type</Label>
+          <Label>{translations.sessionType}</Label>
 
           <Select
             value={sessionType}
@@ -212,7 +246,7 @@ const SessionDetailsCard = () => {
             <SelectTrigger className="h-11 rounded-xl p-3">
               <Stethoscope className="mr-2 h-4 w-4 text-muted-foreground" />
 
-              <SelectValue placeholder="Select type" />
+              <SelectValue placeholder={translations.selectType} />
             </SelectTrigger>
 
             <SelectContent>
@@ -225,9 +259,8 @@ const SessionDetailsCard = () => {
           </Select>
         </div>
 
-        {/* DATE */}
         <div className="space-y-2">
-          <Label>Date</Label>
+          <Label>{translations.date}</Label>
 
           <div className="relative">
             <CalendarDays className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -244,9 +277,8 @@ const SessionDetailsCard = () => {
           )}
         </div>
 
-        {/* TIME */}
         <div className="space-y-2">
-          <Label>Time</Label>
+          <Label>{translations.time}</Label>
 
           <div className="relative">
             <Clock3 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -259,9 +291,8 @@ const SessionDetailsCard = () => {
           </div>
         </div>
 
-        {/* DURATION */}
         <div className="space-y-2">
-          <Label>Duration</Label>
+          <Label>{translations.duration}</Label>
 
           <Select
             value={String(duration)}
@@ -272,7 +303,7 @@ const SessionDetailsCard = () => {
             }
           >
             <SelectTrigger className="h-11 rounded-xl p-3">
-              <SelectValue placeholder="Select duration" />
+              <SelectValue placeholder={translations.selectDuration} />
             </SelectTrigger>
 
             <SelectContent>
@@ -285,21 +316,43 @@ const SessionDetailsCard = () => {
           </Select>
         </div>
 
-        {/* DIAGNOSIS */}
         <div className="space-y-2">
-          <Label>Diagnosis</Label>
+          <Label>{translations.diagnosisEnglish}</Label>
 
           <Input
+            dir="ltr"
             placeholder="Generalized Anxiety Disorder..."
             className="h-11 rounded-xl p-3"
             {...register("diagnosis")}
           />
+
+          {errors.diagnosis && (
+            <p className="text-sm text-destructive">
+              {errors.diagnosis.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label>{translations.diagnosisArabic}</Label>
+
+          <Input
+            dir="rtl"
+            placeholder="اضطراب القلق العام..."
+            className="h-11 rounded-xl p-3"
+            {...register("diagnosisAr")}
+          />
+
+          {errors.diagnosisAr && (
+            <p className="text-sm text-destructive">
+              {errors.diagnosisAr.message}
+            </p>
+          )}
         </div>
       </div>
 
-      {/* MOOD */}
       <div className="mt-8">
-        <Label className="mb-3 block">Patient Mood</Label>
+        <Label className="mb-3 block">{translations.mood.title}</Label>
 
         <MoodSelector
           value={mood}
@@ -308,6 +361,7 @@ const SessionDetailsCard = () => {
               shouldValidate: true,
             })
           }
+          translations={translations.mood}
         />
       </div>
     </Card>

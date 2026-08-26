@@ -1,16 +1,32 @@
+// ProfileCard.tsx
+
 "use client";
 
-import { Camera } from "lucide-react";
-
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+
+type Locale = "en" | "ar";
 
 interface Props {
   firstName: string;
   lastName: string;
+  locale: Locale;
 }
 
-const ProfileCard = ({ firstName, lastName }: Props) => {
+const translations = {
+  en: {
+    patient: "Patient",
+    yourName: "Your Name",
+  },
+
+  ar: {
+    patient: "مريض",
+    yourName: "اسمك",
+  },
+} as const;
+
+const ProfileCard = ({ firstName, lastName, locale }: Props) => {
+  const t = translations[locale];
+
   const fullName = `${firstName} ${lastName}`.trim();
 
   const initials =
@@ -26,9 +42,9 @@ const ProfileCard = ({ firstName, lastName }: Props) => {
         </div>
 
         <div className="text-center">
-          <h3 className="text-xl font-semibold">{fullName || "Your Name"}</h3>
+          <h3 className="text-xl font-semibold">{fullName || t.yourName}</h3>
 
-          <p className="text-muted-foreground">Patient</p>
+          <p className="text-muted-foreground">{t.patient}</p>
         </div>
       </CardContent>
     </Card>

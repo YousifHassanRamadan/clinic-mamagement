@@ -36,6 +36,10 @@ type SubmitTestError = {
 type SubmitTestResponse = SubmitTestSuccess | SubmitTestError;
 
 export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
+  // ==========================================
+  // VALIDATE INPUT
+  // ==========================================
+
   const validation = submitTestSchema.safeParse(input);
 
   if (!validation.success) {
@@ -47,6 +51,10 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
 
   const { patientTestId, answers } = validation.data;
 
+  // ==========================================
+  // AUTH
+  // ==========================================
+
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -57,6 +65,10 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
   }
 
   try {
+    // ==========================================
+    // GET PATIENT TEST
+    // ==========================================
+
     const patientTest = await prisma.patientTest.findUnique({
       where: {
         id: patientTestId,
@@ -69,6 +81,7 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
               include: {
                 options: true,
               },
+
               orderBy: {
                 order: "asc",
               },
@@ -91,6 +104,10 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
       };
     }
 
+    // ==========================================
+    // CHECK OWNERSHIP
+    // ==========================================
+
     if (patientTest.patientId !== session.user.id) {
       return {
         success: false,
@@ -98,12 +115,45 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
       };
     }
 
+    // ==========================================
+    // CHECK TEST STATUS
+    // ==========================================
+
     if (patientTest.status !== "IN_PROGRESS") {
       return {
         success: false,
         message: "This test is not currently in progress",
       };
     }
+
+    // ==========================================
+    // CHECK ACCESS
+    // ==========================================
+
+    const testAccess = await prisma.testAccess.findUnique({
+      where: {
+        userId_testId: {
+          userId: patientTest.patientId,
+          testId: patientTest.testId,
+        },
+      },
+
+      select: {
+        id: true,
+        approval: true,
+      },
+    });
+
+    if (!testAccess || !testAccess.approval) {
+      return {
+        success: false,
+        message: "You no longer have access to this test",
+      };
+    }
+
+    // ==========================================
+    // GET QUESTIONS
+    // ==========================================
 
     const questions = patientTest.test.questions;
 
@@ -114,6 +164,10 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
       };
     }
 
+    // ==========================================
+    // CHECK DUPLICATE QUESTIONS
+    // ==========================================
+
     const questionIds = answers.map((answer) => answer.questionId);
 
     if (new Set(questionIds).size !== questionIds.length) {
@@ -122,6 +176,10 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
         message: "Duplicate answers are not allowed",
       };
     }
+
+    // ==========================================
+    // VALIDATE ANSWERS
+    // ==========================================
 
     const preparedAnswers: {
       questionId: string;
@@ -159,10 +217,18 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
       });
     }
 
+    // ==========================================
+    // CALCULATE SCORE
+    // ==========================================
+
     const score = preparedAnswers.reduce(
       (total, answer) => total + answer.points,
       0,
     );
+
+    // ==========================================
+    // FIND RESULT RANGE
+    // ==========================================
 
     const resultRange = patientTest.test.resultRanges.find(
       (range) => score >= range.minScore && score <= range.maxScore,
@@ -177,7 +243,12 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
 
     const completedAt = new Date();
 
+    // ==========================================
+    // COMPLETE TEST + REVOKE ACCESS
+    // ==========================================
+
     const completedTest = await prisma.$transaction(async (tx) => {
+      // Save answers
       await tx.answer.createMany({
         data: preparedAnswers.map((answer) => ({
           patientTestId,
@@ -187,7 +258,8 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
         })),
       });
 
-      return tx.patientTest.update({
+      // Mark test as completed
+      const completedTest = await tx.patientTest.update({
         where: {
           id: patientTestId,
         },
@@ -199,7 +271,27 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
           completedAt,
         },
       });
+
+      // Revoke access
+      await tx.testAccess.update({
+        where: {
+          userId_testId: {
+            userId: patientTest.patientId,
+            testId: patientTest.testId,
+          },
+        },
+
+        data: {
+          approval: false,
+        },
+      });
+
+      return completedTest;
     });
+
+    // ==========================================
+    // SUCCESS
+    // ==========================================
 
     return {
       success: true,

@@ -1,53 +1,70 @@
+// update-availability.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+import { getTranslations } from "@/i18n/getTranslations";
+import { type Locale } from "@/i18n/config";
+import { z } from "zod";
 
-import {
-  createAvailabilitySchema,
-  type CreateAvailabilityInput,
-} from "@/schemas/availability.schema";
+const updateAvailabilitySchema = z.object({
+  date: z.string().min(1, "Date is required"),
+  startTime: z.string().min(1, "Start time is required"),
+  endTime: z.string().min(1, "End time is required"),
+  duration: z.union([
+    z.literal(30),
+    z.literal(45),
+    z.literal(60),
+    z.literal(90),
+  ]),
+  slots: z.array(z.string()),
+});
 
 export async function updateAvailability(
   availabilityId: string,
-  values: CreateAvailabilityInput,
+  values: {
+    date: string;
+    startTime: string;
+    endTime: string;
+    duration: 30 | 45 | 60 | 90;
+    slots: string[];
+  },
+  locale: Locale,
 ) {
+  const t = await getTranslations(locale);
+
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        message: "Unauthorized",
+        message: t("appointments.server.unauthorized"),
       };
     }
 
     if (session.user.role !== "DOCTOR") {
       return {
         success: false,
-        message: "Only doctors can update availability",
+        message: t("appointments.server.onlyDoctorsUpdate"),
       };
     }
 
-    const parsed = createAvailabilitySchema.safeParse(values);
+    const parsed = updateAvailabilitySchema.safeParse(values);
 
     if (!parsed.success) {
       return {
         success: false,
-        message: parsed.error.issues[0]?.message ?? "Invalid data",
+        message:
+          parsed.error.issues[0]?.message ??
+          t("appointments.server.invalidData"),
       };
     }
 
     const { date, startTime, endTime, duration, slots } = parsed.data;
 
-    const availabilityDate = new Date(`${date}T00:00:00`);
-
-    if (Number.isNaN(availabilityDate.getTime())) {
-      return {
-        success: false,
-        message: "Invalid date",
-      };
-    }
+    const availabilityDate = new Date(`${date}T00:00:00.000Z`);
 
     const existingAvailability = await prisma.availability.findFirst({
       where: {
@@ -55,20 +72,20 @@ export async function updateAvailability(
         doctorId: session.user.id,
       },
       include: {
-        slots: true,
+        slots: {
+          orderBy: {
+            time: "asc",
+          },
+        },
       },
     });
 
     if (!existingAvailability) {
       return {
         success: false,
-        message: "Availability not found",
+        message: t("appointments.server.availabilityNotFound"),
       };
     }
-
-    // =========================
-    // Check duplicate date
-    // =========================
 
     const duplicateDate = await prisma.availability.findFirst({
       where: {
@@ -83,13 +100,9 @@ export async function updateAvailability(
     if (duplicateDate) {
       return {
         success: false,
-        message: "Availability already exists for this date",
+        message: t("appointments.server.availabilityExists"),
       };
     }
-
-    // =========================
-    // Validate slots
-    // =========================
 
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -97,10 +110,22 @@ export async function updateAvailability(
     const startTotalMinutes = startHour * 60 + startMinute;
     const endTotalMinutes = endHour * 60 + endMinute;
 
+    if (
+      Number.isNaN(startHour) ||
+      Number.isNaN(startMinute) ||
+      Number.isNaN(endHour) ||
+      Number.isNaN(endMinute)
+    ) {
+      return {
+        success: false,
+        message: t("appointments.server.invalidWorkingHours"),
+      };
+    }
+
     if (startTotalMinutes >= endTotalMinutes) {
       return {
         success: false,
-        message: "End time must be after start time",
+        message: t("appointments.server.endTimeAfterStart"),
       };
     }
 
@@ -109,7 +134,7 @@ export async function updateAvailability(
     if (duration > totalMinutes) {
       return {
         success: false,
-        message: "Duration cannot be longer than working hours",
+        message: t("appointments.server.durationTooLong"),
       };
     }
 
@@ -118,12 +143,28 @@ export async function updateAvailability(
     if (uniqueSlots.length !== slots.length) {
       return {
         success: false,
-        message: "Duplicate time slots are not allowed",
+        message: t("appointments.server.duplicateSlots"),
       };
     }
 
     for (const slot of uniqueSlots) {
       const [slotHour, slotMinute] = slot.split(":").map(Number);
+
+      if (
+        Number.isNaN(slotHour) ||
+        Number.isNaN(slotMinute) ||
+        slotHour < 0 ||
+        slotHour > 23 ||
+        slotMinute < 0 ||
+        slotMinute > 59
+      ) {
+        return {
+          success: false,
+          message: t("appointments.server.invalidSlot", {
+            slot,
+          }),
+        };
+      }
 
       const slotTotalMinutes = slotHour * 60 + slotMinute;
 
@@ -133,7 +174,9 @@ export async function updateAvailability(
       ) {
         return {
           success: false,
-          message: `Slot ${slot} is outside working hours`,
+          message: t("appointments.server.slotOutsideHours", {
+            slot,
+          }),
         };
       }
 
@@ -142,40 +185,80 @@ export async function updateAvailability(
       if (offset % duration !== 0) {
         return {
           success: false,
-          message: `Slot ${slot} does not match the selected duration`,
+          message: t("appointments.server.slotDurationMismatch", {
+            slot,
+          }),
         };
       }
 
       if (slotTotalMinutes + duration > endTotalMinutes) {
         return {
           success: false,
-          message: `Slot ${slot} exceeds working hours`,
+          message: t("appointments.server.slotExceedsHours", {
+            slot,
+          }),
         };
       }
     }
 
-    // =========================
-    // Check booked slots
-    // =========================
+    const dayStart = new Date(`${date}T00:00:00.000Z`);
+    const dayEnd = new Date(`${date}T23:59:59.999Z`);
 
-    const bookedSlots = existingAvailability.slots
-      .filter((slot) => !slot.isAvailable)
-      .map((slot) => slot.time);
+    const appointments = await prisma.appointment.findMany({
+      where: {
+        date: {
+          gte: dayStart,
+          lte: dayEnd,
+        },
+        status: {
+          not: "CANCELLED",
+        },
+      },
+      select: {
+        date: true,
+      },
+    });
 
-    const removingBookedSlot = bookedSlots.some(
-      (slot) => !uniqueSlots.includes(slot),
+    const bookedTimes = new Set(
+      appointments.map((appointment) => {
+        const hours = appointment.date
+          .getUTCHours()
+          .toString()
+          .padStart(2, "0");
+
+        const minutes = appointment.date
+          .getUTCMinutes()
+          .toString()
+          .padStart(2, "0");
+
+        return `${hours}:${minutes}`;
+      }),
+    );
+
+    const removingBookedSlot = existingAvailability.slots.some(
+      (existingSlot) =>
+        bookedTimes.has(existingSlot.time) &&
+        !uniqueSlots.includes(existingSlot.time),
     );
 
     if (removingBookedSlot) {
       return {
         success: false,
-        message: "You cannot remove a booked time slot",
+        message: t("appointments.server.cannotRemoveBookedSlot"),
       };
     }
 
-    // =========================
-    // Update availability
-    // =========================
+    const existingTimes = new Set(
+      existingAvailability.slots.map((slot) => slot.time),
+    );
+
+    const slotsToCreate = uniqueSlots.filter(
+      (time) => !existingTimes.has(time),
+    );
+
+    const slotsToDelete = existingAvailability.slots.filter(
+      (slot) => !uniqueSlots.includes(slot.time) && !bookedTimes.has(slot.time),
+    );
 
     await prisma.$transaction(async (tx) => {
       await tx.availability.update({
@@ -184,25 +267,15 @@ export async function updateAvailability(
         },
         data: {
           date: availabilityDate,
-          startTime: new Date(`${date}T${startTime}:00`),
-          endTime: new Date(`${date}T${endTime}:00`),
+          startTime: new Date(`${date}T${startTime}:00.000Z`),
+          endTime: new Date(`${date}T${endTime}:00.000Z`),
           duration,
         },
       });
 
-      const existingTimes = existingAvailability.slots.map((slot) => slot.time);
-
-      const newSlots = uniqueSlots.filter(
-        (time) => !existingTimes.includes(time),
-      );
-
-      const slotsToDelete = existingAvailability.slots.filter(
-        (slot) => !uniqueSlots.includes(slot.time) && slot.isAvailable,
-      );
-
-      if (newSlots.length > 0) {
+      if (slotsToCreate.length > 0) {
         await tx.availabilitySlot.createMany({
-          data: newSlots.map((time) => ({
+          data: slotsToCreate.map((time) => ({
             availabilityId,
             time,
             isAvailable: true,
@@ -223,14 +296,14 @@ export async function updateAvailability(
 
     return {
       success: true,
-      message: "Availability updated successfully",
+      message: t("appointments.server.updatedSuccessfully"),
     };
   } catch (error) {
     console.error("UPDATE_AVAILABILITY_ERROR:", error);
 
     return {
       success: false,
-      message: "Something went wrong while updating availability",
+      message: t("appointments.server.updateError"),
     };
   }
 }

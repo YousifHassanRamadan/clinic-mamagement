@@ -1,3 +1,5 @@
+// create-question-option.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -24,7 +26,7 @@ export async function createQuestionOption(input: unknown) {
       };
     }
 
-    const { questionId, text, points } = parsed.data;
+    const { questionId, text, textAr, points } = parsed.data;
 
     const question = await prisma.question.findUnique({
       where: {
@@ -58,6 +60,7 @@ export async function createQuestionOption(input: unknown) {
       data: {
         questionId,
         text,
+        textAr: textAr || null,
         points,
         order: (lastOption?.order ?? 0) + 1,
       },
@@ -66,7 +69,10 @@ export async function createQuestionOption(input: unknown) {
     return {
       success: true,
       message: "Option added successfully",
-      data: option,
+      data: {
+        ...option,
+        textAr: option.textAr ?? "",
+      },
     };
   } catch (error) {
     console.error("CREATE_QUESTION_OPTION_ERROR:", error);

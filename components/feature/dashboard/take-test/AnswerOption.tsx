@@ -14,20 +14,20 @@ const AnswerOption = ({ checked, label, onClick }: Props) => {
       type="button"
       onClick={onClick}
       className={cn(
-        "flex w-full items-center gap-4 rounded-xl border p-5 text-left transition",
+        "flex w-full items-center gap-4 rounded-xl border p-5 text-start transition",
         checked && "border-primary bg-primary/10",
       )}
     >
       <div
         className={cn(
-          "flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary",
+          "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 border-primary",
           checked && "bg-primary",
         )}
       >
         {checked && <div className="h-2.5 w-2.5 rounded-full bg-background" />}
       </div>
 
-      <span>{label}</span>
+      <span className="flex-1">{label}</span>
     </button>
   );
 };

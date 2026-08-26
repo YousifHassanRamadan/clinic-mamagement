@@ -1,3 +1,5 @@
+// create-question.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -6,8 +8,10 @@ import { auth } from "@/providers/auth/auth";
 interface CreateQuestionInput {
   testId: string;
   question: string;
+  questionAr?: string;
   options: {
     text: string;
+    textAr?: string;
     points: number;
   }[];
 }
@@ -23,7 +27,7 @@ export async function createQuestion(input: CreateQuestionInput) {
       };
     }
 
-    const { testId, question, options } = input;
+    const { testId, question, questionAr, options } = input;
 
     if (!testId) {
       return {
@@ -36,6 +40,13 @@ export async function createQuestion(input: CreateQuestionInput) {
       return {
         success: false,
         message: "Question is required",
+      };
+    }
+
+    if (!options || options.length < 2) {
+      return {
+        success: false,
+        message: "At least two options are required",
       };
     }
 
@@ -73,16 +84,19 @@ export async function createQuestion(input: CreateQuestionInput) {
       data: {
         testId,
         question: question.trim(),
+        questionAr: questionAr?.trim() || null,
         order: questionOrder,
 
         options: {
           create: options.map((option, index) => ({
             text: option.text.trim(),
+            textAr: option.textAr?.trim() || null,
             points: option.points,
             order: index + 1,
           })),
         },
       },
+
       include: {
         options: {
           orderBy: {
@@ -95,7 +109,14 @@ export async function createQuestion(input: CreateQuestionInput) {
     return {
       success: true,
       message: "Question created successfully",
-      data: newQuestion,
+      data: {
+        ...newQuestion,
+        questionAr: newQuestion.questionAr ?? "",
+        options: newQuestion.options.map((option) => ({
+          ...option,
+          textAr: option.textAr ?? "",
+        })),
+      },
     };
   } catch (error) {
     console.error("CREATE_QUESTION_ERROR:", error);

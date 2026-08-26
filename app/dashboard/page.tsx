@@ -1,23 +1,23 @@
-import DashboardOverview from "@/components/feature/dashboard/overview/DashboardOverview";
-import { auth } from "@/providers/auth/auth";
 import { redirect } from "next/navigation";
 
-const DashboardPage = async () => {
+import { auth } from "@/providers/auth/auth";
+
+export default async function DashboardPage() {
   const session = await auth();
 
   if (!session?.user) {
     redirect("/login");
   }
 
-  if (session.user.role === "DOCTOR") {
+  const role = session.user.role;
+
+  if (role === "DOCTOR") {
     redirect("/dashboard/admin/overview");
   }
 
-  return (
-    <div>
-      <DashboardOverview />
-    </div>
-  );
-};
+  if (role === "PATIENT") {
+    redirect("/dashboard/patient/overview");
+  }
 
-export default DashboardPage;
+  redirect("/unauthorized");
+}

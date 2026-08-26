@@ -1,3 +1,5 @@
+// components/feature/home/psychological-tests/test-card/test-card.tsx
+
 import { Clock3 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

@@ -4,17 +4,28 @@ import { prisma } from "@/lib/prisma";
 
 export type PsychologicalTestWithStats = {
   id: string;
+
   title: string;
+  titleAr: string | null;
+
   description: string | null;
+  descriptionAr: string | null;
+
+  price: number;
+
   isActive: boolean;
+
   categoryId: string | null;
+
   createdById: string;
+
   createdAt: Date;
   updatedAt: Date;
 
   category: {
     id: string;
     name: string;
+    nameAr: string | null;
   } | null;
 
   _count: {
@@ -39,10 +50,20 @@ export async function getTests(input: GetTestsInput = {}) {
       where: {
         ...(search.trim()
           ? {
-              title: {
-                contains: search.trim(),
-                mode: "insensitive",
-              },
+              OR: [
+                {
+                  title: {
+                    contains: search.trim(),
+                    mode: "insensitive",
+                  },
+                },
+                {
+                  titleAr: {
+                    contains: search.trim(),
+                    mode: "insensitive",
+                  },
+                },
+              ],
             }
           : {}),
 
@@ -68,6 +89,7 @@ export async function getTests(input: GetTestsInput = {}) {
           select: {
             id: true,
             name: true,
+            nameAr: true,
           },
         },
 
@@ -82,6 +104,7 @@ export async function getTests(input: GetTestsInput = {}) {
           where: {
             status: "COMPLETED",
           },
+
           select: {
             id: true,
           },
@@ -95,11 +118,21 @@ export async function getTests(input: GetTestsInput = {}) {
 
     const data: PsychologicalTestWithStats[] = tests.map((test) => ({
       id: test.id,
+
       title: test.title,
+      titleAr: test.titleAr,
+
       description: test.description,
+      descriptionAr: test.descriptionAr,
+
+      price: Number(test.price),
+
       isActive: test.isActive,
+
       categoryId: test.categoryId,
+
       createdById: test.createdById,
+
       createdAt: test.createdAt,
       updatedAt: test.updatedAt,
 
@@ -111,14 +144,14 @@ export async function getTests(input: GetTestsInput = {}) {
     }));
 
     return {
-      success: true,
+      success: true as const,
       data,
     };
   } catch (error) {
     console.error("GET_TESTS_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       data: [] as PsychologicalTestWithStats[],
       message: "Failed to fetch tests",
     };
@@ -128,7 +161,7 @@ export async function getTests(input: GetTestsInput = {}) {
 export async function getTestById(testId: string) {
   if (!testId) {
     return {
-      success: false,
+      success: false as const,
       data: null,
       message: "Test ID is required",
     };
@@ -142,30 +175,56 @@ export async function getTestById(testId: string) {
 
       select: {
         id: true,
+
         title: true,
+        titleAr: true,
+
         description: true,
+        descriptionAr: true,
+
+        price: true,
+
         isActive: true,
+
         categoryId: true,
+
+        resultRanges: {
+          orderBy: {
+            order: "asc",
+          },
+
+          select: {
+            id: true,
+            minScore: true,
+            maxScore: true,
+            result: true,
+            resultAr: true,
+            order: true,
+          },
+        },
       },
     });
 
     if (!test) {
       return {
-        success: false,
+        success: false as const,
         data: null,
         message: "Test not found",
       };
     }
 
     return {
-      success: true,
-      data: test,
+      success: true as const,
+      data: {
+        ...test,
+        price: Number(test.price),
+      },
     };
   } catch (error) {
     console.error("GET_TEST_BY_ID_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       data: null,
       message: "Failed to fetch test",
     };

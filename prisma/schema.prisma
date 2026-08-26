@@ -42,6 +42,22 @@ enum TestStatus {
   COMPLETED
 }
 
+enum SessionType {
+  INITIAL
+  FOLLOW_UP
+  INDIVIDUAL
+  EMERGENCY
+  OTHER
+}
+
+enum Mood {
+  VERY_BAD
+  BAD
+  NEUTRAL
+  GOOD
+  VERY_GOOD
+}
+
 // ====================
 // USER
 // ====================
@@ -50,18 +66,22 @@ model User {
   id String @id @default(cuid())
 
   firstName String
-  lastName  String
+  firstNameAr String?
+
+  lastName String
+  lastNameAr String?
 
   email String @unique
   phone String @unique
 
   address String?
-  gender  Gender?
+  addressAr String?
+
+  gender Gender?
 
   password String
 
-  role Role @default(PATIENT)
-
+  role     Role    @default(PATIENT)
   approval Boolean @default(false)
 
   emailVerified DateTime?
@@ -70,19 +90,30 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  // Auth.js
   accounts Account[]
   sessions Session[]
 
+  // Appointments
   appointments Appointment[]
 
+  // Doctor availability
   availabilities Availability[]
 
+  // Clinic sessions
   patientSessions ClinicSession[]
 
-
+  // Psychological tests created by doctor/admin
   testsCreated PsychologicalTest[] @relation("TestCreatedBy")
 
+  // Patient test attempts
   patientTests PatientTest[]
+
+  // Access to specific tests
+  testAccesses TestAccess[]
+
+  // Access to specific books
+  bookAccesses BookAccess[]
 
   @@index([role])
 }
@@ -139,13 +170,14 @@ model Appointment {
   id String @id @default(cuid())
 
   userId String
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   date DateTime
 
   status AppointmentStatus @default(PENDING)
 
   notes String?
+  notesAr String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -165,12 +197,12 @@ model Availability {
   id String @id @default(cuid())
 
   doctorId String
-  doctor   User @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  doctor User @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
   date DateTime
 
   startTime DateTime
-  endTime   DateTime
+  endTime DateTime
 
   duration Int @default(60)
 
@@ -191,7 +223,7 @@ model AvailabilitySlot {
   id String @id @default(cuid())
 
   availabilityId String
-  availability   Availability @relation(fields: [availabilityId],references: [id],onDelete: Cascade)
+  availability Availability @relation(fields: [availabilityId], references: [id], onDelete: Cascade)
 
   time String
 
@@ -209,30 +241,14 @@ model AvailabilitySlot {
 // CLINIC SESSION
 // ====================
 
-enum SessionType {
-  INITIAL
-  FOLLOW_UP
-  INDIVIDUAL
-  EMERGENCY
-  OTHER
-}
-
-enum Mood {
-  VERY_BAD
-  BAD
-  NEUTRAL
-  GOOD
-  VERY_GOOD
-}
-
 model ClinicSession {
   id String @id @default(cuid())
 
   patientId String
-  patient   User   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient User @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
-  appointmentId String?      @unique
-  appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
+  appointmentId String? @unique
+  appointment Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
 
   sessionDate DateTime
 
@@ -243,10 +259,13 @@ model ClinicSession {
   mood Mood?
 
   diagnosis String?
+  diagnosisAr String?
 
   publicNotes String?
+  publicNotesAr String?
 
   privateClinicalNotes String?
+  privateClinicalNotesAr String?
 
   shareNotes Boolean @default(true)
 
@@ -266,16 +285,23 @@ model ClinicSession {
   @@index([status])
 }
 
+// ====================
+// SESSION ATTACHMENT
+// ====================
+
 model SessionAttachment {
   id String @id @default(cuid())
 
   sessionId String
-  session   ClinicSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  session ClinicSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
   name String
-  url  String
+  url String
   size Int
   type String
+
+  publicId String?
+  resourceType String?
 
   createdAt DateTime @default(now())
 
@@ -289,8 +315,11 @@ model SessionAttachment {
 model TestCategory {
   id String @id @default(cuid())
 
-  name        String
+  name String
+  nameAr String?
+
   description String?
+  descriptionAr String?
 
   tests PsychologicalTest[]
 
@@ -305,16 +334,21 @@ model TestCategory {
 model PsychologicalTest {
   id String @id @default(cuid())
 
-  title       String
+  title String
+  titleAr String?
+
   description String?
+  descriptionAr String?
+
+  price Decimal @default(0) @db.Decimal(10, 2)
 
   isActive Boolean @default(true)
 
   categoryId String?
-  category   TestCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  category TestCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   createdById String
-  createdBy   User   @relation("TestCreatedBy", fields: [createdById], references: [id])
+  createdBy User @relation("TestCreatedBy", fields: [createdById], references: [id])
 
   questions Question[]
 
@@ -322,11 +356,37 @@ model PsychologicalTest {
 
   resultRanges TestResultRange[]
 
+  testAccesses TestAccess[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([categoryId])
   @@index([createdById])
+}
+
+// ====================
+// TEST ACCESS
+// ====================
+
+model TestAccess {
+  id String @id @default(cuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  testId String
+  test PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+
+  approval Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, testId])
+  @@index([userId])
+  @@index([testId])
+  @@index([approval])
 }
 
 // ====================
@@ -337,9 +397,10 @@ model Question {
   id String @id @default(cuid())
 
   testId String
-  test   PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   question String
+  questionAr String?
 
   order Int
 
@@ -361,14 +422,13 @@ model QuestionOption {
   id String @id @default(cuid())
 
   questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   text String
+  textAr String?
 
-  // Points given when the patient selects this option
   points Int
 
-  // Option order inside the question
   order Int
 
   answers Answer[]
@@ -379,16 +439,21 @@ model QuestionOption {
   @@index([questionId])
 }
 
+// ====================
+// TEST RESULT RANGE
+// ====================
+
 model TestResultRange {
   id String @id @default(cuid())
 
   testId String
-  test   PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   minScore Int
   maxScore Int
 
   result String
+  resultAr String?
 
   order Int
 
@@ -406,19 +471,18 @@ model PatientTest {
   id String @id @default(cuid())
 
   patientId String
-  patient   User   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  patient User @relation(fields: [patientId], references: [id], onDelete: Cascade)
 
   testId String
-  test   PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
+  test PsychologicalTest @relation(fields: [testId], references: [id], onDelete: Cascade)
 
   status TestStatus @default(NOT_STARTED)
 
-  // Final calculated score
   score Int?
 
   result String?
 
-  startedAt   DateTime?
+  startedAt DateTime?
   completedAt DateTime?
 
   answers Answer[]
@@ -438,15 +502,14 @@ model Answer {
   id String @id @default(cuid())
 
   patientTestId String
-  patientTest   PatientTest @relation(fields: [patientTestId], references: [id], onDelete: Cascade)
+  patientTest PatientTest @relation(fields: [patientTestId], references: [id], onDelete: Cascade)
 
   questionId String
-  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
 
   optionId String
-  option   QuestionOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  option QuestionOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
 
-  // Snapshot of the points at the time of answering
   points Int
 
   createdAt DateTime @default(now())
@@ -454,4 +517,61 @@ model Answer {
   @@index([patientTestId])
   @@index([questionId])
   @@index([optionId])
+}
+
+// ====================
+// BOOK
+// ====================
+
+model Book {
+  id String @id @default(cuid())
+
+  title String
+  titleAr String?
+
+  description String?
+  descriptionAr String?
+
+  price Decimal
+
+  fileUrl String?
+  cloudinaryPublicId String?
+
+  coverImage String?
+  coverImagePublicId String?
+
+  pageCount Int @default(0)
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accesses BookAccess[]
+
+  @@index([isActive])
+}
+
+// ====================
+// BOOK ACCESS
+// ====================
+
+model BookAccess {
+  id String @id @default(cuid())
+
+  userId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bookId String
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  approval Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, bookId])
+  @@index([userId])
+  @@index([bookId])
+  @@index([approval])
 }

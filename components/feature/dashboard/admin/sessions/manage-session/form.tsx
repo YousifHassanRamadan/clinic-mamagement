@@ -1,6 +1,8 @@
+// components/feature/dashboard/admin/sessions/manage-session/form.tsx
+
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -21,6 +23,57 @@ import { updateSessionStatus } from "@/app/actions/admin-actions/session/update-
 type SessionFormProps = {
   mode: "new" | "edit";
   sessionId?: string;
+
+  translations: {
+    publishing: string;
+    saving: string;
+    saveSession: string;
+    cancel: string;
+
+    sessionDetails: string;
+    sessionDetailsDescription: string;
+    patient: string;
+    choosePatient: string;
+    appointment: string;
+    chooseAppointment: string;
+    selectPatientFirst: string;
+    noAppointment: string;
+    walkIn: string;
+    sessionType: string;
+    selectType: string;
+    date: string;
+    time: string;
+    duration: string;
+    selectDuration: string;
+    diagnosisEnglish: string;
+    diagnosisArabic: string;
+
+    mood: {
+      title: string;
+      veryGood: string;
+      good: string;
+      neutral: string;
+      bad: string;
+      veryBad: string;
+    };
+
+    attachments: {
+      title: string;
+      description: string;
+      processing: string;
+      dragDrop: string;
+      fileTypes: string;
+      browseFiles: string;
+      download: string;
+      delete: string;
+      attachmentNotSaved: string;
+      uploadSuccess: string;
+      uploadError: string;
+      deleteSuccess: string;
+      deleteError: string;
+      downloadError: string;
+    };
+  };
 };
 
 const defaultValues: SessionFormInput = {
@@ -31,19 +84,25 @@ const defaultValues: SessionFormInput = {
   duration: 50,
   sessionType: "INDIVIDUAL",
   diagnosis: "",
+  diagnosisAr: "",
   mood: undefined,
   publicNotes: "",
+  publicNotesAr: "",
   privateClinicalNotes: "",
+  privateClinicalNotesAr: "",
   shareNotes: true,
   sendSummaryEmail: false,
   fee: 0,
+  attachments: [],
 };
 
-const SessionForm = ({ mode, sessionId }: SessionFormProps) => {
+const SessionForm = ({ mode, sessionId, translations }: SessionFormProps) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(mode === "edit");
-  const [isPending, startTransition] = useTransition();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const mountedRef = useRef(true);
 
   const form = useForm<SessionFormInput>({
     defaultValues,
@@ -51,9 +110,19 @@ const SessionForm = ({ mode, sessionId }: SessionFormProps) => {
 
   const { reset, handleSubmit } = form;
 
-  // =========================
-  // LOAD SESSION FOR EDIT
-  // =========================
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+
+  const showError = (message: string) => {
+    toast.error(message, {
+      id: "session-form-error",
+    });
+  };
 
   useEffect(() => {
     if (mode !== "edit" || !sessionId) {
@@ -61,63 +130,85 @@ const SessionForm = ({ mode, sessionId }: SessionFormProps) => {
       return;
     }
 
+    let cancelled = false;
+
     const loadSession = async () => {
-      const result = await getSessionById(sessionId);
+      try {
+        const result = await getSessionById(sessionId);
 
-      if (!result.success || !result.data) {
-        toast.error(result.message ?? "Failed to load session");
-        router.push("/dashboard/sessions");
-        return;
+        if (cancelled || !mountedRef.current) return;
+
+        if (!result.success || !result.data) {
+          showError(result.message ?? "Failed to load session");
+          router.replace("/dashboard/admin/sessions");
+          return;
+        }
+
+        const session = result.data;
+        const date = new Date(session.sessionDate);
+
+        const formattedDate = date.toISOString().split("T")[0];
+        const formattedTime = date.toTimeString().slice(0, 5);
+
+        reset({
+          patientId: session.patientId,
+          appointmentId: session.appointmentId ?? "",
+          date: formattedDate,
+          time: formattedTime,
+          duration: session.duration,
+          sessionType: session.sessionType,
+          diagnosis: session.diagnosis ?? "",
+          diagnosisAr: session.diagnosisAr ?? "",
+          mood: session.mood ?? undefined,
+          publicNotes: session.publicNotes ?? "",
+          publicNotesAr: session.publicNotesAr ?? "",
+          privateClinicalNotes: session.privateClinicalNotes ?? "",
+          privateClinicalNotesAr: session.privateClinicalNotesAr ?? "",
+          shareNotes: session.shareNotes,
+          sendSummaryEmail: session.sendSummaryEmail,
+          fee: Number(session.fee),
+          attachments: session.attachments.map((attachment) => ({
+            id: attachment.id,
+            name: attachment.name,
+            url: attachment.url,
+            size: attachment.size,
+            type: attachment.type,
+            publicId: attachment.publicId ?? undefined,
+            resourceType:
+              (attachment.resourceType as
+                | "image"
+                | "raw"
+                | "video"
+                | undefined) ?? undefined,
+          })),
+        });
+      } catch (error) {
+        if (cancelled || !mountedRef.current) return;
+
+        console.error("LOAD_SESSION_ERROR:", error);
+
+        showError("Failed to load session");
+        router.replace("/dashboard/admin/sessions");
+      } finally {
+        if (!cancelled && mountedRef.current) {
+          setLoading(false);
+        }
       }
-
-      const session = result.data;
-
-      const date = new Date(session.sessionDate);
-
-      const formattedDate = date.toISOString().split("T")[0];
-
-      const formattedTime = date.toTimeString().slice(0, 5);
-
-      reset({
-        patientId: session.patientId,
-
-        appointmentId: session.appointmentId ?? "",
-
-        date: formattedDate,
-
-        time: formattedTime,
-
-        duration: session.duration,
-
-        sessionType: session.sessionType,
-
-        diagnosis: session.diagnosis ?? "",
-
-        mood: session.mood ?? undefined,
-
-        publicNotes: session.publicNotes ?? "",
-
-        privateClinicalNotes: session.privateClinicalNotes ?? "",
-
-        shareNotes: session.shareNotes,
-
-        sendSummaryEmail: session.sendSummaryEmail,
-
-        fee: Number(session.fee),
-      });
-
-      setLoading(false);
     };
 
     loadSession();
+
+    return () => {
+      cancelled = true;
+    };
   }, [mode, sessionId, reset, router]);
 
-  // =========================
-  // CREATE / UPDATE
-  // =========================
+  const onSubmit = async (values: SessionFormInput) => {
+    if (isSubmitting) return;
 
-  const onSubmit = (values: SessionFormInput) => {
-    startTransition(async () => {
+    setIsSubmitting(true);
+
+    try {
       const result =
         mode === "new"
           ? await createSession(values)
@@ -127,45 +218,77 @@ const SessionForm = ({ mode, sessionId }: SessionFormProps) => {
             });
 
       if (!result.success) {
-        toast.error(result.message);
+        showError(result.message ?? "Failed to save session");
         return;
       }
 
-      toast.success(result.message);
+      toast.success(result.message ?? "Session saved successfully", {
+        id: "session-form-success",
+      });
 
-      router.push("/dashboard/admin/sessions");
-    });
+      router.replace("/dashboard/admin/sessions");
+    } catch (error) {
+      console.error("SESSION_SUBMIT_ERROR:", error);
+
+      showError("Failed to save session");
+    } finally {
+      if (mountedRef.current) {
+        setIsSubmitting(false);
+      }
+    }
   };
-  // =========================
-  // SAVE DRAFT
-  // =========================
 
-  const handleSaveDraft = () => {
-    handleSubmit((values) => {
-      startTransition(async () => {
-        const result =
-          mode === "new"
-            ? await createSession(values)
-            : await updateSession({
-                ...values,
-                sessionId: sessionId!,
-              });
+  const handleSaveDraft = async () => {
+    if (isSubmitting) return;
 
-        if (!result.success) {
-          toast.error(result.message);
+    const isValid = await form.trigger();
+
+    if (!isValid) return;
+
+    const values = form.getValues();
+
+    setIsSubmitting(true);
+
+    try {
+      const result =
+        mode === "new"
+          ? await createSession(values)
+          : await updateSession({
+              ...values,
+              sessionId: sessionId!,
+            });
+
+      if (!result.success) {
+        showError(result.message ?? "Failed to save session");
+        return;
+      }
+
+      if (result.data?.id) {
+        const statusResult = await updateSessionStatus(
+          result.data.id,
+          SessionStatus.DRAFT,
+        );
+
+        if (!statusResult.success) {
+          showError(statusResult.message ?? "Failed to save draft status");
           return;
         }
+      }
 
-        if (result.data?.id) {
-          await updateSessionStatus(result.data.id, SessionStatus.DRAFT);
-        }
-
-        toast.success("Session saved as draft");
-
-        router.push("/dashboard/sessions");
-        router.refresh();
+      toast.success("Session saved as draft", {
+        id: "session-form-success",
       });
-    })();
+
+      router.replace("/dashboard/admin/sessions");
+    } catch (error) {
+      console.error("SAVE_DRAFT_ERROR:", error);
+
+      showError("Failed to save session");
+    } finally {
+      if (mountedRef.current) {
+        setIsSubmitting(false);
+      }
+    }
   };
 
   if (loading) {
@@ -182,23 +305,46 @@ const SessionForm = ({ mode, sessionId }: SessionFormProps) => {
         onSubmit={handleSubmit(onSubmit)}
         className="grid gap-6 xl:grid-cols-[1fr_320px]"
       >
-        {/* LEFT */}
-
         <div className="space-y-6">
-          <SessionDetailsCard />
+          <SessionDetailsCard
+            translations={{
+              sessionDetails: translations.sessionDetails,
+              sessionDetailsDescription: translations.sessionDetailsDescription,
+              patient: translations.patient,
+              choosePatient: translations.choosePatient,
+              appointment: translations.appointment,
+              chooseAppointment: translations.chooseAppointment,
+              selectPatientFirst: translations.selectPatientFirst,
+              noAppointment: translations.noAppointment,
+              walkIn: translations.walkIn,
+              sessionType: translations.sessionType,
+              selectType: translations.selectType,
+              date: translations.date,
+              time: translations.time,
+              duration: translations.duration,
+              selectDuration: translations.selectDuration,
+              diagnosisEnglish: translations.diagnosisEnglish,
+              diagnosisArabic: translations.diagnosisArabic,
+              mood: translations.mood,
+            }}
+          />
 
           <NotesCard />
 
-          {/* <AttachmentsCard sessionId={sessionId} mode={mode} /> */}
+          <AttachmentsCard translations={translations.attachments} />
         </div>
-
-        {/* RIGHT */}
 
         <div>
           <div className="xl:sticky xl:top-24">
             <PublishingCard
-              isPending={isPending}
+              isPending={isSubmitting}
               onSaveDraft={handleSaveDraft}
+              translations={{
+                publishing: translations.publishing,
+                saving: translations.saving,
+                saveSession: translations.saveSession,
+                cancel: translations.cancel,
+              }}
             />
           </div>
         </div>

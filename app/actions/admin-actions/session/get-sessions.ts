@@ -1,3 +1,5 @@
+// app/actions/admin-actions/session/get-sessions.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -31,12 +33,6 @@ export async function getSessions(filters?: GetSessionsFilters) {
         ...(search
           ? {
               OR: [
-                {
-                  id: {
-                    contains: search,
-                    mode: "insensitive",
-                  },
-                },
                 {
                   diagnosis: {
                     contains: search,
@@ -112,6 +108,7 @@ export async function getSessions(filters?: GetSessionsFilters) {
 
     return {
       success: true,
+
       data: sessions.map((s) => ({
         ...s,
         fee: Number(s.fee),

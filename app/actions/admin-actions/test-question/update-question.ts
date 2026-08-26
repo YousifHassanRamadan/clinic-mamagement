@@ -1,3 +1,5 @@
+// update-question.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -24,7 +26,7 @@ export async function updateQuestion(input: unknown) {
       };
     }
 
-    const { questionId, question, options } = parsed.data;
+    const { questionId, question, questionAr, options } = parsed.data;
 
     const existingQuestion = await prisma.question.findUnique({
       where: {
@@ -63,6 +65,7 @@ export async function updateQuestion(input: unknown) {
         },
         data: {
           question,
+          questionAr: questionAr || null,
         },
       });
 
@@ -84,6 +87,7 @@ export async function updateQuestion(input: unknown) {
             },
             data: {
               text: option.text,
+              textAr: option.textAr || null,
               points: option.points,
               order: option.order,
             },
@@ -93,6 +97,7 @@ export async function updateQuestion(input: unknown) {
             data: {
               questionId,
               text: option.text,
+              textAr: option.textAr || null,
               points: option.points,
               order: option.order,
             },
@@ -114,10 +119,24 @@ export async function updateQuestion(input: unknown) {
       },
     });
 
+    if (!updatedQuestion) {
+      return {
+        success: false,
+        message: "Question not found after update",
+      };
+    }
+
     return {
       success: true,
       message: "Question saved successfully",
-      data: updatedQuestion,
+      data: {
+        ...updatedQuestion,
+        questionAr: updatedQuestion.questionAr ?? "",
+        options: updatedQuestion.options.map((option) => ({
+          ...option,
+          textAr: option.textAr ?? "",
+        })),
+      },
     };
   } catch (error) {
     console.error("UPDATE_QUESTION_ERROR:", error);

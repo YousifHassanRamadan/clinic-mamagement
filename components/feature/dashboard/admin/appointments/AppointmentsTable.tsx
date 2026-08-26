@@ -1,3 +1,5 @@
+// components/feature/dashboard/admin/appointments/AppointmentsTable.tsx
+
 "use client";
 
 import AppointmentRow from "./AppointmentRow";
@@ -9,6 +11,17 @@ interface Props {
   onConfirm: (appointment: AdminAppointment) => void;
   onReschedule: (appointment: AdminAppointment) => void;
   onCancel: (appointment: AdminAppointment) => void;
+
+  translations: {
+    patient: string;
+    dateTime: string;
+    appointment: string;
+    noAppointmentsFound: string;
+    changeSearchOrFilters: string;
+    confirm: string;
+    reschedule: string;
+    cancelAppointment: string;
+  };
 }
 
 const AppointmentsTable = ({
@@ -16,25 +29,24 @@ const AppointmentsTable = ({
   onConfirm,
   onReschedule,
   onCancel,
+  translations,
 }: Props) => {
   return (
     <div>
-      {/* Desktop header */}
       <div className="hidden grid-cols-[1.5fr_1fr_1fr_1fr_auto] gap-4 border-b bg-muted/30 px-4 py-3 text-xs font-medium uppercase tracking-wide text-muted-foreground md:grid">
-        <span>Patient</span>
-        <span>Date & time</span>
-        <span>Appointment</span>
-
+        <span>{translations.patient}</span>
+        <span>{translations.dateTime}</span>
+        <span>{translations.appointment}</span>
         <span />
       </div>
 
       {appointments.length === 0 ? (
         <div className="flex min-h-60 items-center justify-center p-6 text-center">
           <div>
-            <p className="font-medium">No appointments found</p>
+            <p className="font-medium">{translations.noAppointmentsFound}</p>
 
             <p className="mt-1 text-sm text-muted-foreground">
-              Try changing your search or filters.
+              {translations.changeSearchOrFilters}
             </p>
           </div>
         </div>
@@ -46,6 +58,7 @@ const AppointmentsTable = ({
             onConfirm={() => onConfirm(appointment)}
             onReschedule={() => onReschedule(appointment)}
             onCancel={() => onCancel(appointment)}
+            translations={translations}
           />
         ))
       )}

@@ -1,3 +1,5 @@
+// components/feature/dashboard/admin/sessions/manage-session/MoodSelector.tsx
+
 "use client";
 
 import { cn } from "@/lib/utils";
@@ -6,41 +8,48 @@ import { Mood } from "@/app/generated/prisma/enums";
 type MoodSelectorProps = {
   value?: Mood;
   onChange: (value: Mood) => void;
+  translations: {
+    veryGood: string;
+    good: string;
+    neutral: string;
+    bad: string;
+    veryBad: string;
+  };
 };
 
-const moods: {
-  value: Mood;
-  label: string;
-  emoji: string;
-}[] = [
-  {
-    value: "VERY_GOOD",
-    label: "Very Good",
-    emoji: "😁",
-  },
-  {
-    value: "GOOD",
-    label: "Good",
-    emoji: "🙂",
-  },
-  {
-    value: "NEUTRAL",
-    label: "Neutral",
-    emoji: "😐",
-  },
-  {
-    value: "BAD",
-    label: "Bad",
-    emoji: "😔",
-  },
-  {
-    value: "VERY_BAD",
-    label: "Very Bad",
-    emoji: "😣",
-  },
-];
+const MoodSelector = ({ value, onChange, translations }: MoodSelectorProps) => {
+  const moods: {
+    value: Mood;
+    label: string;
+    emoji: string;
+  }[] = [
+    {
+      value: "VERY_GOOD",
+      label: translations.veryGood,
+      emoji: "😁",
+    },
+    {
+      value: "GOOD",
+      label: translations.good,
+      emoji: "🙂",
+    },
+    {
+      value: "NEUTRAL",
+      label: translations.neutral,
+      emoji: "😐",
+    },
+    {
+      value: "BAD",
+      label: translations.bad,
+      emoji: "😔",
+    },
+    {
+      value: "VERY_BAD",
+      label: translations.veryBad,
+      emoji: "😣",
+    },
+  ];
 
-const MoodSelector = ({ value, onChange }: MoodSelectorProps) => {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
       {moods.map((mood) => {

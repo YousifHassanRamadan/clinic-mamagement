@@ -34,28 +34,72 @@ import { createTestSchema, type CreateTestInput } from "@/schemas/test.schema";
 
 import { createTest } from "@/app/actions/admin-actions/test/create-test";
 import { updateTest } from "@/app/actions/admin-actions/test/update-test";
-
 import { getTestById } from "@/app/actions/admin-actions/test/get-test-by-id";
 
 export type TestFormMode = "create" | "edit";
 
-type TestRange = {
-  minScore: number | string;
-  maxScore: number | string;
+export interface TestFormTranslations {
+  createTitle: string;
+  editTitle: string;
+  createDescription: string;
+  editDescription: string;
+
+  title: string;
+  titlePlaceholder: string;
+
+  titleAr: string;
+  titleArPlaceholder: string;
+
+  description: string;
+  descriptionPlaceholder: string;
+
+  descriptionAr: string;
+  descriptionArPlaceholder: string;
+
+  category: string;
+  selectCategory: string;
+
+  price: string;
+  pricePlaceholder: string;
+  currency: string;
+
+  scoreRanges: string;
+  scoreRangesDescription: string;
+  addRange: string;
+
+  minScore: string;
+  maxScore: string;
+
   result: string;
-};
+  resultPlaceholder: string;
+
+  resultAr: string;
+  resultArPlaceholder: string;
+
+  remove: string;
+
+  active: string;
+  activeDescription: string;
+
+  cancel: string;
+  creating: string;
+  saving: string;
+  createTest: string;
+  saveChanges: string;
+
+  close: string;
+  testIdRequired: string;
+  noChanges: string;
+}
 
 interface TestFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-
   mode?: TestFormMode;
-
   testId?: string;
-
   initialData?: Partial<CreateTestInput>;
-
   categories: CategoryWithCount[];
+  translations: TestFormTranslations;
 }
 
 const TestFormDialog = ({
@@ -65,6 +109,7 @@ const TestFormDialog = ({
   testId,
   initialData,
   categories,
+  translations,
 }: TestFormDialogProps) => {
   const router = useRouter();
 
@@ -81,8 +126,13 @@ const TestFormDialog = ({
 
     defaultValues: {
       title: "",
+      titleAr: "",
+
       description: "",
+      descriptionAr: "",
+
       categoryId: "",
+      price: 0,
       isActive: true,
 
       ranges: [
@@ -90,6 +140,7 @@ const TestFormDialog = ({
           minScore: 0,
           maxScore: 0,
           result: "",
+          resultAr: "",
         },
       ],
     },
@@ -104,18 +155,24 @@ const TestFormDialog = ({
     if (!open) return;
 
     const loadTest = async () => {
-      // CREATE
       if (!isEdit) {
         reset({
           title: "",
+          titleAr: "",
+
           description: "",
+          descriptionAr: "",
+
           categoryId: "",
+          price: 0,
           isActive: true,
+
           ranges: [
             {
               minScore: 0,
               maxScore: 0,
               result: "",
+              resultAr: "",
             },
           ],
         });
@@ -123,13 +180,13 @@ const TestFormDialog = ({
         return;
       }
 
-      // EDIT
       if (!testId) {
-        toast.error("Test ID is required");
+        toast.error(translations.testIdRequired);
         return;
       }
 
       const result = await getTestById(testId);
+
       if (!result.success) {
         toast.error(result.message);
         return;
@@ -138,37 +195,46 @@ const TestFormDialog = ({
       reset({
         title: result.data.title,
         description: result.data.description ?? "",
+
+        titleAr: result.data.titleAr ?? "",
+        descriptionAr: result.data.descriptionAr ?? "",
+
         categoryId: result.data.categoryId ?? "",
+        price: Number(result.data.price),
         isActive: result.data.isActive,
 
         ranges: result.data.resultRanges.map((range) => ({
           minScore: Number(range.minScore),
           maxScore: Number(range.maxScore),
           result: range.result,
+          resultAr: range.resultAr ?? "",
         })),
       });
     };
 
     loadTest();
-  }, [open, isEdit, testId, reset]);
+  }, [open, isEdit, testId, reset, translations.testIdRequired]);
 
   const onSubmit = async (data: CreateTestInput) => {
     if (isEdit) {
       if (!testId) {
-        toast.error("Test ID is required");
+        toast.error(translations.testIdRequired);
         return;
       }
 
       const hasChanges =
         data.title !== (initialData?.title ?? "") ||
+        data.titleAr !== (initialData?.titleAr ?? "") ||
         data.description !== (initialData?.description ?? "") ||
+        data.descriptionAr !== (initialData?.descriptionAr ?? "") ||
         data.categoryId !== (initialData?.categoryId ?? "") ||
+        data.price !== (initialData?.price ?? 0) ||
         data.isActive !== (initialData?.isActive ?? true) ||
         JSON.stringify(data.ranges) !==
           JSON.stringify(initialData?.ranges ?? []);
 
       if (!hasChanges) {
-        toast.info("No changes were made");
+        toast.info(translations.noChanges);
         return;
       }
 
@@ -208,13 +274,13 @@ const TestFormDialog = ({
       >
         <DialogHeader className="relative space-y-1 border-b px-5 py-4 text-left">
           <DialogTitle className="text-base font-semibold">
-            {isEdit ? "Edit test" : "Create test"}
+            {isEdit ? translations.editTitle : translations.createTitle}
           </DialogTitle>
 
           <DialogDescription className="text-xs text-muted-foreground">
             {isEdit
-              ? "Update the details of this psychological instrument."
-              : "Set up the test details before adding questions."}
+              ? translations.editDescription
+              : translations.createDescription}
           </DialogDescription>
 
           <button
@@ -224,21 +290,20 @@ const TestFormDialog = ({
             className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-50"
           >
             <X className="h-4 w-4" />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{translations.close}</span>
           </button>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="max-h-[70vh] space-y-4 overflow-y-auto px-5 py-5">
-            {/* Title */}
             <div className="space-y-1.5">
               <label htmlFor="test-title" className="text-xs font-medium">
-                Title
+                {translations.title}
               </label>
 
               <Input
                 id="test-title"
-                placeholder="e.g. GAD-7 Anxiety Screen"
+                placeholder={translations.titlePlaceholder}
                 className="h-10 rounded-xl p-3"
                 disabled={isSubmitting}
                 {...register("title")}
@@ -251,15 +316,35 @@ const TestFormDialog = ({
               )}
             </div>
 
-            {/* Description */}
+            <div className="space-y-1.5">
+              <label htmlFor="test-title-ar" className="text-xs font-medium">
+                {translations.titleAr}
+              </label>
+
+              <Input
+                id="test-title-ar"
+                dir="rtl"
+                placeholder={translations.titleArPlaceholder}
+                className="h-10 rounded-xl p-3 text-right"
+                disabled={isSubmitting}
+                {...register("titleAr")}
+              />
+
+              {errors.titleAr && (
+                <p className="text-sm text-destructive">
+                  {errors.titleAr.message}
+                </p>
+              )}
+            </div>
+
             <div className="space-y-1.5">
               <label htmlFor="test-description" className="text-xs font-medium">
-                Description
+                {translations.description}
               </label>
 
               <Textarea
                 id="test-description"
-                placeholder="What this instrument measures..."
+                placeholder={translations.descriptionPlaceholder}
                 className="min-h-[85px] resize-none rounded-xl p-3"
                 disabled={isSubmitting}
                 {...register("description")}
@@ -272,9 +357,34 @@ const TestFormDialog = ({
               )}
             </div>
 
-            {/* Category */}
             <div className="space-y-1.5">
-              <label className="text-xs font-medium">Category</label>
+              <label
+                htmlFor="test-description-ar"
+                className="text-xs font-medium"
+              >
+                {translations.descriptionAr}
+              </label>
+
+              <Textarea
+                id="test-description-ar"
+                dir="rtl"
+                placeholder={translations.descriptionArPlaceholder}
+                className="min-h-[85px] resize-none rounded-xl p-3 text-right"
+                disabled={isSubmitting}
+                {...register("descriptionAr")}
+              />
+
+              {errors.descriptionAr && (
+                <p className="text-sm text-destructive">
+                  {errors.descriptionAr.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium">
+                {translations.category}
+              </label>
 
               <Controller
                 name="categoryId"
@@ -286,7 +396,7 @@ const TestFormDialog = ({
                     disabled={isSubmitting}
                   >
                     <SelectTrigger className="h-10 w-full rounded-xl p-3">
-                      <SelectValue placeholder="Select category" />
+                      <SelectValue placeholder={translations.selectCategory} />
                     </SelectTrigger>
 
                     <SelectContent>
@@ -307,14 +417,46 @@ const TestFormDialog = ({
               )}
             </div>
 
-            {/* Score Ranges */}
+            <div className="space-y-1.5">
+              <label htmlFor="test-price" className="text-xs font-medium">
+                {translations.price}
+              </label>
+
+              <div className="relative">
+                <Input
+                  id="test-price"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  placeholder={translations.pricePlaceholder}
+                  className="h-10 rounded-xl p-3 pr-16"
+                  disabled={isSubmitting}
+                  {...register("price", {
+                    valueAsNumber: true,
+                  })}
+                />
+
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+                  {translations.currency}
+                </span>
+              </div>
+
+              {errors.price && (
+                <p className="text-sm text-destructive">
+                  {errors.price.message}
+                </p>
+              )}
+            </div>
+
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium">Score ranges</p>
+                  <p className="text-sm font-medium">
+                    {translations.scoreRanges}
+                  </p>
 
                   <p className="text-xs text-muted-foreground">
-                    Define the result for each score range.
+                    {translations.scoreRangesDescription}
                   </p>
                 </div>
 
@@ -328,11 +470,12 @@ const TestFormDialog = ({
                       minScore: 0,
                       maxScore: 0,
                       result: "",
+                      resultAr: "",
                     })
                   }
                   disabled={isSubmitting}
                 >
-                  Add range
+                  {translations.addRange}
                 </Button>
               </div>
 
@@ -344,7 +487,9 @@ const TestFormDialog = ({
                   >
                     <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-xs font-medium">Min score</label>
+                        <label className="text-xs font-medium">
+                          {translations.minScore}
+                        </label>
 
                         <Input
                           type="number"
@@ -363,7 +508,9 @@ const TestFormDialog = ({
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-medium">Max score</label>
+                        <label className="text-xs font-medium">
+                          {translations.maxScore}
+                        </label>
 
                         <Input
                           type="number"
@@ -383,10 +530,12 @@ const TestFormDialog = ({
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-medium">Result</label>
+                      <label className="text-xs font-medium">
+                        {translations.result}
+                      </label>
 
                       <Input
-                        placeholder="e.g. Mild anxiety"
+                        placeholder={translations.resultPlaceholder}
                         {...register(`ranges.${index}.result`)}
                         disabled={isSubmitting}
                         className="rounded-xl p-3"
@@ -395,6 +544,26 @@ const TestFormDialog = ({
                       {errors.ranges?.[index]?.result && (
                         <p className="text-xs text-destructive">
                           {errors.ranges[index]?.result?.message}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-xs font-medium">
+                        {translations.resultAr}
+                      </label>
+
+                      <Input
+                        dir="rtl"
+                        placeholder={translations.resultArPlaceholder}
+                        {...register(`ranges.${index}.resultAr`)}
+                        disabled={isSubmitting}
+                        className="rounded-xl p-3 text-right"
+                      />
+
+                      {errors.ranges?.[index]?.resultAr && (
+                        <p className="text-xs text-destructive">
+                          {errors.ranges[index]?.resultAr?.message}
                         </p>
                       )}
                     </div>
@@ -408,7 +577,7 @@ const TestFormDialog = ({
                         disabled={isSubmitting}
                         className="text-destructive"
                       >
-                        Remove
+                        {translations.remove}
                       </Button>
                     )}
                   </div>
@@ -422,13 +591,12 @@ const TestFormDialog = ({
               )}
             </div>
 
-            {/* Active */}
             <div className="flex items-center justify-between rounded-xl border bg-card px-3 py-3">
               <div className="space-y-0.5">
-                <p className="text-sm font-medium">Active</p>
+                <p className="text-sm font-medium">{translations.active}</p>
 
                 <p className="text-[11px] text-muted-foreground">
-                  Available to assign to patients
+                  {translations.activeDescription}
                 </p>
               </div>
 
@@ -454,7 +622,7 @@ const TestFormDialog = ({
               disabled={isSubmitting}
               className="rounded-xl"
             >
-              Cancel
+              {translations.cancel}
             </Button>
 
             <Button
@@ -464,11 +632,11 @@ const TestFormDialog = ({
             >
               {isSubmitting
                 ? isEdit
-                  ? "Saving..."
-                  : "Creating..."
+                  ? translations.saving
+                  : translations.creating
                 : isEdit
-                  ? "Save changes"
-                  : "Create test"}
+                  ? translations.saveChanges
+                  : translations.createTest}
             </Button>
           </div>
         </form>

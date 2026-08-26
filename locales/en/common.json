@@ -1,0 +1,1467 @@
+{
+  "user": {
+    "there": "there"
+  },
+  "header": {
+    "signIn": "Sign in",
+    "language": "Language",
+    "arabic": "Arabic",
+    "english": "English",
+    "appearance": "Appearance",
+    "dark": "Dark",
+    "light": "Light"
+  },
+  "greetings": {
+    "goodMorning": "Good Morning",
+    "goodAfternoon": "Good Afternoon",
+    "goodEvening": "Good Evening"
+  },
+  "welcome": {
+    "back": "Welcome back, {{username}}",
+    "description": "Continue your wellness journey, check your upcoming sessions, complete assessments and track your progress."
+  },
+
+  "dashboard": {
+    "upcomingAppointments": "Upcoming Appointments",
+    "scheduledSessions": "Scheduled Sessions",
+    "totalAppointments": "Total Appointments",
+    "allAppointments": "All Your Appointments",
+    "completedTests": "Completed Tests",
+    "assessmentsFinished": "Assessments Finished",
+    "statsLoadFailed": "Failed to load dashboard stats.",
+    "admin": {
+      "books": {
+        "title": "Books",
+        "description": "Manage books and patient access.",
+        "form": {
+          "createTitle": "Create Book",
+          "editTitle": "Edit Book",
+          "bookTitle": "Book Title",
+          "bookTitlePlaceholder": "Enter book title",
+          "arabicTitle": "Arabic Book Title",
+          "arabicTitlePlaceholder": "Enter book title in Arabic",
+          "description": "Description",
+          "descriptionPlaceholder": "Enter book description",
+          "arabicDescription": "Arabic Description",
+          "arabicDescriptionPlaceholder": "Enter book description in Arabic",
+          "price": "Price",
+          "pricePlaceholder": "Enter book price",
+          "cover": "Book Cover",
+          "currentCoverAlt": "Current book cover",
+          "keepCurrentCover": "Leave empty to keep the current cover.",
+          "newCoverHint": "PNG, JPG or WEBP. Maximum size: 5MB.",
+          "pdf": "Book PDF",
+          "keepCurrentPdf": "Leave empty to keep the current PDF.",
+          "newPdfHint": "PDF only. Maximum size: 20MB.",
+          "cancel": "Cancel Edit",
+          "create": "Create Book",
+          "update": "Update Book",
+          "uploading": "Uploading Book...",
+          "updating": "Updating Book..."
+        },
+        "list": {
+          "title": "All Books",
+          "description": "Manage your uploaded books.",
+          "emptyTitle": "No books found",
+          "emptyDescription": "Create your first book to get started.",
+          "noDescription": "No description available.",
+          "active": "Active",
+          "inactive": "Inactive",
+          "patient": "patient",
+          "patients": "patients",
+          "pdf": "PDF",
+          "edit": "Edit",
+          "currency": "EGP"
+        }
+      }
+    },
+    "sidebar": {
+      "brand": "user",
+      "patientWorkspace": "Workspace",
+      "items": {
+        "dashboard": "Dashboard",
+        "doctorDashboard": "Doctor Dashboard",
+        "testResults": "Test Results",
+        "categories": "Categories",
+        "tests": "Tests",
+        "bookAccess": "Book Access",
+        "books": "Books",
+        "testAccess": "Test Access",
+        "appointments": "Appointments",
+        "users": "Users",
+        "sessions": "Sessions",
+        "bookAppointment": "Book Appointment",
+        "myAppointments": "My Appointments",
+        "myBooks": "My Books",
+        "psychologicalTests": "Psychological Tests",
+        "myProfile": "My Profile"
+      }
+    }
+  },
+
+  "assessment": {
+    "take": "Take Assessment",
+    "latest": "Latest Assessment",
+    "unableToLoad": "Unable to load your latest assessment.",
+    "noCompleted": "No completed assessments",
+    "completeToSeeResult": "Complete an assessment to see your latest result here.",
+    "completed": "Assessment completed",
+    "score": "Score"
+  },
+
+  "role": {
+    "PATIENT": "Patient",
+    "DOCTOR": "Doctor"
+  },
+  "gender": {
+    "MALE": "Male",
+    "FEMALE": "Female"
+  },
+  "sessionStatus": {
+    "DRAFT": "Draft",
+    "SCHEDULED": "Scheduled",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled",
+    "NO_SHOW": "No Show"
+  },
+  "testStatus": {
+    "NOT_STARTED": "Not Started",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed"
+  },
+  "sessionType": {
+    "INITIAL": "Initial",
+    "FOLLOW_UP": "Follow-up",
+    "INDIVIDUAL": "Individual",
+    "EMERGENCY": "Emergency",
+    "OTHER": "Other"
+  },
+  "mood": {
+    "VERY_BAD": "Very Bad",
+    "BAD": "Bad",
+    "NEUTRAL": "Neutral",
+    "GOOD": "Good",
+    "VERY_GOOD": "Very Good"
+  },
+  "fields": {
+    "firstName": "First Name",
+    "firstNameAr": "First Name in Arabic",
+    "lastName": "Last Name",
+    "lastNameAr": "Last Name in Arabic",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "addressAr": "Address in Arabic",
+    "gender": "Gender",
+    "password": "Password",
+    "role": "Role",
+    "approval": "Approval",
+    "date": "Date",
+    "status": "Status",
+    "notes": "Notes",
+    "notesAr": "Notes in Arabic",
+    "sessionDate": "Session Date",
+    "duration": "Duration",
+    "sessionType": "Session Type",
+    "mood": "Mood",
+    "diagnosis": "Diagnosis",
+    "diagnosisAr": "Diagnosis in Arabic",
+    "publicNotes": "Public Notes",
+    "publicNotesAr": "Public Notes in Arabic",
+    "privateClinicalNotes": "Private Clinical Notes",
+    "privateClinicalNotesAr": "Private Clinical Notes in Arabic",
+    "shareNotes": "Share Notes",
+    "sendSummaryEmail": "Send Summary Email",
+    "fee": "Fee",
+    "title": "Title",
+    "titleAr": "Title in Arabic",
+    "description": "Description",
+    "descriptionAr": "Description in Arabic",
+    "price": "Price",
+    "question": "Question",
+    "questionAr": "Question in Arabic",
+    "order": "Order",
+    "points": "Points",
+    "result": "Result",
+    "resultAr": "Result in Arabic",
+    "score": "Score",
+    "pageCount": "Page Count",
+    "fileUrl": "File",
+    "coverImage": "Cover Image",
+    "isActive": "Active"
+  },
+  "appointment": {
+    "book": "Book Appointment",
+    "upcoming": "Upcoming Appointment",
+    "unableToLoad": "Unable to load your appointments.",
+    "noUpcoming": "No upcoming appointments",
+    "noScheduled": "You don't have any scheduled appointments.",
+    "psychology": "Psychology Appointment",
+    "clinic": "Clinic",
+    "duration": "{{duration}} minutes"
+  },
+  "appointmentStatus": {
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "completed": "Completed"
+  },
+  "booking": {
+    "chooseDate": "1. Choose a date",
+    "selectAvailableDate": "Select one of the available dates.",
+    "chooseTime": "2. Choose a time",
+    "selectDateFirst": "Please select a date first.",
+    "loadingTimes": "Loading available times...",
+    "noAvailableAppointments": "No available appointments for this date.",
+    "sessionTypeAndNotes": "3. Session type & Notes",
+    "notesPlaceholder": "Anything you'd like the doctor to know...",
+    "summary": "Summary",
+    "noDateSelected": "No date selected",
+    "noTimeSelected": "No time selected",
+    "minutes": "minutes",
+    "onsiteClinic": "On-site at the clinic",
+    "googleMeet": "Google Meet",
+    "freeCancellation": "Free cancellation up to 24 hours before the session.",
+    "booking": "Booking...",
+    "confirm": "Confirm booking",
+    "selectDate": "Please select a date",
+    "selectTime": "Please select an available time",
+    "bookingSuccess": "Appointment booked successfully."
+  },
+  "sessionType2": {
+    "onsite": "On-site",
+    "onsiteDescription": "Attend the session at the clinic.",
+    "online": "Online",
+    "onlineDescription": "Attend the session online via Google Meet."
+  },
+  "appointmentPage": {
+    "title": "Book an appointment",
+    "description": "Pick a date, choose a free slot and add anything the doctor should know."
+  },
+  "appointmentsPage": {
+    "title": "My appointments",
+    "description": "Everything booked, attended and cancelled.",
+    "loading": "Loading appointments...",
+    "noAppointments": "No appointments found."
+  },
+  "appointmentTabs": {
+    "upcoming": "Upcoming ({{count}})",
+    "completed": "Completed ({{count}})",
+    "cancelled": "Cancelled ({{count}})"
+  },
+  "books": {
+    "title": "Books",
+    "description": "Explore our books and access the resources available to you.",
+    "noBooks": "No books available",
+    "noBooksDescription": "There are no books available at the moment. Please check again later.",
+    "noDescription": "No description available.",
+    "buy": "Buy Book",
+    "currency": "EGP"
+  },
+  "myBooks": {
+    "title": "My Books",
+    "description": "Read the books you have purchased.",
+    "emptyTitle": "You don't have any books yet",
+    "emptyDescription": "Books you purchase will appear here.",
+    "noDescription": "No description available.",
+    "purchased": "Purchased",
+    "readBook": "Read Book"
+  },
+  "tests": {
+    "title": "Psychological Tests",
+    "description": "Short, validated screenings. Your results go directly to your therapist.",
+    "viewResults": "View Results",
+    "all": "All",
+    "noTests": "No psychological tests found.",
+    "loadFailed": "Failed to load psychological tests.",
+    "questions": "Questions",
+    "startTest": "Start Test",
+    "buyNow": "Buy Now",
+    "noDescription": "No description available.",
+    "uncategorized": "Uncategorized",
+    "buyMessage": "Hello, I want to buy the psychological test"
+  },
+  "profile": {
+    "title": "My Profile",
+    "description": "Keep your details up to date so the clinic can reach you.",
+    "saving": "Saving...",
+    "saveChanges": "Save Changes",
+    "somethingWentWrong": "Something went wrong",
+    "patient": "Patient",
+    "yourName": "Your Name",
+    "personalInformation": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "gender": "Gender",
+    "selectGender": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "address": "Address",
+    "invalidProfileData": "Invalid profile data",
+    "unauthorized": "Unauthorized",
+    "userNotFound": "User not found",
+    "emailInUse": "Email is already in use",
+    "phoneInUse": "Phone number is already in use",
+    "updatedSuccessfully": "Profile updated successfully",
+    "failedToUpdate": "Failed to update profile",
+    "edit": "Edit Profile"
+  },
+  "dashboard2": {
+    "doctor": {
+      "version2": {
+        "welcome": {
+          "day": "Tuesday • 28 July 2026",
+          "greeting": "Good morning, Dr. {name}",
+          "description": "Six sessions this week, two assessments awaiting review, and one patient flagged for weekly safety check-in.",
+          "newSession": "New Session"
+        },
+        "stats": {
+          "patients": "Patients",
+          "patientsSubtitle": "Total registered patients",
+          "sessions": "Sessions",
+          "sessionsSubtitle": "Total clinic sessions",
+          "tests": "Tests",
+          "testsSubtitle": "Total psychological tests"
+        },
+        "appointments": {
+          "title": "Upcoming Appointments",
+          "empty": "No upcoming appointments"
+        },
+        "sessions": {
+          "title": "Recent Sessions",
+          "empty": "No recent sessions",
+          "noDiagnosis": "No diagnosis",
+          "minutes": "min",
+          "veryBad": "Very Bad",
+          "bad": "Bad",
+          "neutral": "Neutral",
+          "good": "Good",
+          "veryGood": "Very Good"
+        }
+      }
+    }
+  },
+  "testCategories": {
+    "version2": {
+      "header": {
+        "eyebrow": "Assessments",
+        "title": "Test Categories",
+        "description": "Organize psychological tests into categories for easier management and patient assessment workflows."
+      },
+      "create": {
+        "button": "Create Category",
+        "title": "Create Category"
+      },
+      "update": {
+        "title": "Edit Category"
+      },
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "e.g. Anxiety & Panic",
+        "nameAr": "Arabic Name",
+        "nameArPlaceholder": "e.g. القلق والهلع",
+        "description": "Description (optional)",
+        "descriptionPlaceholder": "What belongs in this category...",
+        "descriptionAr": "Arabic Description (optional)",
+        "descriptionArPlaceholder": "What belongs in this category...",
+        "cancel": "Cancel",
+        "creating": "Creating...",
+        "saving": "Saving...",
+        "createCategory": "Create Category",
+        "saveChanges": "Save Changes",
+        "categoryIdRequired": "Category ID is required"
+      },
+      "categories": {
+        "tests": "Tests",
+        "noDescription": "No description",
+        "emptyTitle": "No Categories Yet",
+        "emptyDescription": "Create your first psychological test category to organize your assessments.",
+        "createCategory": "Create Category",
+        "failed": "Failed to fetch categories"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "deleteFailed": "Failed to delete category",
+        "somethingWentWrong": "Something went wrong"
+      }
+    }
+  },
+  "tests2": {
+    "version2": {
+      "header": {
+        "eyebrow": "Assessments",
+        "title": "Psychological tests",
+        "description": "Manage your clinical assessments, questions, scoring and patient completion data.",
+        "createTest": "Create test"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Search tests...",
+        "allStatuses": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive",
+        "allCategories": "All categories",
+        "categories": "Categories"
+      },
+      "form": {
+        "createTitle": "Create test",
+        "editTitle": "Edit test",
+        "createDescription": "Set up the test details before adding questions.",
+        "editDescription": "Update the details of this psychological instrument.",
+        "title": "Title",
+        "titlePlaceholder": "e.g. GAD-7 Anxiety Screen",
+        "titleAr": "Title (Arabic)",
+        "titleArPlaceholder": "مثال: مقياس القلق العام",
+        "description": "Description",
+        "descriptionPlaceholder": "What this instrument measures...",
+        "descriptionAr": "Description (Arabic)",
+        "descriptionArPlaceholder": "ما الذي يقيسه هذا الاختبار...",
+        "category": "Category",
+        "selectCategory": "Select category",
+        "price": "Price",
+        "pricePlaceholder": "e.g. 150",
+        "currency": "EGP",
+        "scoreRanges": "Score ranges",
+        "scoreRangesDescription": "Define the result for each score range.",
+        "addRange": "Add range",
+        "minScore": "Min score",
+        "maxScore": "Max score",
+        "result": "Result",
+        "resultPlaceholder": "e.g. Mild anxiety",
+        "resultAr": "Result (Arabic)",
+        "resultArPlaceholder": "مثال: قلق بسيط",
+        "remove": "Remove",
+        "active": "Active",
+        "activeDescription": "Available to assign to patients",
+        "cancel": "Cancel",
+        "creating": "Creating...",
+        "saving": "Saving...",
+        "createTest": "Create test",
+        "saveChanges": "Save changes",
+        "close": "Close",
+        "testIdRequired": "Test ID is required",
+        "noChanges": "No changes were made"
+      },
+      "table": {
+        "test": "Test",
+        "category": "Category",
+        "questions": "Questions",
+        "duration": "Duration",
+        "status": "Status",
+        "completions": "Completions",
+        "actions": "Actions",
+        "updated": "Updated",
+        "uncategorized": "Uncategorized",
+        "loading": "Loading tests...",
+        "empty": "No tests found."
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "deleteFailed": "Failed to delete test.",
+        "somethingWentWrong": "Something went wrong."
+      },
+      "editDialog": {
+        "title": "Edit test",
+        "loading": "Loading test..."
+      },
+      "questions": {
+        "title": "Question builder",
+        "description": "Add questions and options in Arabic and English.",
+        "addQuestion": "Add question",
+        "adding": "Adding...",
+        "selectTest": "Select a test to manage its questions.",
+        "loading": "Loading questions...",
+        "empty": "No questions yet.",
+        "failedToLoad": "Failed to load questions.",
+        "failedToCreate": "Failed to create question."
+      },
+      "question": {
+        "english": "Question in English",
+        "arabic": "Question in Arabic",
+        "englishPlaceholder": "Write the question in English",
+        "arabicPlaceholder": "اكتب السؤال بالعربي",
+        "addOption": "Add option",
+        "adding": "Adding...",
+        "saveChanges": "Save changes",
+        "saving": "Saving...",
+        "duplicate": "Duplicate",
+        "duplicating": "Duplicating...",
+        "delete": "Delete",
+        "deleting": "Deleting...",
+        "optionAdded": "Option added",
+        "optionFailed": "Failed to add option.",
+        "questionDuplicated": "Question duplicated",
+        "duplicateFailed": "Failed to duplicate question.",
+        "questionDeleted": "Question deleted",
+        "deleteFailed": "Failed to delete question.",
+        "saveFailed": "Failed to save question."
+      }
+    }
+  },
+  "bookAccess": {
+    "title": "Book Access",
+    "description": "Manage access to individual books for your patients.",
+    "grantBookAccess": "Grant Book Access",
+    "selectPatientAndBook": "Select a patient and a book they purchased.",
+    "patient": "Patient",
+    "selectPatient": "Select a patient",
+    "noPatientsFound": "No patients found",
+    "book": "Book",
+    "selectPatientFirst": "Select a patient first",
+    "loadingBooks": "Loading books...",
+    "selectBook": "Select a book",
+    "noAvailableBooks": "No available books for this patient",
+    "readyToGrantAccess": "Ready to grant access",
+    "willGetAccessTo": "{{patient}} will get access to {{book}}.",
+    "noBooksAvailable": "No books available",
+    "allBooksAccess": "This patient already has access to all active books.",
+    "grantingAccess": "Granting access...",
+    "pleaseSelectPatient": "Please select a patient.",
+    "pleaseSelectBook": "Please select a book.",
+    "accessGranted": "Book access granted successfully.",
+    "failedToLoad": "Failed to load book access data."
+  },
+  "books2": {
+    "title": "Books",
+    "description": "Manage books and patient access.",
+    "createBook": "Create Book",
+    "editBook": "Edit Book",
+    "allBooks": "All Books",
+    "manageUploadedBooks": "Manage your uploaded books.",
+    "noBooks": "No books found",
+    "createFirstBook": "Create your first book to get started.",
+    "bookTitle": "Book Title",
+    "bookTitleEnglish": "Book Title",
+    "bookTitleArabic": "Book Title in Arabic",
+    "enterBookTitle": "Enter book title",
+    "enterBookTitleArabic": "Enter book title in Arabic",
+    "descriptionLabel": "Description",
+    "descriptionEnglish": "Description",
+    "descriptionArabic": "Book Description in Arabic",
+    "enterDescription": "Enter book description",
+    "enterDescriptionArabic": "Enter book description in Arabic",
+    "price": "Price",
+    "enterPrice": "Enter book price",
+    "bookCover": "Book Cover",
+    "bookPdf": "Book PDF",
+    "leaveEmptyCover": "Leave empty to keep the current cover.",
+    "leaveEmptyPdf": "Leave empty to keep the current PDF.",
+    "coverRequirements": "PNG, JPG or WEBP. Maximum size: 5MB.",
+    "pdfRequirements": "PDF only. Maximum size: 20MB.",
+    "cancelEdit": "Cancel Edit",
+    "updateBook": "Update Book",
+    "uploadingBook": "Uploading Book...",
+    "updatingBook": "Updating Book...",
+    "active": "Active",
+    "inactive": "Inactive",
+    "patient": "patient",
+    "patients": "patients",
+    "pdf": "PDF",
+    "edit": "Edit",
+    "noDescription": "No description available.",
+    "bookTitleRequired": "Book title is required.",
+    "arabicBookTitleRequired": "Arabic book title is required.",
+    "validPriceRequired": "Please enter a valid price.",
+    "pdfRequired": "Book PDF is required.",
+    "onlyPdfAllowed": "Only PDF files are allowed.",
+    "pdfMaxSize": "PDF maximum size is 20MB.",
+    "coverRequired": "Book cover is required.",
+    "invalidCoverType": "Cover must be JPG, PNG, or WEBP.",
+    "coverMaxSize": "Cover image maximum size is 5MB.",
+    "bookIdRequired": "Book ID is required.",
+    "bookNotFound": "Book not found.",
+    "createdSuccessfully": "Book created successfully.",
+    "updatedSuccessfully": "Book updated successfully.",
+    "createFailed": "Failed to create book.",
+    "updateFailed": "Failed to update book.",
+    "fetchFailed": "Failed to fetch books."
+  },
+  "testAccess": {
+    "header": {
+      "title": "Test Access",
+      "description": "Manage access to individual psychological tests for your patients."
+    },
+    "card": {
+      "title": "Grant Test Access",
+      "description": "Select a patient and the specific test they purchased."
+    },
+    "patient": {
+      "label": "Patient",
+      "placeholder": "Select a patient",
+      "noPatients": "No patients found"
+    },
+    "test": {
+      "label": "Test",
+      "placeholder": "Select a test",
+      "selectPatientFirst": "Select a patient first",
+      "loading": "Loading tests...",
+      "noTests": "No available tests for this patient",
+      "allTestsGranted": "This patient already has access to all active tests."
+    },
+    "summary": {
+      "title": "Ready to grant access",
+      "description": "will get access to"
+    },
+    "actions": {
+      "grant": "Grant Test Access",
+      "granting": "Granting access..."
+    },
+    "validation": {
+      "selectPatient": "Please select a patient.",
+      "selectTest": "Please select a test."
+    },
+    "server": {
+      "unauthorized": "Unauthorized.",
+      "unauthorizedAction": "You are not authorized to perform this action.",
+      "userRequired": "User is required.",
+      "userAndTestRequired": "User and test are required.",
+      "userNotFound": "User not found.",
+      "onlyPatients": "Test access can only be granted to patients.",
+      "testNotFound": "Test not found.",
+      "testInactive": "This test is not active.",
+      "loadPatientsFailed": "Failed to load patients.",
+      "loadTestsFailed": "Failed to load available tests.",
+      "accessGranted": "{{title}} access granted successfully.",
+      "genericError": "Something went wrong. Please try again."
+    }
+  },
+  "common": {
+    "edit": "Edit",
+    "reset": "Reset"
+  },
+  "availability": {
+    "header": {
+      "eyebrow": "Scheduling",
+      "title": "Create appointment",
+      "description": "Add your available time slots for patients to book.",
+      "calendar": "View my calendar",
+      "recurring": "Add recurring availability",
+      "newAvailability": "New availability",
+      "reset": "Reset"
+    },
+    "date": {
+      "title": "1. Select a date",
+      "description": "Choose the day you want to configure.",
+      "selected": "Selected date"
+    },
+    "workingHours": {
+      "title": "3. Set working hours for this day",
+      "description": "Working hours can be different for every selected day.",
+      "start": "Start time",
+      "end": "End time",
+      "generated": "Time slots will be generated automatically between {{start}} and {{end}}."
+    },
+    "duration": {
+      "title": "4. Session duration",
+      "description": "Choose how long each appointment slot should be.",
+      "label": "Duration",
+      "minutes": "{{value}} minutes"
+    },
+    "slots": {
+      "title": "5. Available time slots",
+      "description": "Manage the available times for this day.",
+      "selected": "{{count}} selected",
+      "empty": {
+        "title": "No time slots available",
+        "description": "Adjust your working hours or session duration."
+      },
+      "status": {
+        "available": "Available",
+        "booked": "Booked",
+        "disabled": "Disabled"
+      }
+    },
+    "summary": {
+      "title": "Availability summary",
+      "workingHours": "Working hours",
+      "duration": "Session duration",
+      "slots": "Available slots"
+    },
+    "list": {
+      "empty": {
+        "title": "No availability yet",
+        "description": "Create your first availability."
+      }
+    },
+    "actions": {
+      "selectAll": "Select all",
+      "clear": "Clear",
+      "saving": "Saving...",
+      "save": "Save availability",
+      "update": "Update availability"
+    },
+    "messages": {
+      "checkingBookedAppointments": "Checking booked appointments..."
+    },
+    "loading": {
+      "bookedAppointments": "Checking booked appointments..."
+    },
+    "units": {
+      "minutes": "min",
+      "slots": "slots"
+    },
+    "success": {
+      "created": "Availability created successfully",
+      "updated": "Availability updated successfully"
+    },
+    "errors": {
+      "unauthorized": "Unauthorized",
+      "doctorOnlyCreate": "Only doctors can create availability",
+      "doctorOnlyUpdate": "Only doctors can update availability",
+      "doctorOnlyView": "Only doctors can view availability",
+      "invalidData": "Invalid data",
+      "notFound": "Availability not found",
+      "alreadyExists": "Availability already exists for this date",
+      "invalidWorkingHours": "Invalid working hours",
+      "endBeforeStart": "End time must be after start time",
+      "durationTooLong": "Duration cannot be longer than working hours",
+      "duplicateSlots": "Duplicate time slots are not allowed",
+      "invalidSlot": "Invalid time slot",
+      "slotOutsideHours": "One or more slots are outside working hours",
+      "slotDurationMismatch": "One or more slots do not match the selected duration",
+      "slotExceedsHours": "One or more slots exceed working hours",
+      "removeBookedSlot": "You cannot remove a booked time slot",
+      "bookedSlot": "This time slot already has an appointment",
+      "noAvailabilitySelected": "No availability selected for update",
+      "completeInformation": "Please complete the availability information",
+      "selectSlot": "Please select at least one available time slot",
+      "saveFailed": "Something went wrong while saving availability",
+      "createFailed": "Something went wrong while creating availability",
+      "updateFailed": "Something went wrong while updating availability",
+      "loadFailed": "Failed to fetch availability",
+      "bookedSlotsFailed": "Something went wrong while loading booked slots"
+    },
+    "server": {
+      "unauthorized": "Unauthorized.",
+      "onlyDoctorsCreate": "Only doctors can create availability.",
+      "onlyDoctorsUpdate": "Only doctors can update availability.",
+      "onlyDoctorsView": "Only doctors can view availability.",
+      "invalidData": "Invalid data.",
+      "dateRequired": "Date is required.",
+      "startTimeRequired": "Start time is required.",
+      "endTimeRequired": "End time is required.",
+      "invalidStartTime": "Invalid start time.",
+      "invalidEndTime": "Invalid end time.",
+      "durationRequired": "Invalid duration.",
+      "slotsRequired": "Please select at least one time slot.",
+      "endAfterStart": "End time must be after start time.",
+      "durationTooLong": "Duration cannot be longer than working hours.",
+      "duplicateSlots": "Duplicate time slots are not allowed.",
+      "slotOutsideHours": "Slot {{slot}} is outside working hours.",
+      "slotDurationMismatch": "Slot {{slot}} does not match the selected duration.",
+      "slotExceedsHours": "Slot {{slot}} exceeds working hours.",
+      "availabilityExists": "Availability already exists for this date.",
+      "created": "Availability created successfully.",
+      "notFound": "Availability not found.",
+      "invalidWorkingHours": "Invalid working hours.",
+      "invalidSlot": "Invalid time slot: {{slot}}.",
+      "cannotRemoveBooked": "You cannot remove a booked time slot.",
+      "updated": "Availability updated successfully.",
+      "createFailed": "Something went wrong while creating availability.",
+      "updateFailed": "Something went wrong while updating availability.",
+      "fetchFailed": "Failed to fetch availability.",
+      "bookedSlotsFailed": "Something went wrong while loading booked slots."
+    }
+  },
+  "appointments": {
+    "header": {
+      "eyebrow": "Scheduling",
+      "title": "Create appointment",
+      "description": "Add your available time slots for patients to "
+    },
+    "workingHours": {
+      "title": "3. Set working hours for this day",
+      "description": "Working hours can be different for every selected day.",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "timeSlotsInfo": "Time slots will be generated automatically between {{startTime}} and {{endTime}}."
+    },
+    "sessionDuration": {
+      "title": "4. Session duration",
+      "description": "Choose how long each appointment slot should be.",
+      "duration": "Duration",
+      "minutes": "minutes"
+    },
+    "availableTimeSlots": {
+      "title": "5. Available time slots",
+      "description": "Manage the available times for this day.",
+      "selected": "selected",
+      "available": "Available",
+      "booked": "Booked",
+      "disabled": "Disabled",
+      "noTimeSlots": "No time slots available",
+      "adjustWorkingHours": "Adjust your working hours or session duration."
+    },
+    "availabilitySummary": {
+      "title": "Availability summary",
+      "workingHours": "Working hours",
+      "sessionDuration": "Session duration",
+      "availableSlots": "Available slots"
+    },
+    "availabilityList": {
+      "noAvailability": "No availability yet",
+      "createFirst": "Create your first availability."
+    },
+    "actions": {
+      "newAvailability": "New availability",
+      "reset": "Reset",
+      "selectAll": "Select all",
+      "clear": "Clear",
+      "saving": "Saving...",
+      "updateAvailability": "Update availability",
+      "saveAvailability": "Save availability",
+      "edit": "edit"
+    },
+    "server": {
+      "unauthorized": "Unauthorized",
+      "onlyDoctorsCreate": "Only doctors can create availability",
+      "onlyDoctorsUpdate": "Only doctors can update availability",
+      "onlyDoctorsView": "Only doctors can view availability",
+      "invalidData": "Invalid data",
+      "endTimeAfterStart": "End time must be after start time",
+      "durationTooLong": "Duration cannot be longer than working hours",
+      "duplicateSlots": "Duplicate time slots are not allowed",
+      "slotOutsideHours": "Slot {{slot}} is outside working hours",
+      "slotDurationMismatch": "Slot {{slot}} does not match the selected duration",
+      "slotExceedsHours": "Slot {{slot}} exceeds working hours",
+      "availabilityExists": "Availability already exists for this date",
+      "createdSuccessfully": "Availability created successfully",
+      "createError": "Something went wrong while creating availability",
+      "availabilityNotFound": "Availability not found",
+      "invalidWorkingHours": "Invalid working hours",
+      "invalidSlot": "Invalid time slot: {{slot}}",
+      "cannotRemoveBookedSlot": "You cannot remove a booked time slot",
+      "updatedSuccessfully": "Availability updated successfully",
+      "updateError": "Something went wrong while updating availability",
+      "fetchError": "Failed to fetch availability",
+      "bookedSlotsError": "Something went wrong while loading booked slots"
+    },
+    "messages": {
+      "checkingBookedAppointments": "Checking booked appointments...",
+      "noAvailabilitySelected": "No availability selected for update",
+      "completeAvailability": "Please complete the availability information",
+      "selectAtLeastOneSlot": "Please select at least one available time slot",
+      "cannotRemoveBookedSlot": "You cannot remove a booked time slot",
+      "saveError": "Something went wrong while saving availability",
+      "savedSuccessfully": "Availability saved successfully"
+    },
+    "page": {
+      "header": {
+        "eyebrow": "Appointments",
+        "title": "All appointments",
+        "description": "Review appointment requests, confirm bookings, reschedule appointments, or cancel them when needed.",
+        "createAppointment": "Create Appointment"
+      },
+      "stats": {
+        "total": "Total",
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled"
+      },
+
+      "messages": {
+        "failedToLoad": "Failed to load appointments",
+        "appointmentConfirmed": "Appointment confirmed",
+        "appointmentCancelled": "Appointment cancelled",
+        "confirmationDescription": "{{patientName}}'s appointment has been confirmed.",
+        "cancellationDescription": "{{patientName}}'s appointment has been cancelled.",
+        "failedToUpdateStatus": "Failed to update appointment status",
+        "appointmentRescheduled": "Appointment rescheduled",
+        "rescheduleDescription": "{{patientName}}'s appointment has been moved."
+      },
+
+      "toolbar": {
+        "searchPlaceholder": "Search by name, email, phone, or ID...",
+        "filterStatus": "Filter status",
+        "allStatuses": "All statuses",
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "cancelled": "Cancelled",
+        "completed": "Completed"
+      },
+      "table": {
+        "loading": "Loading appointments...",
+        "showing": "Showing",
+        "of": "of",
+        "appointments": "appointments",
+        "patient": "Patient",
+        "dateTime": "Date & time",
+        "appointment": "Appointment",
+        "noAppointmentsFound": "No appointments found",
+        "changeSearchOrFilters": "Try changing your search or filters."
+      },
+      "actions": {
+        "confirm": "Confirm",
+        "reschedule": "Reschedule",
+        "cancelAppointment": "Cancel appointment"
+      }
+    }
+  },
+  "users": {
+    "page": {
+      "header": {
+        "title": "Users",
+        "description": "Manage patients and doctors",
+        "totalUsers": "Total Users"
+      },
+      "toolbar": {
+        "searchPlaceholder": "Search name, email or phone...",
+        "allRoles": "All roles",
+        "patients": "Patients",
+        "doctors": "Doctors",
+        "allStatuses": "All statuses",
+        "approved": "Approved",
+        "pending": "Pending"
+      },
+      "table": {
+        "user": "User",
+        "contact": "Contact",
+        "address": "Address",
+        "role": "Role",
+        "status": "Status",
+        "joined": "Joined",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No users found",
+        "description": "Try changing your search or filters."
+      },
+      "user": {
+        "male": "Male",
+        "female": "Female",
+        "genderNotSpecified": "Gender not specified",
+        "noAddress": "No address",
+        "joined": "Joined"
+      },
+      "status": {
+        "approved": "Approved",
+        "pending": "Pending"
+      },
+      "actions": {
+        "approve": "Approve",
+        "unapprove": "Unapprove",
+        "delete": "Delete",
+        "deleteUser": "Delete user?",
+        "deleteDescription": "This action cannot be undone. All data associated with this user may also be deleted.",
+        "cancel": "Cancel",
+        "deleting": "Deleting..."
+      }
+    }
+  },
+  "sessions": {
+    "page": {
+      "addSession": "New Session",
+      "header": {
+        "label": "Sessions",
+        "title": "Sessions",
+        "description": "Manage therapy sessions, notes, attachments and session status."
+      },
+      "toolbar": {
+        "searchPlaceholder": "Search sessions...",
+        "status": "Status",
+        "allStatuses": "All Statuses",
+        "completed": "Completed",
+        "scheduled": "Scheduled",
+        "draft": "Draft",
+        "cancelled": "Cancelled",
+        "noShow": "No Show",
+        "type": "Type",
+        "allTypes": "All Types",
+        "initialSession": "Initial Session",
+        "followUp": "Follow Up",
+        "individual": "Individual",
+        "emergency": "Emergency",
+        "other": "Other"
+      },
+      "table": {
+        "patient": "Patient",
+        "status": "Status",
+        "date": "Date",
+        "duration": "Duration",
+        "mood": "Mood",
+        "sessionType": "Session Type",
+        "actions": "Actions",
+        "loading": "Loading sessions...",
+        "noSessions": "No sessions found.",
+        "minutes": "minutes"
+      },
+      "actions": {
+        "edit": "Edit",
+        "delete": "Delete",
+        "deleteSuccess": "Session deleted successfully.",
+        "deleteFailed": "Failed to delete session."
+      }
+    }
+  },
+  "dashboard3": {
+    "admin": {
+      "sessions": {
+        "newSession": {
+          "label": "Sessions",
+          "title": "Create Session",
+          "description": "Capture the appointment, notes and attachments. Drafts stay private until you publish them.",
+          "backToSessions": "Back to Sessions"
+        },
+        "editSession": {
+          "label": "Sessions",
+          "title": "Edit Session",
+          "description": "Update the appointment details, notes and attachments. Changes will be saved to this session.",
+          "backToSessions": "Back to Sessions"
+        },
+        "publishing": {
+          "publishing": "Publishing",
+          "saving": "Saving...",
+          "saveSession": "Save Session",
+          "cancel": "Cancel"
+        },
+        "details": {
+          "title": "Session Details",
+          "description": "Basic information about this therapy session.",
+          "patient": "Patient",
+          "choosePatient": "Choose patient",
+          "appointment": "Appointment",
+          "chooseAppointment": "Choose appointment",
+          "selectPatientFirst": "Select patient first",
+          "noAppointment": "No Appointment",
+          "walkIn": "Walk-in",
+          "sessionType": "Session Type",
+          "selectType": "Select type",
+          "date": "Date",
+          "time": "Time",
+          "duration": "Duration",
+          "selectDuration": "Select duration",
+          "diagnosisEnglish": "Diagnosis - English",
+          "diagnosisArabic": "Diagnosis - Arabic",
+          "mood": {
+            "title": "Patient Mood",
+            "veryGood": "Very Good",
+            "good": "Good",
+            "neutral": "Neutral",
+            "bad": "Bad",
+            "veryBad": "Very Bad"
+          }
+        },
+        "attachments": {
+          "title": "Attachments",
+          "description": "Upload documents, PDFs, images or voice notes for this session.",
+          "processing": "Processing...",
+          "dragDrop": "Drag & Drop your files",
+          "fileTypes": "PNG, JPG, PDF, DOCX up to 10 MB",
+          "browseFiles": "Browse Files",
+          "download": "Download attachment",
+          "delete": "Delete attachment",
+          "attachmentNotSaved": "Attachment is not saved yet",
+          "uploadSuccess": "File uploaded successfully",
+          "uploadError": "Failed to upload file",
+          "deleteSuccess": "Attachment deleted successfully",
+          "deleteError": "Failed to delete attachment",
+          "downloadError": "Failed to download attachment"
+        }
+      }
+    }
+  },
+  "dashboard4": {
+    "admin": {
+      "testResults": {
+        "header": {
+          "label": "Psychological Tests",
+          "title": "Test Results",
+          "description": "Review the psychological tests completed by patients, their scores, results and selected answers."
+        },
+        "search": {
+          "placeholder": "Search by patient name, email or test..."
+        },
+        "table": {
+          "patient": "Patient",
+          "test": "Test",
+          "status": "Status",
+          "score": "Score",
+          "result": "Result",
+          "answers": "Answers",
+          "date": "Date",
+          "actions": "Actions",
+          "view": "View Results",
+          "loading": "Loading test results...",
+          "empty": "No test results found."
+        },
+        "status": {
+          "notStarted": "Not Started",
+          "inProgress": "In Progress",
+          "completed": "Completed"
+        },
+        "details": {
+          "back": "Back to Test Results",
+          "header": {
+            "label": "Test Result",
+            "title": "Test Result Details"
+          },
+          "patient": {
+            "title": "Patient",
+            "email": "Email",
+            "phone": "Phone"
+          },
+          "test": {
+            "title": "Test Information",
+            "description": "Test description"
+          },
+          "result": {
+            "title": "Result Summary",
+            "status": "Status",
+            "score": "Score",
+            "result": "Result",
+            "completedAt": "Completed At",
+            "inProgress": "In Progress",
+            "notStarted": "Not Started",
+            "completed": "Completed"
+          },
+          "answers": {
+            "title": "Patient Answers",
+            "question": "Question",
+            "selectedAnswer": "Selected Answer",
+            "points": "Points",
+            "empty": "No answers have been submitted for this test."
+          },
+          "loading": "Loading test result...",
+          "error": "Unable to load this test result."
+        }
+      }
+    },
+    "sidebar": {
+      "dashboard": "Dashboard",
+      "doctorDashboard": "Doctor Dashboard",
+      "testResults": "Test Results",
+      "categories": "Categories",
+      "tests": "Tests",
+      "bookAccess": "Book Access",
+      "books": "Books",
+      "testAccess": "Test Access",
+      "appointments": "Appointments",
+      "users": "Users",
+      "sessions": "Sessions",
+      "bookAppointment": "Book Appointment",
+      "myAppointments": "My Appointments",
+      "myBooks": "My Books",
+      "psychologicalTests": "Psychological Tests",
+      "myProfile": "My Profile",
+      "patientWorkspace": "Patient Workspace"
+    }
+  },
+  "home": {
+    "hero": {
+      "workTime": "Licensed clinical psychology · Sunday – Thursday · 9:00 AM – 5:00 PM",
+      "header": {
+        "line1": "A calmer mind,",
+        "line2": "one session at a",
+        "line3": "time"
+      },
+      "description": " the private practice of Dr. Yasmin Madeh. Book appointments, follow your session history and complete validated psychological assessments — all in one quiet, secure portal.",
+      "buttons": {
+        "bookAppointment": "Book your appointment",
+        "meetDoctor": "Meet with Dr. Yasmin"
+      },
+      "experience": {
+        "years": {
+          "title": "14 yrs",
+          "subtitle": "In practice"
+        },
+        "clients": {
+          "title": "400+",
+          "subtitle": "Clients supported"
+        },
+        "rating": {
+          "title": "9.9/10",
+          "subtitle": "Client rating"
+        }
+      },
+      "image": {
+        "alt": "Serene Mind Clinic",
+        "nextOpening": "Next opening",
+        "nextOpeningDetails": "Saturday 09:00 · On-site or Google Meet"
+      }
+    },
+    "aboutDoctor": {
+      "brief": {
+        "badge": "Mental Health & Family Counseling Consultant",
+        "name": "Dr. Yasmin Madeh",
+        "subtitle": "Mental Health & Family Counseling Consultant • Member of the Arab Psychotherapists Union • Internationally Certified Marriage Coach",
+        "description": "My role is to help you live a better-quality life and build healthier relationships with yourself and others. I will help you make peace with yourself, overcome the past, see the bigger picture more clearly, and begin your journey toward positive change — for yourself and because of yourself.",
+        "specialties": {
+          "mentalHealth": "Mental health & psychological counseling",
+          "familyEducational": "Family & educational counseling",
+          "marriageRelationship": "Marriage & relationship counseling",
+          "selfDevelopment": "Self-development & change management",
+          "traumaSupport": "Negative emotions & trauma support",
+          "womensMentalHealth": "Women's mental health"
+        },
+        "credentials": {
+          "professionalDoctorate": "Professional Doctorate:",
+          "doctorateValue": "Mental Health — United Ford College, London, UK",
+          "professionalMasters": "Professional Master's:",
+          "mastersValue": "Family & Educational Counseling",
+          "lifeCoach": "Life Coach:",
+          "lifeCoachValue": "CPD Certified",
+          "internationalTraining": "International Training of Trainers:",
+          "internationalTrainingValue": "ITOT – ITC – BTC – IPTA"
+        }
+      }
+    },
+    "services": {
+      "header": {
+        "eyebrow": "Services",
+        "title": "Care that fits the shape of your life",
+        "description": "Every track begins with an 80-minute intake assessment, then settles into a rhythm you choose."
+      },
+      "cards": {
+        "individualTherapy": {
+          "title": "Individual Psychological Counseling",
+          "description": "Personalized individual sessions to help you understand yourself, manage emotional challenges, and build healthier coping strategies."
+        },
+        "couplesFamily": {
+          "title": "Couples & Family Counseling",
+          "description": "Supportive sessions focused on improving communication, resolving conflicts, and building healthier family and relationship dynamics."
+        },
+        "adolescentCare": {
+          "title": "Adolescent Counseling",
+          "description": "Age-appropriate psychological support for adolescents to help them navigate emotional, social, academic, and developmental challenges."
+        },
+        "psychologicalAssessment": {
+          "title": "Psychological Assessment",
+          "description": "Professional psychological assessments using validated tools to better understand emotional, behavioral, and psychological needs."
+        },
+        "burnoutRecovery": {
+          "title": "Stress & Burnout Support",
+          "description": "Guidance to understand stress and burnout, restore emotional balance, and develop healthier boundaries and daily habits."
+        },
+        "followUpAftercare": {
+          "title": "Follow-up & Continued Support",
+          "description": "Ongoing follow-up sessions to support your progress, maintain positive changes, and address new challenges along the way."
+        }
+      }
+    },
+    "whyChooseUs": {
+      "header": {
+        "eyebrow": "Why Choose Us",
+        "title": "Small practice. Serious standards.",
+        "description": "No call centres, no rotating therapists. Just one clinician, a secretary who knows your name, and measurement that keeps everyone honest about progress."
+      },
+      "features": {
+        "continuity": {
+          "title": "One doctor, full continuity",
+          "description": "You are never passed between clinicians. Same therapist, every session."
+        },
+        "progress": {
+          "title": "Measured progress",
+          "description": "Standardised tests track change so improvement is visible, not guessed."
+        },
+        "privacy": {
+          "title": "Private by design",
+          "description": "Clinical notes are split into shared and private records. You control your data."
+        },
+        "flexibility": {
+          "title": "Flexible sessions",
+          "description": "Meet on-site or remotely through a secure video consultation."
+        }
+      }
+    },
+    "psychologicalTests": {
+      "header": {
+        "eyebrow": "Psychological Tests",
+        "title": "Validated assessments, plain-language results",
+        "description": "Take a screening from your portal in minutes. Every result is reviewed with your doctor before conclusions are drawn.",
+        "openLibrary": "Open the test library"
+      },
+      "tests": {
+        "anxiety": {
+          "category": "Anxiety",
+          "duration": "4 min",
+          "title": "GAD-7 Anxiety Screening",
+          "description": "Seven questions measuring generalized anxiety severity over the last two weeks.",
+          "questions": "7 questions"
+        },
+        "mood": {
+          "category": "Mood",
+          "duration": "5 min",
+          "title": "PHQ-9 Depression Scale",
+          "description": "Standard screening instrument for depressive symptoms and severity.",
+          "questions": "9 questions"
+        },
+        "stress": {
+          "category": "Stress",
+          "duration": "10 min",
+          "title": "Maslach Burnout Inventory",
+          "description": "Assesses emotional exhaustion, depersonalisation and personal accomplishment.",
+          "questions": "22 questions"
+        }
+      }
+    },
+    "testimonials": {
+      "header": {
+        "title": "What clients say"
+      },
+      "testimonials": {
+        "marcus": {
+          "name": "Ahmed M.",
+          "role": "Client, 2 years",
+          "review": "I came in barely able to talk about my panic attacks. Two years later, I haven't had a single one in eight months. The gradual pace of therapy made a huge difference for me."
+        },
+        "priya": {
+          "name": "Sara N.",
+          "role": "Client, 8 months",
+          "review": "The test results dashboard made me feel like my progress was real and visible. When I saw my GAD-7 score drop from 17 to 6, I finally felt like there was clear proof that I was getting better."
+        },
+        "elenaTom": {
+          "name": "Mohamed & Nour",
+          "role": "Couples therapy",
+          "review": "Dr. Yasmin never took sides. She helped us understand each other and gave us a better way to talk about the same issue we'd been arguing about for six years."
+        }
+      }
+    },
+    "faq": {
+      "header": {
+        "title": "Frequently asked questions",
+        "description": "Still unsure or have a question?",
+        "sendMessage": "Send us a message"
+      },
+
+      "items": {
+        "sessionDuration": {
+          "question": "How long is a session?",
+          "answer": "Standard sessions are 50 minutes. Initial assessments take 80 minutes, while couples sessions last 75 minutes."
+        },
+
+        "onlineSessions": {
+          "question": "Do you offer online sessions?",
+          "answer": "Yes. You can have your sessions securely through Google Meet if remote therapy is more convenient for you."
+        },
+
+        "confidentiality": {
+          "question": "Will my information remain confidential?",
+          "answer": "Absolutely. Your personal information and clinical records are stored securely and handled with strict confidentiality according to professional standards."
+        },
+
+        "cancelReschedule": {
+          "question": "Can I cancel or reschedule my appointment?",
+          "answer": "Yes. Please let us know at least 24 hours before your appointment if you need to cancel or reschedule without a fee."
+        },
+
+        "psychologicalTests": {
+          "question": "Do psychological tests replace a diagnosis?",
+          "answer": "No. Psychological assessments provide useful information to better understand your situation, but every result is reviewed with the psychologist before any conclusions are made."
+        }
+      }
+    },
+    "footer": {
+      "brand": {
+        "name": "Serene Mind Clinic",
+        "description": "Evidence-based psychology, delivered with warmth. A single-practitioner psychology clinic with a patient portal for appointments, session records and assessments."
+      },
+      "links": {
+        "title": "Explore",
+        "home": "Home",
+        "patientSignIn": "Patient sign in",
+        "createAccount": "Create account"
+      },
+      "contact": {
+        "title": "Clinic"
+      },
+      "bottom": {
+        "copyright": "© 2026 Serene Mind Clinic. All rights reserved.",
+        "privacyPolicy": "Privacy Policy",
+        "terms": "Terms",
+        "accessibility": "Accessibility"
+      }
+    }
+  },
+  "auth": {
+    "brand": "Dr.Yasmin madeh",
+    "testimonial": {
+      "quote": "You don't have to figure everything out alone.",
+      "author": "Dr. Yasmin Madeh",
+      "subtitle": "Clinical Psychologist"
+    },
+    "stats": {
+      "experience": {
+        "value": "10+",
+        "label": "Years Experience"
+      },
+      "clients": {
+        "value": "2K+",
+        "label": "Clients Supported"
+      },
+      "rating": {
+        "value": "4.9",
+        "label": "Average Rating"
+      }
+    },
+    "card": {
+      "tabs": {
+        "login": "Login",
+        "register": "Sign Up"
+      },
+      "login": {
+        "title": "Welcome back",
+        "description": "Login to your account",
+        "email": "Email",
+        "password": "Password",
+        "forgotPassword": "Forgot password?",
+        "login": "Login",
+        "loggingIn": "Logging in...",
+        "or": "OR",
+        "noAccount": "Don't have an account?",
+        "signUp": "Sign Up",
+        "invalidCredentials": "Invalid email or password.",
+        "success": "Logged in successfully!",
+        "error": "Something went wrong. Please try again."
+      },
+      "register": {
+        "title": "Create account",
+        "firstName": "First name",
+        "lastName": "Last name",
+        "address": "Address",
+        "email": "Email",
+        "gender": "Select Gender",
+        "male": "Male",
+        "female": "Female",
+        "phone": "Phone number",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "createAccount": "Create Account",
+        "creatingAccount": "Creating account...",
+        "or": "OR",
+        "alreadyAccount": "Already have an account?",
+        "login": "Login",
+        "success": "Account created successfully!",
+        "error": "Something went wrong. Please try again.",
+        "automaticLoginFailed": "Account created, but automatic login failed."
+      }
+    }
+  },
+  "tests4": {
+    "take": {
+      "noTestSelected": "No test selected",
+      "answerAllQuestions": "Please answer all questions before finishing the test.",
+      "patientTestIdMissing": "Patient test ID is missing.",
+      "submitError": "Something went wrong while submitting the test.",
+      "unableToLoad": "Unable to load this test.",
+      "defaultDescription": "Please answer the following questions.",
+
+      "progress": {
+        "question": "Question",
+        "of": "of",
+        "complete": "complete"
+      },
+
+      "navigation": {
+        "previous": "Previous",
+        "next": "Next",
+        "finish": "Finish Test",
+        "submitting": "Submitting..."
+      }
+    }
+  }
+}

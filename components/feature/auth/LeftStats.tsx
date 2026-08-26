@@ -1,6 +1,13 @@
-import { stats } from "@/constants/auth/auth";
+// components/feature/auth/LeftStats.tsx
 
-const LeftStats = () => {
+interface LeftStatsProps {
+  stats: {
+    value: string;
+    label: string;
+  }[];
+}
+
+const LeftStats = ({ stats }: LeftStatsProps) => {
   return (
     <div className="grid grid-cols-3 gap-10">
       {stats.map((item) => (

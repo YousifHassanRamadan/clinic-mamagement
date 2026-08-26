@@ -24,7 +24,16 @@ export async function createTest(input: unknown) {
     };
   }
 
-  const { title, description, categoryId, isActive, ranges } = validation.data;
+  const {
+    title,
+    titleAr,
+    description,
+    descriptionAr,
+    categoryId,
+    price,
+    isActive,
+    ranges,
+  } = validation.data;
 
   try {
     const category = await prisma.testCategory.findUnique({
@@ -44,16 +53,25 @@ export async function createTest(input: unknown) {
       const createdTest = await tx.psychologicalTest.create({
         data: {
           title,
+          titleAr: titleAr || null,
+
           description: description || null,
+          descriptionAr: descriptionAr || null,
+
           categoryId,
+          price,
           isActive,
+
           createdById: session.user.id,
 
           resultRanges: {
             create: ranges.map((range, index) => ({
               minScore: range.minScore,
               maxScore: range.maxScore,
+
               result: range.result,
+              resultAr: range.resultAr || null,
+
               order: index + 1,
             })),
           },
@@ -74,7 +92,11 @@ export async function createTest(input: unknown) {
     return {
       success: true,
       message: "Test created successfully",
-      data: test,
+
+      data: {
+        ...test,
+        price: Number(test.price),
+      },
     };
   } catch (error) {
     console.error("CREATE_TEST_ERROR:", error);

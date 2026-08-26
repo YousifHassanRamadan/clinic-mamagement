@@ -26,9 +26,36 @@ interface Props {
   question: TestQuestion;
   onDelete: () => void;
   onDuplicate: (question: TestQuestion) => void;
+
+  translations: {
+    english: string;
+    arabic: string;
+    englishPlaceholder: string;
+    arabicPlaceholder: string;
+    addOption: string;
+    adding: string;
+    saveChanges: string;
+    saving: string;
+    duplicate: string;
+    duplicating: string;
+    delete: string;
+    deleting: string;
+    optionAdded: string;
+    optionFailed: string;
+    questionDuplicated: string;
+    duplicateFailed: string;
+    questionDeleted: string;
+    deleteFailed: string;
+    saveFailed: string;
+  };
 }
 
-const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
+const QuestionCard = ({
+  question,
+  onDelete,
+  onDuplicate,
+  translations,
+}: Props) => {
   const [isSaving, setIsSaving] = useState(false);
   const [isAddingOption, setIsAddingOption] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -40,12 +67,13 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
 
       defaultValues: {
         questionId: question.id,
-
         question: question.question,
+        questionAr: question.questionAr ?? "",
 
         options: question.options.map((option) => ({
           id: option.id,
           text: option.text,
+          textAr: option.textAr ?? "",
           points: option.points,
           order: option.order,
         })),
@@ -57,8 +85,6 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
     name: "options",
   });
 
-  // مهم جدًا:
-  // watch يجعل الـ component يعمل re-render لما options تتغير
   const watchedOptions = watch("options");
 
   const saveQuestion = async (data: UpdateQuestionInput) => {
@@ -70,14 +96,14 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
       const result = await updateQuestion(data);
 
       if (!result.success) {
-        toast.error(result.message);
+        toast.error(result.message ?? translations.saveFailed);
         return;
       }
 
       toast.success(result.message);
     } catch (error) {
       console.error("SAVE_QUESTION_ERROR:", error);
-      toast.error("Failed to save question");
+      toast.error(translations.saveFailed);
     } finally {
       setIsSaving(false);
     }
@@ -91,26 +117,28 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
 
       const result = await createQuestionOption({
         questionId: question.id,
-        text: "",
+        text: "New option",
+        textAr: "خيار جديد",
         points: 0,
       });
 
       if (!result.success || !result.data) {
-        toast.error(result.message);
+        toast.error(result.message ?? translations.optionFailed);
         return;
       }
 
       append({
         id: result.data.id,
         text: result.data.text,
+        textAr: result.data.textAr ?? "",
         points: result.data.points,
         order: result.data.order,
       });
 
-      toast.success("Option added");
+      toast.success(result.message ?? translations.optionAdded);
     } catch (error) {
       console.error("ADD_OPTION_ERROR:", error);
-      toast.error("Failed to add option");
+      toast.error(translations.optionFailed);
     } finally {
       setIsAddingOption(false);
     }
@@ -137,16 +165,16 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
       const result = await deleteQuestion(question.id);
 
       if (!result.success) {
-        toast.error(result.message);
+        toast.error(result.message ?? translations.deleteFailed);
         return;
       }
 
-      toast.success(result.message);
+      toast.success(result.message ?? translations.questionDeleted);
 
       onDelete();
     } catch (error) {
       console.error("DELETE_QUESTION_ERROR:", error);
-      toast.error("Failed to delete question");
+      toast.error(translations.deleteFailed);
     } finally {
       setIsDeleting(false);
     }
@@ -165,23 +193,28 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
 
         question: `${values.question} (Copy)`,
 
+        questionAr: values.questionAr
+          ? `${values.questionAr} (نسخة)`
+          : "نسخة من السؤال",
+
         options: values.options.map((option) => ({
           text: option.text,
+          textAr: option.textAr,
           points: option.points,
         })),
       });
 
       if (!result.success || !result.data) {
-        toast.error(result.message);
+        toast.error(result.message ?? translations.duplicateFailed);
         return;
       }
 
       onDuplicate(result.data);
 
-      toast.success("Question duplicated");
+      toast.success(result.message ?? translations.questionDuplicated);
     } catch (error) {
       console.error("DUPLICATE_QUESTION_ERROR:", error);
-      toast.error("Failed to duplicate question");
+      toast.error(translations.duplicateFailed);
     } finally {
       setIsDuplicating(false);
     }
@@ -191,28 +224,46 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
     <article className="rounded-2xl border bg-background p-4 sm:p-5">
       <form onSubmit={handleSubmit(saveQuestion)}>
         <div className="flex items-start gap-3">
-          {/* Drag handle */}
           <div className="hidden pt-2 text-muted-foreground sm:block">
             <GripVertical className="h-5 w-5 cursor-grab" />
           </div>
 
-          {/* Content */}
-          <div className="min-w-0 flex-1 space-y-4">
-            {/* Question */}
+          <div className="min-w-0 flex-1 space-y-5">
             <div className="flex items-start gap-3">
               <span className="mt-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-medium">
                 {question.order}
               </span>
 
-              <Input
-                {...register("question")}
-                placeholder="Question"
-                className="rounded-xl p-3"
-              />
+              <div className="grid flex-1 gap-3">
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    {translations.english}
+                  </label>
+
+                  <Input
+                    {...register("question")}
+                    placeholder={translations.englishPlaceholder}
+                    dir="ltr"
+                    className="rounded-xl p-3"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1.5 block text-sm font-medium">
+                    {translations.arabic}
+                  </label>
+
+                  <Input
+                    {...register("questionAr")}
+                    placeholder={translations.arabicPlaceholder}
+                    dir="rtl"
+                    className="rounded-xl p-3"
+                  />
+                </div>
+              </div>
             </div>
 
-            {/* Options */}
-            <div className="space-y-2">
+            <div className="space-y-3">
               {fields.map((field, index) => {
                 const option = watchedOptions?.[index];
 
@@ -222,11 +273,17 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
                     option={{
                       id: option?.id ?? field.id,
                       text: option?.text ?? "",
+                      textAr: option?.textAr ?? "",
                       points: option?.points ?? 0,
                       order: index + 1,
                     }}
-                    onChange={(text, points) => {
+                    onChange={(text, textAr, points) => {
                       setValue(`options.${index}.text`, text, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      });
+
+                      setValue(`options.${index}.textAr`, textAr, {
                         shouldDirty: true,
                         shouldValidate: true,
                       });
@@ -246,7 +303,6 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
               })}
             </div>
 
-            {/* Add option */}
             <button
               type="button"
               onClick={addOption}
@@ -259,10 +315,9 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
                 <Plus className="h-4 w-4" />
               )}
 
-              {isAddingOption ? "Adding..." : "Add option"}
+              {isAddingOption ? translations.adding : translations.addOption}
             </button>
 
-            {/* Save */}
             <div className="flex justify-end">
               <Button type="submit" disabled={isSaving} className="rounded-xl">
                 {isSaving ? (
@@ -271,12 +326,11 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
                   <Save className="mr-2 h-4 w-4" />
                 )}
 
-                {isSaving ? "Saving..." : "Save changes"}
+                {isSaving ? translations.saving : translations.saveChanges}
               </Button>
             </div>
           </div>
 
-          {/* Actions */}
           <div className="flex shrink-0 gap-1">
             <Button
               type="button"
@@ -285,6 +339,11 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
               onClick={duplicateQuestion}
               disabled={isDuplicating}
               className="rounded-lg"
+              title={
+                isDuplicating
+                  ? translations.duplicating
+                  : translations.duplicate
+              }
             >
               {isDuplicating ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -300,6 +359,7 @@ const QuestionCard = ({ question, onDelete, onDuplicate }: Props) => {
               onClick={handleDeleteQuestion}
               disabled={isDeleting}
               className="rounded-lg text-destructive hover:bg-destructive/10 hover:text-destructive"
+              title={isDeleting ? translations.deleting : translations.delete}
             >
               {isDeleting ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

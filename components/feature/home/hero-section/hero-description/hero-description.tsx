@@ -1,13 +1,15 @@
+// components/feature/home/hero-section/hero-description/hero-description.tsx
+
 import React from "react";
 
-const HeroDescription = () => {
+interface HeroDescriptionProps {
+  translations: string;
+}
+
+const HeroDescription = ({ translations }: HeroDescriptionProps) => {
   return (
-    <p className="text-xl text-muted-foreground">
-      Serene Mind is the private practice of Dr. Amara Lindqvist. Book
-      <br />
-      appointments, follow your session history and complete validated
-      <br />
-      psychological assessments — all in one quiet, secure portal.
+    <p className="text-base leading-8 text-muted-foreground sm:text-lg lg:text-xl">
+      {translations}
     </p>
   );
 };

@@ -4,44 +4,65 @@ import { deleteTest } from "@/app/actions/admin-actions/test/delete-test";
 import { Button } from "@/components/ui/button";
 import { useTestModalStore } from "@/store/test-modal.store";
 import { Eye, Loader2, Pencil, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
 
-const TestRowActions = ({ testId }: { testId: string }) => {
-  const router = useRouter();
+interface TestRowActionsProps {
+  testId: string;
+  onDelete: (testId: string) => void;
+}
 
+const TestRowActions = ({ testId, onDelete }: TestRowActionsProps) => {
   const openEdit = useTestModalStore((state) => state.openEdit);
+  const selectTest = useTestModalStore((state) => state.selectTest);
 
   const [isDeleting, setIsDeleting] = useState(false);
 
-  const selectTest = useTestModalStore((state) => state.selectTest);
+  const scrollToTopSmoothly = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
 
   const handleDeleteSubmit = async () => {
     if (isDeleting) return;
 
     setIsDeleting(true);
 
-    const result = await deleteTest(testId);
+    try {
+      const result = await deleteTest(testId);
 
-    if (!result.success) {
-      toast.error(result.message);
+      if (!result.success) {
+        toast.error(result.message);
+        scrollToTopSmoothly();
+        return;
+      }
+
+      toast.success(result.message);
+
+      onDelete(testId);
+
+      scrollToTopSmoothly();
+    } catch (error) {
+      console.error("DELETE_TEST_CLIENT_ERROR:", error);
+
+      toast.error("Failed to delete test");
+
+      scrollToTopSmoothly();
+    } finally {
       setIsDeleting(false);
-      return;
     }
-
-    toast.success(result.message);
-    router.refresh();
   };
 
   const handleEditSubmit = () => {
     openEdit(testId);
+    scrollToTopSmoothly();
   };
 
   const handlePreview = () => {
     selectTest(testId);
-
-    console.log("testId", testId);
+    scrollToTopSmoothly();
   };
 
   return (

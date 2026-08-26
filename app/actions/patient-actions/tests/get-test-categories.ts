@@ -1,3 +1,5 @@
+// app/actions/patient-actions/tests/get-test-categories.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -12,7 +14,14 @@ export async function getTestCategories() {
           },
         },
       },
-      include: {
+
+      select: {
+        id: true,
+        name: true,
+        nameAr: true,
+        description: true,
+        descriptionAr: true,
+
         _count: {
           select: {
             tests: {
@@ -23,20 +32,21 @@ export async function getTestCategories() {
           },
         },
       },
+
       orderBy: {
         name: "asc",
       },
     });
 
     return {
-      success: true,
+      success: true as const,
       categories,
     };
   } catch (error) {
     console.error("GET_TEST_CATEGORIES_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       message: "Failed to get test categories",
       categories: [],
     };

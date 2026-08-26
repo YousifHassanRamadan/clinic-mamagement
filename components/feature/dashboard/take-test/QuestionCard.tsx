@@ -4,8 +4,7 @@ import { Card } from "@/components/ui/card";
 
 import AnswerOption from "./AnswerOption";
 import QuestionNavigation from "./QuestionNavigation";
-
-import { TestQuestion } from "@/app/dashboard/tests/types";
+import { TestQuestion } from "@/app/dashboard/patient/tests/types";
 
 interface Props {
   question: TestQuestion;
@@ -16,6 +15,13 @@ interface Props {
   selected: string | null;
 
   submitting?: boolean;
+
+  translations: {
+    previous: string;
+    next: string;
+    finish: string;
+    submitting: string;
+  };
 
   onSelect: (optionId: string) => void;
 
@@ -30,6 +36,7 @@ const QuestionCard = ({
   total,
   selected,
   submitting = false,
+  translations,
   onSelect,
   onPrevious,
   onNext,
@@ -41,7 +48,9 @@ const QuestionCard = ({
   return (
     <Card className="rounded-3xl p-8">
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold">{question.question}</h2>
+        <h2 className="text-2xl font-semibold leading-relaxed">
+          {question.question}
+        </h2>
 
         <div className="space-y-3">
           {question.options.map((option) => (
@@ -59,6 +68,7 @@ const QuestionCard = ({
           isFirst={isFirst}
           isLast={isLast}
           submitting={submitting}
+          translations={translations}
           onPrevious={onPrevious}
           onNext={onNext}
           onFinish={onFinish}

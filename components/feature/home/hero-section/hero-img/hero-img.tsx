@@ -1,29 +1,47 @@
+// components/feature/home/hero-section/hero-img/hero-img.tsx
+
 import React from "react";
 import Image from "next/image";
+
 import heroImg from "@/assets/Serene-Mind-Clinic/imgi_1_clinic-hero-BuhEzBK7.jpg";
+
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
+
 import { Calendar1 } from "lucide-react";
 
-const HeroImg = () => {
+interface HeroImgProps {
+  translations: {
+    alt: string;
+    nextOpening: string;
+    nextOpeningDetails: string;
+  };
+}
+
+const HeroImg = ({ translations }: HeroImgProps) => {
   return (
-    <div className="relative h-[550px] w-[550px] ">
+    <div className="relative h-[420px] w-full max-w-[550px] xl:h-[550px]">
       <Image
         src={heroImg}
-        alt="Hero Image"
+        alt={translations.alt}
+        fill
+        priority
         className="rounded-3xl object-cover"
+        sizes="(max-width: 1280px) 45vw, 550px"
       />
-      <Bubble className="absolute bottom-1/6 left-5" variant={"popover"}>
+
+      <Bubble className="absolute bottom-5 left-5" variant="popover">
         <BubbleContent>
-          <div className="flex items-center  gap-2">
-            <Calendar1 className="text-primary text-sm" />
-            <p className="text-sm text-foreground font-semibold">
-              Next opening
+          <div className="flex items-center gap-2">
+            <Calendar1 className="text-sm text-primary" />
+
+            <p className="text-sm font-semibold text-foreground">
+              {translations.nextOpening}
             </p>
           </div>
+
           <div>
             <p className="text-xs text-muted-foreground">
-              Saturday 09:00 · On-site or <br />
-              Google Meet
+              {translations.nextOpeningDetails}
             </p>
           </div>
         </BubbleContent>

@@ -1,3 +1,5 @@
+// components/feature/home/testimonials/testimonial-card/testimonial-card.tsx
+
 import { Card } from "@/components/ui/card";
 import { Quote, Star } from "lucide-react";
 

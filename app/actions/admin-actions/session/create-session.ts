@@ -30,7 +30,6 @@ export async function createSession(input: unknown) {
 
     const data = parsed.data;
 
-    // Verify patient
     const patient = await prisma.user.findUnique({
       where: {
         id: data.patientId,
@@ -49,7 +48,6 @@ export async function createSession(input: unknown) {
       };
     }
 
-    // Appointment is OPTIONAL
     if (data.appointmentId) {
       const appointment = await prisma.appointment.findUnique({
         where: {
@@ -80,55 +78,92 @@ export async function createSession(input: unknown) {
 
     const sessionDate = combineDateAndTime(data.date, data.time);
 
-    const clinicSession = await prisma.clinicSession.create({
-      data: {
-        patientId: data.patientId,
+    const clinicSession = await prisma.$transaction(async (tx) => {
+      const createdSession = await tx.clinicSession.create({
+        data: {
+          patientId: data.patientId,
 
-        appointmentId: data.appointmentId || null,
+          appointmentId: data.appointmentId || null,
 
-        sessionDate,
+          sessionDate,
 
-        duration: data.duration,
+          duration: data.duration,
 
-        sessionType: data.sessionType,
+          sessionType: data.sessionType,
 
-        diagnosis: data.diagnosis?.trim() || null,
+          diagnosis: data.diagnosis?.trim() || null,
 
-        mood: data.mood ?? null,
+          diagnosisAr: data.diagnosisAr?.trim() || null,
 
-        publicNotes: data.publicNotes?.trim() || null,
+          mood: data.mood ?? null,
 
-        privateClinicalNotes: data.privateClinicalNotes?.trim() || null,
+          publicNotes: data.publicNotes?.trim() || null,
 
-        shareNotes: data.shareNotes,
+          publicNotesAr: data.publicNotesAr?.trim() || null,
 
-        sendSummaryEmail: data.sendSummaryEmail,
+          privateClinicalNotes: data.privateClinicalNotes?.trim() || null,
 
-        fee: data.fee,
-      },
+          privateClinicalNotesAr: data.privateClinicalNotesAr?.trim() || null,
 
-      include: {
-        patient: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            phone: true,
-          },
+          shareNotes: data.shareNotes,
+
+          sendSummaryEmail: data.sendSummaryEmail,
+
+          fee: data.fee,
+        },
+      });
+
+      if (data.attachments.length > 0) {
+        await tx.sessionAttachment.createMany({
+          data: data.attachments.map((attachment) => ({
+            sessionId: createdSession.id,
+
+            name: attachment.name,
+
+            url: attachment.url,
+
+            size: attachment.size,
+
+            type: attachment.type,
+
+            publicId: attachment.publicId ?? null,
+
+            resourceType: attachment.resourceType ?? null,
+          })),
+        });
+      }
+
+      return tx.clinicSession.findUniqueOrThrow({
+        where: {
+          id: createdSession.id,
         },
 
-        appointment: true,
+        include: {
+          patient: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              phone: true,
+            },
+          },
 
-        attachments: true,
-      },
+          appointment: true,
+
+          attachments: true,
+        },
+      });
     });
 
     return {
       success: true,
+
       data: {
         ...clinicSession,
+
         fee: Number(clinicSession.fee),
       },
+
       message: "Session created successfully",
     };
   } catch (error) {

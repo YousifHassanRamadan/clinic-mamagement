@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useTestModalStore } from "@/store/test-modal.store";
 import { Plus } from "lucide-react";
 import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
 
 import {
   Dialog,
@@ -12,14 +12,23 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-import TestFormDialog from "./TestFormDialog";
+import { useTestModalStore } from "@/store/test-modal.store";
+
+import TestFormDialog, { type TestFormTranslations } from "./TestFormDialog";
 
 import {
-  CategoryWithCount,
   getCategories,
+  type CategoryWithCount,
 } from "@/app/actions/admin-actions/handle-category/get-categories";
 
-const CreateTestAction = () => {
+interface Props {
+  buttonText: string;
+  translations: {
+    form: TestFormTranslations;
+  };
+}
+
+const CreateTestAction = ({ buttonText, translations }: Props) => {
   const openCreate = useTestModalStore((state) => state.openCreate);
   const isCreateOpen = useTestModalStore((state) => state.isCreateOpen);
   const closeCreate = useTestModalStore((state) => state.closeCreate);
@@ -50,7 +59,7 @@ const CreateTestAction = () => {
         type="button"
       >
         <Plus className="mr-2 h-4 w-4" />
-        Create test
+        {buttonText}
       </Button>
 
       <Dialog
@@ -63,7 +72,7 @@ const CreateTestAction = () => {
       >
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Create Test</DialogTitle>
+            <DialogTitle>{translations.form.createTitle}</DialogTitle>
           </DialogHeader>
 
           <TestFormDialog
@@ -71,6 +80,7 @@ const CreateTestAction = () => {
             onOpenChange={closeCreate}
             categories={categories}
             open={isCreateOpen}
+            translations={translations.form}
           />
         </DialogContent>
       </Dialog>

@@ -14,13 +14,15 @@ export async function createCategory(input: unknown) {
     };
   }
 
-  const { name, description } = validation.data;
+  const { name, nameAr, description, descriptionAr } = validation.data;
 
   try {
     const category = await prisma.testCategory.create({
       data: {
         name,
+        nameAr: nameAr || null,
         description: description || null,
+        descriptionAr: descriptionAr || null,
       },
     });
 

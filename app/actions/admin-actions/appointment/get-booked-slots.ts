@@ -1,16 +1,22 @@
+// get-booked-slots.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+import { getTranslations } from "@/i18n/getTranslations";
+import { type Locale } from "@/i18n/config";
 
-export async function getBookedSlots(date: string) {
+export async function getBookedSlots(date: string, locale: Locale) {
+  const t = await getTranslations(locale);
+
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        message: "Unauthorized",
+        message: t("appointments.server.unauthorized"),
         slots: [],
       };
     }
@@ -18,13 +24,14 @@ export async function getBookedSlots(date: string) {
     if (session.user.role !== "DOCTOR") {
       return {
         success: false,
-        message: "Only doctors can view availability",
+        message: t("appointments.server.onlyDoctorsView"),
         slots: [],
       };
     }
 
-    const startOfDay = new Date(`${date}T00:00:00`);
-    const endOfDay = new Date(`${date}T23:59:59.999`);
+    const startOfDay = new Date(`${date}T00:00:00.000+03:00`);
+
+    const endOfDay = new Date(`${date}T23:59:59.999+03:00`);
 
     const appointments = await prisma.appointment.findMany({
       where: {
@@ -44,12 +51,14 @@ export async function getBookedSlots(date: string) {
       },
     });
 
-    const bookedSlots = appointments.map((appointment) => {
-      const hours = appointment.date.getHours().toString().padStart(2, "0");
-      const minutes = appointment.date.getMinutes().toString().padStart(2, "0");
-
-      return `${hours}:${minutes}`;
-    });
+    const bookedSlots = appointments.map((appointment) =>
+      new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Africa/Cairo",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      }).format(appointment.date),
+    );
 
     return {
       success: true,
@@ -60,7 +69,7 @@ export async function getBookedSlots(date: string) {
 
     return {
       success: false,
-      message: "Something went wrong while loading booked slots",
+      message: t("appointments.server.bookedSlotsError"),
       slots: [],
     };
   }

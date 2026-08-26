@@ -1,3 +1,5 @@
+// SidebarItem.tsx
+
 "use client";
 
 import Link from "next/link";
@@ -15,9 +17,17 @@ interface Props {
 const SidebarItem = ({ item, onNavigate }: Props) => {
   const pathname = usePathname();
 
-  const Icon = item.icon;
+  const isPatientDashboard =
+    item.href === "/dashboard/" && pathname === "/dashboard/patient/overview";
 
-  const active = pathname === item.href;
+  const isDoctorDashboard =
+    item.href === "/dashboard/admin/overview" &&
+    pathname === "/dashboard/admin/overview";
+
+  const active =
+    pathname === item.href || isPatientDashboard || isDoctorDashboard;
+
+  const Icon = item.icon;
 
   return (
     <Link

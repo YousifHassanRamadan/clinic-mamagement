@@ -1,3 +1,5 @@
+// ProfilePage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -16,7 +18,40 @@ import { updateProfile } from "@/app/actions/patient-actions/profile/update-prof
 
 import { profileSchema, ProfileFormValues } from "@/schemas/profile.schema";
 
+type Locale = "en" | "ar";
+
+const translations = {
+  en: {
+    title: "My Profile",
+    description: "Keep your details up to date so the clinic can reach you.",
+    saving: "Saving...",
+    saveChanges: "Save Changes",
+    somethingWentWrong: "Something went wrong",
+  },
+
+  ar: {
+    title: "ملفي الشخصي",
+    description: "حافظ على تحديث بياناتك حتى تتمكن العيادة من التواصل معك.",
+    saving: "جاري الحفظ...",
+    saveChanges: "حفظ التغييرات",
+    somethingWentWrong: "حدث خطأ ما",
+  },
+} as const;
+
+// Get the current language directly from the browser cookie.
+// جلب اللغة الحالية مباشرة من Cookie الموجودة في المتصفح.
+const getLocaleFromCookie = (): Locale => {
+  const match = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("locale="));
+
+  const locale = match?.split("=")[1];
+
+  return locale === "ar" ? "ar" : "en";
+};
+
 const ProfilePage = () => {
+  const [locale, setLocale] = useState<Locale>("en");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -41,6 +76,10 @@ const ProfilePage = () => {
   } = form;
 
   useEffect(() => {
+    const currentLocale = getLocaleFromCookie();
+
+    setLocale(currentLocale);
+
     const loadProfile = async () => {
       const result = await getProfile();
 
@@ -65,8 +104,11 @@ const ProfilePage = () => {
     loadProfile();
   }, [reset]);
 
+  const t = translations[locale];
+
   const onSubmit = async (values: ProfileFormValues) => {
-    // Don't submit if nothing changed
+    // Don't submit if nothing changed.
+    // لا ترسل البيانات إذا لم يحدث أي تغيير.
     if (!isDirty) {
       return;
     }
@@ -95,7 +137,7 @@ const ProfilePage = () => {
       }
     } catch (error) {
       console.error("UPDATE_PROFILE_ERROR:", error);
-      toast.error("Something went wrong");
+      toast.error(t.somethingWentWrong);
     } finally {
       setSaving(false);
     }
@@ -122,11 +164,9 @@ const ProfilePage = () => {
       <div className="space-y-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-3xl font-bold">My Profile</h1>
+            <h1 className="text-3xl font-bold">{t.title}</h1>
 
-            <p className="mt-2 text-muted-foreground">
-              Keep your details up to date so the clinic can reach you.
-            </p>
+            <p className="mt-2 text-muted-foreground">{t.description}</p>
           </div>
 
           <Button
@@ -136,7 +176,7 @@ const ProfilePage = () => {
           >
             <Save className="mr-2 h-4 w-4" />
 
-            {saving ? "Saving..." : "Save Changes"}
+            {saving ? t.saving : t.saveChanges}
           </Button>
         </div>
 
@@ -144,10 +184,11 @@ const ProfilePage = () => {
           <ProfileCard
             firstName={profile.firstName}
             lastName={profile.lastName}
+            locale={locale}
           />
 
           <div className="space-y-8">
-            <PersonalInformation form={form} />
+            <PersonalInformation form={form} locale={locale} />
           </div>
         </div>
       </div>

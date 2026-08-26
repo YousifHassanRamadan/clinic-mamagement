@@ -1,3 +1,5 @@
+// CreateAppointmentPage.tsx
+
 "use client";
 
 import { useEffect, useMemo, useState, useTransition } from "react";
@@ -14,7 +16,7 @@ import AppointmentHeader from "./AppointmentHeader";
 import DateCalendar from "./DateCalendar";
 import WorkingHoursCard from "./WorkingHoursCard";
 import TimeSlotSettings from "./TimeSlotSettings";
-import TimeSlotGrid from "./TimeSlotGrid";
+import TimeSlotGrid, { type TimeSlot } from "./TimeSlotGrid";
 import AvailabilitySummary from "./AvailabilitySummary";
 import AvailabilityList from "./AvailabilityList";
 
@@ -34,19 +36,83 @@ interface Availability {
   startTime: Date;
   endTime: Date;
   duration: number;
-  slots: {
-    id: string;
-    time: string;
-    isAvailable: boolean;
-  }[];
+  slots: TimeSlot[];
 }
 
-const CreateAppointmentPage = () => {
+interface CreateAppointmentPageProps {
+  locale: "en" | "ar";
+
+  translations: {
+    scheduling: string;
+    createAppointment: string;
+    description: string;
+
+    newAvailability: string;
+    reset: string;
+    checkingBookedAppointments: string;
+    selectAll: string;
+    clear: string;
+    saving: string;
+    updateAvailability: string;
+    saveAvailability: string;
+
+    noAvailabilitySelected: string;
+    completeAvailability: string;
+    selectAtLeastOneSlot: string;
+    cannotRemoveBookedSlot: string;
+    saveError: string;
+    savedSuccessfully: string;
+
+    workingHoursTitle: string;
+    workingHoursDescription: string;
+    startTime: string;
+    endTime: string;
+    timeSlotsInfo: string;
+
+    sessionDurationTitle: string;
+    sessionDurationDescription: string;
+    duration: string;
+    minutes: string;
+
+    availableTimeSlotsTitle: string;
+    availableTimeSlotsDescription: string;
+    selected: string;
+    available: string;
+    booked: string;
+    disabled: string;
+    noTimeSlots: string;
+    adjustWorkingHours: string;
+
+    availabilitySummaryTitle: string;
+    workingHours: string;
+    sessionDuration: string;
+    availableSlots: string;
+
+    availabilityListNoAvailability: string;
+    availabilityListCreateFirst: string;
+    slots: string;
+    edit: string;
+  };
+}
+
+const formatUTCTime = (date: Date | string) => {
+  const value = new Date(date);
+
+  return `${String(value.getUTCHours()).padStart(2, "0")}:${String(
+    value.getUTCMinutes(),
+  ).padStart(2, "0")}`;
+};
+
+const CreateAppointmentPage = ({
+  locale,
+  translations: t,
+}: CreateAppointmentPageProps) => {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
   const [mode, setMode] = useState<"create" | "edit">("create");
+
   const [editingAvailabilityId, setEditingAvailabilityId] = useState<
     string | null
   >(null);
@@ -56,14 +122,12 @@ const CreateAppointmentPage = () => {
   const [date, setDate] = useState<Date>(new Date());
 
   const [bookedSlots, setBookedSlots] = useState<string[]>([]);
-  const [isLoadingBookedSlots, setIsLoadingBookedSlots] = useState(false);
 
-  // =========================
-  // Form
-  // =========================
+  const [isLoadingBookedSlots, setIsLoadingBookedSlots] = useState(false);
 
   const form = useForm<CreateAvailabilityInput>({
     resolver: zodResolver(createAvailabilitySchema),
+
     defaultValues: {
       date: format(new Date(), "yyyy-MM-dd"),
       startTime: "09:00",
@@ -78,36 +142,29 @@ const CreateAppointmentPage = () => {
   const duration = form.watch("duration");
   const selectedSlots = form.watch("slots");
 
-  // =========================
-  // Load availabilities
-  // =========================
-
   const loadAvailabilities = async () => {
-    const result = await getAvailabilities();
+    const result = await getAvailabilities(locale);
 
     if (!result.success) {
       toast.error(result.message);
       return;
     }
 
-    setAvailabilities(result.data);
+    setAvailabilities(result.data as Availability[]);
   };
 
   useEffect(() => {
     loadAvailabilities();
   }, []);
 
-  // =========================
-  // Load booked slots
-  // =========================
-
   useEffect(() => {
     const loadBookedSlots = async () => {
       setIsLoadingBookedSlots(true);
+      setBookedSlots([]);
 
       const dateString = format(date, "yyyy-MM-dd");
 
-      const result = await getBookedSlots(dateString);
+      const result = await getBookedSlots(dateString, locale);
 
       if (!result.success) {
         setBookedSlots([]);
@@ -120,11 +177,7 @@ const CreateAppointmentPage = () => {
     };
 
     loadBookedSlots();
-  }, [date]);
-
-  // =========================
-  // Generate slots
-  // =========================
+  }, [date, locale]);
 
   const generatedSlots = useMemo(() => {
     if (!startTime || !endTime || !duration) {
@@ -164,17 +217,47 @@ const CreateAppointmentPage = () => {
     return slots;
   }, [date, startTime, endTime, duration]);
 
-  // =========================
-  // Available slots
-  // =========================
+  const currentAvailability = useMemo(() => {
+    if (mode !== "edit") {
+      return null;
+    }
+
+    const dateString = format(date, "yyyy-MM-dd");
+
+    return (
+      availabilities.find(
+        (availability) =>
+          format(new Date(availability.date), "yyyy-MM-dd") === dateString,
+      ) ?? null
+    );
+  }, [mode, date, availabilities]);
+
+  const displaySlots = useMemo<TimeSlot[]>(() => {
+    if (mode === "edit" && currentAvailability) {
+      return currentAvailability.slots.map((slot) => ({
+        ...slot,
+        isBooked: slot.isBooked === true || bookedSlots.includes(slot.time),
+      }));
+    }
+
+    return generatedSlots.map((time) => ({
+      id: `generated-${time}`,
+      time,
+      isAvailable: true,
+      isBooked: false,
+    }));
+  }, [mode, currentAvailability, generatedSlots, bookedSlots]);
 
   const availableSlots = useMemo(() => {
-    return generatedSlots.filter((slot) => !bookedSlots.includes(slot));
-  }, [generatedSlots, bookedSlots]);
-
-  // =========================
-  // Edit
-  // =========================
+    return displaySlots
+      .filter(
+        (slot) =>
+          !bookedSlots.includes(slot.time) &&
+          !slot.isBooked &&
+          slot.isAvailable,
+      )
+      .map((slot) => slot.time);
+  }, [displaySlots, bookedSlots]);
 
   const handleEdit = (availability: Availability) => {
     setMode("edit");
@@ -186,16 +269,12 @@ const CreateAppointmentPage = () => {
 
     form.reset({
       date: format(selectedDate, "yyyy-MM-dd"),
-      startTime: format(new Date(availability.startTime), "HH:mm"),
-      endTime: format(new Date(availability.endTime), "HH:mm"),
+      startTime: formatUTCTime(availability.startTime),
+      endTime: formatUTCTime(availability.endTime),
       duration: availability.duration as 30 | 45 | 60 | 90,
       slots: availability.slots.map((slot) => slot.time),
     });
   };
-
-  // =========================
-  // New
-  // =========================
 
   const handleNew = () => {
     setMode("create");
@@ -204,6 +283,7 @@ const CreateAppointmentPage = () => {
     const today = new Date();
 
     setDate(today);
+    setBookedSlots([]);
 
     form.reset({
       date: format(today, "yyyy-MM-dd"),
@@ -214,12 +294,9 @@ const CreateAppointmentPage = () => {
     });
   };
 
-  // =========================
-  // Slot actions
-  // =========================
-
   const toggleSlot = (slot: string) => {
     if (bookedSlots.includes(slot)) {
+      toast.error(t.cannotRemoveBookedSlot);
       return;
     }
 
@@ -245,22 +322,33 @@ const CreateAppointmentPage = () => {
   };
 
   const selectAll = () => {
-    form.setValue("slots", availableSlots, {
+    const currentSlots = form.getValues("slots");
+    const booked = new Set(bookedSlots);
+
+    const mergedSlots = [
+      ...new Set([
+        ...currentSlots.filter((slot) => booked.has(slot)),
+        ...availableSlots,
+      ]),
+    ].sort();
+
+    form.setValue("slots", mergedSlots, {
       shouldValidate: true,
       shouldDirty: true,
     });
   };
 
   const clearAll = () => {
-    form.setValue("slots", [], {
+    const currentSlots = form.getValues("slots");
+    const booked = new Set(bookedSlots);
+
+    const bookedSlotsToKeep = currentSlots.filter((slot) => booked.has(slot));
+
+    form.setValue("slots", bookedSlotsToKeep, {
       shouldValidate: true,
       shouldDirty: true,
     });
   };
-
-  // =========================
-  // Working hours
-  // =========================
 
   const handleStartChange = (value: string) => {
     form.setValue("startTime", value, {
@@ -286,10 +374,6 @@ const CreateAppointmentPage = () => {
     });
   };
 
-  // =========================
-  // Duration
-  // =========================
-
   const handleDurationChange = (value: CreateAvailabilityInput["duration"]) => {
     form.setValue("duration", value, {
       shouldValidate: true,
@@ -302,14 +386,12 @@ const CreateAppointmentPage = () => {
     });
   };
 
-  // =========================
-  // Date
-  // =========================
-
   const handleDateChange = (newDate: Date) => {
     setDate(newDate);
 
-    form.setValue("date", format(newDate, "yyyy-MM-dd"), {
+    const dateString = format(newDate, "yyyy-MM-dd");
+
+    form.setValue("date", dateString, {
       shouldValidate: true,
       shouldDirty: true,
     });
@@ -319,53 +401,136 @@ const CreateAppointmentPage = () => {
         shouldValidate: true,
         shouldDirty: true,
       });
-    }
-  };
 
-  // =========================
-  // Submit
-  // =========================
-
-  const handleSave = form.handleSubmit((values) => {
-    if (values.slots.length === 0) {
-      toast.error("Please select at least one available time slot");
       return;
     }
 
-    startTransition(async () => {
-      const result =
-        mode === "create"
-          ? await createAvailability(values)
-          : await updateAvailability(editingAvailabilityId!, values);
+    const availability = availabilities.find(
+      (item) => format(new Date(item.date), "yyyy-MM-dd") === dateString,
+    );
 
-      if (!result.success) {
-        toast.error(result.message);
+    if (availability) {
+      setEditingAvailabilityId(availability.id);
+
+      form.reset({
+        date: dateString,
+        startTime: formatUTCTime(availability.startTime),
+        endTime: formatUTCTime(availability.endTime),
+        duration: availability.duration as 30 | 45 | 60 | 90,
+        slots: availability.slots.map((slot) => slot.time),
+      });
+    } else {
+      setEditingAvailabilityId(null);
+
+      form.setValue("slots", [], {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
+  };
+
+  const handleSave = () => {
+    if (isPending || isLoadingBookedSlots) {
+      return;
+    }
+
+    if (mode === "edit" && !editingAvailabilityId) {
+      toast.error(t.noAvailabilitySelected);
+      return;
+    }
+
+    const values = form.getValues();
+
+    if (!values.date || !values.startTime || !values.endTime) {
+      toast.error(t.completeAvailability);
+      return;
+    }
+
+    if (mode === "create" && values.slots.length === 0) {
+      toast.error(t.selectAtLeastOneSlot);
+      return;
+    }
+
+    if (mode === "edit") {
+      const bookedSet = new Set(bookedSlots);
+
+      const removedBookedSlot = currentAvailability?.slots.some(
+        (slot) => bookedSet.has(slot.time) && !values.slots.includes(slot.time),
+      );
+
+      if (removedBookedSlot) {
+        toast.error(t.cannotRemoveBookedSlot);
         return;
       }
+    }
 
-      toast.success(result.message);
+    startTransition(async () => {
+      try {
+        const result =
+          mode === "create"
+            ? await createAvailability(values, locale)
+            : await updateAvailability(editingAvailabilityId!, values, locale);
 
-      await loadAvailabilities();
+        if (!result.success) {
+          toast.error(result.message);
+          return;
+        }
 
-      handleNew();
+        toast.success(result.message || t.savedSuccessfully);
 
-      router.refresh();
+        await loadAvailabilities();
+
+        handleNew();
+
+        router.refresh();
+      } catch (error) {
+        console.error("SAVE_AVAILABILITY_ERROR:", error);
+
+        toast.error(t.saveError);
+      }
     });
-  });
+  };
+
+  const isEditDirty = mode === "edit" && form.formState.isDirty;
+
+  const canSave =
+    !isPending &&
+    !isLoadingBookedSlots &&
+    (mode === "create"
+      ? selectedSlots.length > 0
+      : Boolean(editingAvailabilityId) && isEditDirty);
 
   return (
-    <div className="space-y-8 pb-10">
+    <div dir={locale === "ar" ? "rtl" : "ltr"} className="space-y-8 pb-10">
       <div className="flex items-center justify-between gap-4">
-        <AppointmentHeader />
+        <AppointmentHeader
+          scheduling={t.scheduling}
+          title={t.createAppointment}
+          description={t.description}
+        />
 
         <Button variant="outline" className="rounded-xl" onClick={handleNew}>
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          {mode === "edit" ? "New availability" : "Reset"}
+          <ArrowLeft
+            className={`h-4 w-4 ${
+              locale === "ar" ? "ml-2 rotate-180" : "mr-2"
+            }`}
+          />
+
+          {mode === "edit" ? t.newAvailability : t.reset}
         </Button>
       </div>
 
-      {/* Existing availability */}
-      <AvailabilityList availabilities={availabilities} onEdit={handleEdit} />
+      <AvailabilityList
+        availabilities={availabilities}
+        onEdit={handleEdit}
+        translations={{
+          noAvailability: t.availabilityListNoAvailability,
+          createFirst: t.availabilityListCreateFirst,
+          slots: t.slots,
+          edit: t.edit,
+        }}
+        locale={locale}
+      />
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
         <main className="min-w-0 space-y-6">
@@ -376,22 +541,46 @@ const CreateAppointmentPage = () => {
             endTime={endTime}
             onStartChange={handleStartChange}
             onEndChange={handleEndChange}
+            translations={{
+              title: t.workingHoursTitle,
+              description: t.workingHoursDescription,
+              startTime: t.startTime,
+              endTime: t.endTime,
+              timeSlotsInfo: t.timeSlotsInfo,
+            }}
+            locale={locale}
           />
 
           <TimeSlotSettings
             duration={duration}
             onDurationChange={handleDurationChange}
+            translations={{
+              title: t.sessionDurationTitle,
+              description: t.sessionDurationDescription,
+              duration: t.duration,
+              minutes: t.minutes,
+            }}
           />
 
           <TimeSlotGrid
-            slots={availableSlots}
+            slots={displaySlots}
             selectedSlots={selectedSlots}
             onToggle={toggleSlot}
+            translations={{
+              title: t.availableTimeSlotsTitle,
+              description: t.availableTimeSlotsDescription,
+              selected: t.selected,
+              available: t.available,
+              booked: t.booked,
+              disabled: t.disabled,
+              noTimeSlots: t.noTimeSlots,
+              adjustWorkingHours: t.adjustWorkingHours,
+            }}
           />
 
           {isLoadingBookedSlots && (
             <p className="text-center text-xs text-muted-foreground">
-              Checking booked appointments...
+              {t.checkingBookedAppointments}
             </p>
           )}
 
@@ -408,7 +597,7 @@ const CreateAppointmentPage = () => {
                   isLoadingBookedSlots
                 }
               >
-                Select all
+                {t.selectAll}
               </Button>
 
               <Button
@@ -416,27 +605,30 @@ const CreateAppointmentPage = () => {
                 variant="ghost"
                 className="rounded-xl"
                 onClick={clearAll}
-                disabled={selectedSlots.length === 0 || isPending}
+                disabled={
+                  selectedSlots.filter((slot) => !bookedSlots.includes(slot))
+                    .length === 0 || isPending
+                }
               >
-                Clear
+                {t.clear}
               </Button>
             </div>
 
             <Button
               type="button"
               onClick={handleSave}
-              disabled={
-                selectedSlots.length === 0 || isPending || isLoadingBookedSlots
-              }
+              disabled={!canSave}
               className="rounded-xl"
             >
-              <Save className="mr-2 h-4 w-4" />
+              <Save
+                className={`h-4 w-4 ${locale === "ar" ? "ml-2" : "mr-2"}`}
+              />
 
               {isPending
-                ? "Saving..."
+                ? t.saving
                 : mode === "edit"
-                  ? "Update availability"
-                  : "Save availability"}
+                  ? t.updateAvailability
+                  : t.saveAvailability}
             </Button>
           </div>
         </main>
@@ -448,6 +640,13 @@ const CreateAppointmentPage = () => {
             endTime={endTime}
             duration={duration}
             selectedSlots={selectedSlots.length}
+            translations={{
+              title: t.availabilitySummaryTitle,
+              workingHours: t.workingHours,
+              sessionDuration: t.sessionDuration,
+              availableSlots: t.availableSlots,
+            }}
+            locale={locale}
           />
         </aside>
       </div>

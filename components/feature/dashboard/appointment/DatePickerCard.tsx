@@ -1,3 +1,5 @@
+// components/feature/dashboard/appointments/DatePickerCard.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -9,9 +11,17 @@ interface Props {
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   availableDates: Date[];
+  title: string;
+  description: string;
 }
 
-const DatePickerCard = ({ date, setDate, availableDates }: Props) => {
+const DatePickerCard = ({
+  date,
+  setDate,
+  availableDates,
+  title,
+  description,
+}: Props) => {
   const [month, setMonth] = useState<Date>(date ?? new Date());
 
   const isDateAvailable = (date: Date) => {
@@ -25,8 +35,6 @@ const DatePickerCard = ({ date, setDate, availableDates }: Props) => {
 
   const handleMonthChange = (newMonth: Date) => {
     setMonth(newMonth);
-
-    // Clear the selected date when changing month
     setDate(undefined);
   };
 
@@ -36,7 +44,6 @@ const DatePickerCard = ({ date, setDate, availableDates }: Props) => {
       return;
     }
 
-    // Only allow available dates
     if (!isDateAvailable(newDate)) {
       setDate(undefined);
       return;
@@ -47,7 +54,7 @@ const DatePickerCard = ({ date, setDate, availableDates }: Props) => {
 
   return (
     <Card className="block rounded-3xl p-6">
-      <h3 className="mb-5 text-xl font-semibold">1. Choose a date</h3>
+      <h3 className="mb-5 text-xl font-semibold">{title}</h3>
 
       <Calendar
         mode="single"
@@ -59,9 +66,7 @@ const DatePickerCard = ({ date, setDate, availableDates }: Props) => {
         className="rounded-xl border"
       />
 
-      <p className="mt-4 text-sm text-muted-foreground">
-        Select one of the available dates.
-      </p>
+      <p className="mt-4 text-sm text-muted-foreground">{description}</p>
     </Card>
   );
 };

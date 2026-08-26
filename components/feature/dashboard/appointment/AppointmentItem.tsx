@@ -1,30 +1,64 @@
-import { ArrowRight, CalendarDays, Clock3, MapPin } from "lucide-react";
+// AppointmentItem.tsx
+
+"use client";
+
+import { useEffect, useState } from "react";
+import { CalendarDays, Clock3, MapPin } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 import AppointmentStatus from "./AppointmentStatus";
 
 import type { PatientAppointment } from "./AppointmentsPage";
+
+import enCommon from "@/locales/en/common.json";
+import arCommon from "@/locales/ar/common.json";
 
 interface Props {
   appointment: PatientAppointment;
 }
 
 const AppointmentItem = ({ appointment }: Props) => {
+  const [locale, setLocale] = useState<"en" | "ar">("en");
+
+  useEffect(() => {
+    const updateLocale = () => {
+      setLocale(document.documentElement.lang.startsWith("ar") ? "ar" : "en");
+    };
+
+    updateLocale();
+
+    const observer = new MutationObserver(updateLocale);
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["lang"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  const translations = locale === "ar" ? arCommon : enCommon;
+
   const appointmentDate = new Date(appointment.date);
 
-  const formattedDate = appointmentDate.toLocaleDateString("en-US", {
-    weekday: "long",
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-  });
+  const formattedDate = appointmentDate.toLocaleDateString(
+    locale === "ar" ? "ar-EG" : "en-US",
+    {
+      weekday: "long",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    },
+  );
 
-  const formattedTime = appointmentDate.toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const formattedTime = appointmentDate.toLocaleTimeString(
+    locale === "ar" ? "ar-EG" : "en-US",
+    {
+      hour: "numeric",
+      minute: "2-digit",
+    },
+  );
 
   return (
     <Card className="rounded-3xl p-6 transition hover:shadow-md">
@@ -45,11 +79,16 @@ const AppointmentItem = ({ appointment }: Props) => {
 
               <span className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                Clinic
+                {translations.appointment.clinic}
               </span>
 
               {appointment.session && (
-                <span>{appointment.session.duration} minutes</span>
+                <span>
+                  {translations.appointment.duration.replace(
+                    "{{duration}}",
+                    String(appointment.session.duration),
+                  )}
+                </span>
               )}
             </div>
 

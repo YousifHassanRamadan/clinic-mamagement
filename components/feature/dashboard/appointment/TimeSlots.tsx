@@ -1,10 +1,14 @@
+// components/feature/dashboard/appointments/TimeSlots.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 import { getAvailableSlots } from "@/app/actions/patient-actions/appoinments/get-available-slots";
 
 interface Slot {
@@ -17,9 +21,20 @@ interface Props {
   date: Date | undefined;
   selectedTime: string | undefined;
   setSelectedTime: (time: string, slotId: string) => void;
+  translations: {
+    title: string;
+    selectDateFirst: string;
+    loading: string;
+    noAvailable: string;
+  };
 }
 
-const TimeSlots = ({ date, selectedTime, setSelectedTime }: Props) => {
+const TimeSlots = ({
+  date,
+  selectedTime,
+  setSelectedTime,
+  translations,
+}: Props) => {
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -32,8 +47,10 @@ const TimeSlots = ({ date, selectedTime, setSelectedTime }: Props) => {
     const loadSlots = async () => {
       setLoading(true);
 
+      const dateString = format(date, "yyyy-MM-dd");
+
       const result = await getAvailableSlots({
-        date,
+        date: dateString,
       });
 
       setLoading(false);
@@ -52,23 +69,21 @@ const TimeSlots = ({ date, selectedTime, setSelectedTime }: Props) => {
 
   return (
     <Card className="block rounded-3xl p-6">
-      <h3 className="mb-6 text-xl font-semibold">2. Choose a time</h3>
+      <h3 className="mb-6 text-xl font-semibold">{translations.title}</h3>
 
       {!date && (
         <p className="text-sm text-muted-foreground">
-          Please select a date first.
+          {translations.selectDateFirst}
         </p>
       )}
 
       {date && loading && (
-        <p className="text-sm text-muted-foreground">
-          Loading available times...
-        </p>
+        <p className="text-sm text-muted-foreground">{translations.loading}</p>
       )}
 
       {date && !loading && slots.length === 0 && (
         <p className="text-sm text-muted-foreground">
-          No available appointments for this date.
+          {translations.noAvailable}
         </p>
       )}
 

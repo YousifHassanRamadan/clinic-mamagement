@@ -1,0 +1,1465 @@
+{
+  "user": {
+    "there": "هناك"
+  },
+  "header": {
+    "signIn": "تسجيل الدخول",
+    "language": "اللغة",
+    "arabic": "العربية",
+    "english": "الإنجليزية",
+    "appearance": "المظهر",
+    "dark": "داكن",
+    "light": "فاتح"
+  },
+  "greetings": {
+    "goodMorning": "صباح الخير",
+    "goodAfternoon": "مساء الخير",
+    "goodEvening": "مساء الخير"
+  },
+  "welcome": {
+    "back": "مرحبًا بعودتك، {{username}}",
+    "description": "واصل رحلتك نحو العافية، وتابع جلساتك القادمة، وأكمل التقييمات، وتابع تقدمك."
+  },
+
+  "dashboard": {
+    "upcomingAppointments": "المواعيد القادمة",
+    "scheduledSessions": "الجلسات المجدولة",
+    "totalAppointments": "إجمالي المواعيد",
+    "allAppointments": "جميع مواعيدك",
+    "completedTests": "الاختبارات المكتملة",
+    "assessmentsFinished": "التقييمات المكتملة",
+    "statsLoadFailed": "فشل تحميل إحصائيات لوحة التحكم.",
+    "admin": {
+      "books": {
+        "title": "الكتب",
+        "description": "إدارة الكتب وإمكانية وصول المرضى إليها.",
+        "form": {
+          "createTitle": "إضافة كتاب",
+          "editTitle": "تعديل الكتاب",
+          "bookTitle": "عنوان الكتاب",
+          "bookTitlePlaceholder": "اكتب عنوان الكتاب",
+          "arabicTitle": "اسم الكتاب بالعربي",
+          "arabicTitlePlaceholder": "اكتب اسم الكتاب بالعربي",
+          "description": "الوصف",
+          "descriptionPlaceholder": "اكتب وصف الكتاب",
+          "arabicDescription": "وصف الكتاب بالعربي",
+          "arabicDescriptionPlaceholder": "اكتب وصف الكتاب بالعربي",
+          "price": "السعر",
+          "pricePlaceholder": "اكتب سعر الكتاب",
+          "cover": "غلاف الكتاب",
+          "currentCoverAlt": "غلاف الكتاب الحالي",
+          "keepCurrentCover": "اترك الحقل فارغًا للاحتفاظ بالغلاف الحالي.",
+          "newCoverHint": "PNG أو JPG أو WEBP. الحد الأقصى للحجم: 5 ميجابايت.",
+          "pdf": "ملف الكتاب PDF",
+          "keepCurrentPdf": "اترك الحقل فارغًا للاحتفاظ بملف PDF الحالي.",
+          "newPdfHint": "ملف PDF فقط. الحد الأقصى للحجم: 20 ميجابايت.",
+          "cancel": "إلغاء التعديل",
+          "create": "إضافة الكتاب",
+          "update": "تحديث الكتاب",
+          "uploading": "جاري رفع الكتاب...",
+          "updating": "جاري تحديث الكتاب..."
+        },
+        "list": {
+          "title": "جميع الكتب",
+          "description": "إدارة الكتب التي تم رفعها.",
+          "emptyTitle": "لا توجد كتب",
+          "emptyDescription": "أضف أول كتاب للبدء.",
+          "noDescription": "لا يوجد وصف متاح.",
+          "active": "نشط",
+          "inactive": "غير نشط",
+          "patient": "مريض",
+          "patients": "مرضى",
+          "pdf": "PDF",
+          "edit": "تعديل",
+          "currency": "جنيه"
+        }
+      }
+    },
+    "sidebar": {
+      "brand": "مستخدم",
+      "patientWorkspace": "مساحة عمل ",
+      "items": {
+        "dashboard": "لوحة التحكم",
+        "doctorDashboard": "لوحة تحكم الطبيب",
+        "testResults": "نتائج الاختبارات",
+        "categories": "التصنيفات",
+        "tests": "الاختبارات",
+        "bookAccess": "صلاحيات الكتب",
+        "books": "الكتب",
+        "testAccess": "صلاحيات الاختبارات",
+        "appointments": "المواعيد",
+        "users": "المستخدمون",
+        "sessions": "الجلسات",
+        "bookAppointment": "حجز موعد",
+        "myAppointments": "مواعيدي",
+        "myBooks": "كتبي",
+        "psychologicalTests": "الاختبارات النفسية",
+        "myProfile": "ملفي الشخصي"
+      }
+    }
+  },
+
+  "assessment": {
+    "take": "إجراء التقييم",
+    "latest": "أحدث تقييم",
+    "unableToLoad": "تعذر تحميل أحدث تقييم لك.",
+    "noCompleted": "لا توجد تقييمات مكتملة",
+    "completeToSeeResult": "أكمل تقييمًا لعرض أحدث نتيجة لك هنا.",
+    "completed": "اكتمل التقييم",
+    "score": "الدرجة"
+  },
+
+  "role": {
+    "PATIENT": "مريض",
+    "DOCTOR": "طبيب"
+  },
+  "gender": {
+    "MALE": "ذكر",
+    "FEMALE": "أنثى"
+  },
+  "sessionStatus": {
+    "DRAFT": "مسودة",
+    "SCHEDULED": "مجدولة",
+    "COMPLETED": "مكتملة",
+    "CANCELLED": "ملغاة",
+    "NO_SHOW": "لم يحضر"
+  },
+  "testStatus": {
+    "NOT_STARTED": "لم يبدأ",
+    "IN_PROGRESS": "قيد التنفيذ",
+    "COMPLETED": "مكتمل"
+  },
+  "sessionType": {
+    "INITIAL": "أولية",
+    "FOLLOW_UP": "متابعة",
+    "INDIVIDUAL": "فردية",
+    "EMERGENCY": "طوارئ",
+    "OTHER": "أخرى"
+  },
+  "mood": {
+    "VERY_BAD": "سيئ جدًا",
+    "BAD": "سيئ",
+    "NEUTRAL": "محايد",
+    "GOOD": "جيد",
+    "VERY_GOOD": "جيد جدًا"
+  },
+  "fields": {
+    "firstName": "الاسم الأول",
+    "firstNameAr": "الاسم الأول بالعربية",
+    "lastName": "اسم العائلة",
+    "lastNameAr": "اسم العائلة بالعربية",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "address": "العنوان",
+    "addressAr": "العنوان بالعربية",
+    "gender": "النوع",
+    "password": "كلمة المرور",
+    "role": "الدور",
+    "approval": "الموافقة",
+    "date": "التاريخ",
+    "status": "الحالة",
+    "notes": "الملاحظات",
+    "notesAr": "الملاحظات بالعربية",
+    "sessionDate": "تاريخ الجلسة",
+    "duration": "المدة",
+    "sessionType": "نوع الجلسة",
+    "mood": "الحالة المزاجية",
+    "diagnosis": "التشخيص",
+    "diagnosisAr": "التشخيص بالعربية",
+    "publicNotes": "الملاحظات العامة",
+    "publicNotesAr": "الملاحظات العامة بالعربية",
+    "privateClinicalNotes": "الملاحظات السريرية الخاصة",
+    "privateClinicalNotesAr": "الملاحظات السريرية الخاصة بالعربية",
+    "shareNotes": "مشاركة الملاحظات",
+    "sendSummaryEmail": "إرسال ملخص عبر البريد الإلكتروني",
+    "fee": "الرسوم",
+    "title": "العنوان",
+    "titleAr": "العنوان بالعربية",
+    "description": "الوصف",
+    "descriptionAr": "الوصف بالعربية",
+    "price": "السعر",
+    "question": "السؤال",
+    "questionAr": "السؤال بالعربية",
+    "order": "الترتيب",
+    "points": "النقاط",
+    "result": "النتيجة",
+    "resultAr": "النتيجة بالعربية",
+    "score": "الدرجة",
+    "pageCount": "عدد الصفحات",
+    "fileUrl": "الملف",
+    "coverImage": "صورة الغلاف",
+    "isActive": "نشط"
+  },
+  "appointment": {
+    "book": "حجز موعد",
+    "upcoming": "الموعد القادم",
+    "unableToLoad": "تعذر تحميل مواعيدك.",
+    "noUpcoming": "لا توجد مواعيد قادمة",
+    "noScheduled": "ليس لديك أي مواعيد مجدولة.",
+    "psychology": "موعد مع الطبيب النفسي",
+    "clinic": "العيادة",
+    "duration": "{{duration}} دقيقة"
+  },
+  "appointmentStatus": {
+    "pending": "قيد الانتظار",
+    "confirmed": "مؤكد",
+    "cancelled": "ملغي",
+    "completed": "مكتمل"
+  },
+  "booking": {
+    "chooseDate": "1. اختر التاريخ",
+    "selectAvailableDate": "اختر أحد التواريخ المتاحة.",
+    "chooseTime": "2. اختر الوقت",
+    "selectDateFirst": "يرجى اختيار التاريخ أولًا.",
+    "loadingTimes": "جارٍ تحميل الأوقات المتاحة...",
+    "noAvailableAppointments": "لا توجد مواعيد متاحة لهذا التاريخ.",
+    "sessionTypeAndNotes": "3. نوع الجلسة والملاحظات",
+    "notesPlaceholder": "أي شيء تريد أن يعرفه الطبيب...",
+    "summary": "ملخص الحجز",
+    "noDateSelected": "لم يتم اختيار تاريخ",
+    "noTimeSelected": "لم يتم اختيار وقت",
+    "minutes": "دقيقة",
+    "onsiteClinic": "حضوري في العيادة",
+    "googleMeet": "Google Meet",
+    "freeCancellation": "يمكن إلغاء الموعد مجانًا حتى 24 ساعة قبل الجلسة.",
+    "booking": "جارٍ الحجز...",
+    "confirm": "تأكيد الحجز",
+    "selectDate": "يرجى اختيار التاريخ",
+    "selectTime": "يرجى اختيار وقت متاح",
+    "bookingSuccess": "تم حجز الموعد بنجاح."
+  },
+  "sessionType2": {
+    "onsite": "حضوري",
+    "onsiteDescription": "احضر الجلسة في العيادة.",
+    "online": "عن بُعد",
+    "onlineDescription": "احضر الجلسة عبر Google Meet."
+  },
+  "appointmentPage": {
+    "title": "حجز موعد",
+    "description": "اختر تاريخًا، وحدد موعدًا متاحًا، وأضف أي شيء تود أن يعرفه الطبيب."
+  },
+  "appointmentsPage": {
+    "title": "مواعيدي",
+    "description": "جميع المواعيد المحجوزة والتي حضرتها والتي تم إلغاؤها.",
+    "loading": "جاري تحميل المواعيد...",
+    "noAppointments": "لم يتم العثور على مواعيد."
+  },
+  "appointmentTabs": {
+    "upcoming": "القادمة ({{count}})",
+    "completed": "المكتملة ({{count}})",
+    "cancelled": "الملغاة ({{count}})"
+  },
+  "books": {
+    "title": "الكتب",
+    "description": "استكشف كتبنا واطلع على الموارد المتاحة لك.",
+    "noBooks": "لا توجد كتب متاحة",
+    "noBooksDescription": "لا توجد كتب متاحة في الوقت الحالي. يرجى التحقق مرة أخرى لاحقًا.",
+    "noDescription": "لا يوجد وصف متاح.",
+    "buy": "شراء الكتاب",
+    "currency": "جنيه مصري"
+  },
+  "myBooks": {
+    "title": "كتبي",
+    "description": "اقرأ الكتب التي قمت بشرائها.",
+    "emptyTitle": "ليس لديك أي كتب حتى الآن",
+    "emptyDescription": "ستظهر الكتب التي تشتريها هنا.",
+    "noDescription": "لا يوجد وصف متاح.",
+    "purchased": "تم الشراء",
+    "readBook": "قراءة الكتاب"
+  },
+  "tests": {
+    "title": "الاختبارات النفسية",
+    "description": "تقييمات قصيرة ومعتمدة. تصل نتائجك مباشرة إلى طبيبك النفسي.",
+    "viewResults": "عرض النتائج",
+    "all": "الكل",
+    "noTests": "لم يتم العثور على اختبارات نفسية.",
+    "loadFailed": "فشل تحميل الاختبارات النفسية.",
+    "questions": "أسئلة",
+    "startTest": "بدء الاختبار",
+    "buyNow": "شراء الآن",
+    "noDescription": "لا يوجد وصف متاح.",
+    "uncategorized": "غير مصنف",
+    "buyMessage": "مرحبًا، أريد شراء الاختبار النفسي"
+  },
+  "profile": {
+    "title": "ملفي الشخصي",
+    "description": "حافظ على تحديث بياناتك حتى تتمكن العيادة من التواصل معك.",
+    "saving": "جاري الحفظ...",
+    "saveChanges": "حفظ التغييرات",
+    "somethingWentWrong": "حدث خطأ ما",
+    "patient": "مريض",
+    "yourName": "اسمك",
+    "personalInformation": "المعلومات الشخصية",
+    "firstName": "الاسم الأول",
+    "lastName": "اسم العائلة",
+    "email": "البريد الإلكتروني",
+    "phone": "رقم الهاتف",
+    "gender": "النوع",
+    "selectGender": "اختر النوع",
+    "male": "ذكر",
+    "female": "أنثى",
+    "address": "العنوان",
+    "invalidProfileData": "بيانات الملف الشخصي غير صالحة",
+    "unauthorized": "غير مصرح لك",
+    "userNotFound": "المستخدم غير موجود",
+    "emailInUse": "البريد الإلكتروني مستخدم بالفعل",
+    "phoneInUse": "رقم الهاتف مستخدم بالفعل",
+    "updatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+    "failedToUpdate": "فشل تحديث الملف الشخصي",
+    "edit": "تعديل الملف الشخصي"
+  },
+  "dashboard2": {
+    "doctor": {
+      "version2": {
+        "welcome": {
+          "day": "الثلاثاء • 28 يوليو 2026",
+          "greeting": "صباح الخير، د. {name}",
+          "description": "لديك ست جلسات هذا الأسبوع، وتقييمان في انتظار المراجعة، ومريض واحد يحتاج إلى متابعة السلامة الأسبوعية.",
+          "newSession": "جلسة جديدة"
+        },
+        "stats": {
+          "patients": "المرضى",
+          "patientsSubtitle": "إجمالي المرضى المسجلين",
+          "sessions": "الجلسات",
+          "sessionsSubtitle": "إجمالي جلسات العيادة",
+          "tests": "الاختبارات",
+          "testsSubtitle": "إجمالي الاختبارات النفسية"
+        },
+        "appointments": {
+          "title": "المواعيد القادمة",
+          "empty": "لا توجد مواعيد قادمة"
+        },
+        "sessions": {
+          "title": "الجلسات الأخيرة",
+          "empty": "لا توجد جلسات حديثة",
+          "noDiagnosis": "لا يوجد تشخيص",
+          "minutes": "دقيقة",
+          "veryBad": "سيئ جدًا",
+          "bad": "سيئ",
+          "neutral": "محايد",
+          "good": "جيد",
+          "veryGood": "جيد جدًا"
+        }
+      }
+    }
+  },
+  "testCategories": {
+    "version2": {
+      "header": {
+        "eyebrow": "التقييمات",
+        "title": "فئات الاختبارات",
+        "description": "نظّم الاختبارات النفسية إلى فئات لتسهيل إدارتها وسير عمل تقييم المرضى."
+      },
+      "create": {
+        "button": "إنشاء فئة",
+        "title": "إنشاء فئة جديدة"
+      },
+      "update": {
+        "title": "تعديل الفئة"
+      },
+      "form": {
+        "name": "الاسم",
+        "namePlaceholder": "مثال: القلق والهلع",
+        "nameAr": "الاسم بالعربي",
+        "nameArPlaceholder": "مثال: القلق والهلع",
+        "description": "الوصف (اختياري)",
+        "descriptionPlaceholder": "ما الذي يندرج تحت هذه الفئة...",
+        "descriptionAr": "الوصف بالعربي (اختياري)",
+        "descriptionArPlaceholder": "ما الذي يندرج تحت هذه الفئة...",
+        "cancel": "إلغاء",
+        "creating": "جارٍ الإنشاء...",
+        "saving": "جارٍ الحفظ...",
+        "createCategory": "إنشاء فئة",
+        "saveChanges": "حفظ التغييرات",
+        "categoryIdRequired": "معرّف الفئة مطلوب"
+      },
+      "categories": {
+        "tests": "اختبارات",
+        "noDescription": "لا يوجد وصف",
+        "emptyTitle": "لا توجد فئات بعد",
+        "emptyDescription": "أنشئ أول فئة للاختبارات النفسية لتنظيم التقييمات الخاصة بك.",
+        "createCategory": "إنشاء فئة",
+        "failed": "فشل في جلب الفئات"
+      },
+      "actions": {
+        "edit": "تعديل",
+        "delete": "حذف",
+        "deleting": "جارٍ الحذف...",
+        "deleteFailed": "فشل في حذف الفئة",
+        "somethingWentWrong": "حدث خطأ ما"
+      }
+    }
+  },
+  "tests2": {
+    "version2": {
+      "header": {
+        "eyebrow": "التقييمات",
+        "title": "الاختبارات النفسية",
+        "description": "إدارة التقييمات السريرية والأسئلة والدرجات وبيانات إكمال المرضى للاختبارات.",
+        "createTest": "إنشاء اختبار"
+      },
+      "toolbar": {
+        "searchPlaceholder": "البحث عن الاختبارات...",
+        "allStatuses": "كل الحالات",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "allCategories": "كل الفئات",
+        "categories": "الفئات"
+      },
+      "form": {
+        "createTitle": "إنشاء اختبار",
+        "editTitle": "تعديل الاختبار",
+        "createDescription": "قم بإعداد تفاصيل الاختبار قبل إضافة الأسئلة.",
+        "editDescription": "تحديث تفاصيل هذا الاختبار النفسي.",
+        "title": "العنوان",
+        "titlePlaceholder": "مثال: مقياس القلق العام GAD-7",
+        "titleAr": "العنوان بالعربي",
+        "titleArPlaceholder": "مثال: مقياس القلق العام",
+        "description": "الوصف",
+        "descriptionPlaceholder": "ما الذي يقيسه هذا الاختبار...",
+        "descriptionAr": "الوصف بالعربي",
+        "descriptionArPlaceholder": "ما الذي يقيسه هذا الاختبار...",
+        "category": "الفئة",
+        "selectCategory": "اختر الفئة",
+        "price": "السعر",
+        "pricePlaceholder": "مثال: 150",
+        "currency": "جنيه",
+        "scoreRanges": "نطاقات الدرجات",
+        "scoreRangesDescription": "حدد النتيجة لكل نطاق من الدرجات.",
+        "addRange": "إضافة نطاق",
+        "minScore": "الحد الأدنى",
+        "maxScore": "الحد الأقصى",
+        "result": "النتيجة",
+        "resultPlaceholder": "مثال: قلق بسيط",
+        "resultAr": "النتيجة بالعربي",
+        "resultArPlaceholder": "مثال: قلق بسيط",
+        "remove": "حذف",
+        "active": "نشط",
+        "activeDescription": "متاح لتعيينه للمرضى",
+        "cancel": "إلغاء",
+        "creating": "جاري الإنشاء...",
+        "saving": "جاري الحفظ...",
+        "createTest": "إنشاء اختبار",
+        "saveChanges": "حفظ التغييرات",
+        "close": "إغلاق",
+        "testIdRequired": "معرّف الاختبار مطلوب",
+        "noChanges": "لم يتم إجراء أي تغييرات"
+      },
+      "table": {
+        "test": "الاختبار",
+        "category": "الفئة",
+        "questions": "الأسئلة",
+        "duration": "المدة",
+        "status": "الحالة",
+        "completions": "الإكمالات",
+        "actions": "الإجراءات",
+        "updated": "آخر تحديث",
+        "uncategorized": "بدون فئة",
+        "loading": "جاري تحميل الاختبارات...",
+        "empty": "لم يتم العثور على اختبارات."
+      },
+      "actions": {
+        "edit": "تعديل",
+        "delete": "حذف",
+        "deleting": "جاري الحذف...",
+        "deleteFailed": "فشل حذف الاختبار.",
+        "somethingWentWrong": "حدث خطأ ما."
+      },
+      "editDialog": {
+        "title": "تعديل الاختبار",
+        "loading": "جاري تحميل الاختبار..."
+      },
+      "questions": {
+        "title": "منشئ الأسئلة",
+        "description": "أضف الأسئلة والخيارات بالعربية والإنجليزية.",
+        "addQuestion": "إضافة سؤال",
+        "adding": "جاري الإضافة...",
+        "selectTest": "اختر اختبارًا لإدارة أسئلته.",
+        "loading": "جاري تحميل الأسئلة...",
+        "empty": "لا توجد أسئلة حتى الآن.",
+        "failedToLoad": "فشل تحميل الأسئلة.",
+        "failedToCreate": "فشل إنشاء السؤال."
+      },
+      "question": {
+        "english": "السؤال بالإنجليزية",
+        "arabic": "السؤال بالعربية",
+        "englishPlaceholder": "اكتب السؤال بالإنجليزية",
+        "arabicPlaceholder": "اكتب السؤال بالعربي",
+        "addOption": "إضافة خيار",
+        "adding": "جاري الإضافة...",
+        "saveChanges": "حفظ التغييرات",
+        "saving": "جاري الحفظ...",
+        "duplicate": "تكرار",
+        "duplicating": "جاري التكرار...",
+        "delete": "حذف",
+        "deleting": "جاري الحذف...",
+        "optionAdded": "تمت إضافة الخيار",
+        "optionFailed": "فشل إضافة الخيار.",
+        "questionDuplicated": "تم تكرار السؤال",
+        "duplicateFailed": "فشل تكرار السؤال.",
+        "questionDeleted": "تم حذف السؤال",
+        "deleteFailed": "فشل حذف السؤال.",
+        "saveFailed": "فشل حفظ السؤال."
+      }
+    }
+  },
+  "bookAccess": {
+    "title": "صلاحيات الكتب",
+    "description": "إدارة صلاحية الوصول إلى الكتب بشكل فردي للمرضى.",
+    "grantBookAccess": "منح صلاحية الوصول إلى الكتاب",
+    "selectPatientAndBook": "اختر مريضًا وكتابًا قام بشرائه.",
+    "patient": "المريض",
+    "selectPatient": "اختر مريضًا",
+    "noPatientsFound": "لم يتم العثور على مرضى",
+    "book": "الكتاب",
+    "selectPatientFirst": "اختر مريضًا أولًا",
+    "loadingBooks": "جاري تحميل الكتب...",
+    "selectBook": "اختر كتابًا",
+    "noAvailableBooks": "لا توجد كتب متاحة لهذا المريض",
+    "readyToGrantAccess": "جاهز لمنح الصلاحية",
+    "willGetAccessTo": "سيحصل {{patient}} على صلاحية الوصول إلى {{book}}.",
+    "noBooksAvailable": "لا توجد كتب متاحة",
+    "allBooksAccess": "هذا المريض لديه بالفعل صلاحية الوصول إلى جميع الكتب النشطة.",
+    "grantingAccess": "جاري منح الصلاحية...",
+    "pleaseSelectPatient": "يرجى اختيار مريض.",
+    "pleaseSelectBook": "يرجى اختيار كتاب.",
+    "accessGranted": "تم منح صلاحية الوصول إلى الكتاب بنجاح.",
+    "failedToLoad": "فشل تحميل بيانات صلاحيات الكتب."
+  },
+  "books2": {
+    "title": "الكتب",
+    "description": "إدارة الكتب وإمكانية وصول المرضى إليها.",
+    "createBook": "إنشاء كتاب",
+    "editBook": "تعديل الكتاب",
+    "allBooks": "جميع الكتب",
+    "manageUploadedBooks": "إدارة الكتب التي تم رفعها.",
+    "noBooks": "لا توجد كتب",
+    "createFirstBook": "أنشئ أول كتاب للبدء.",
+    "bookTitle": "اسم الكتاب",
+    "bookTitleEnglish": "اسم الكتاب بالإنجليزية",
+    "bookTitleArabic": "اسم الكتاب بالعربي",
+    "enterBookTitle": "اكتب اسم الكتاب بالإنجليزية",
+    "enterBookTitleArabic": "اكتب اسم الكتاب بالعربي",
+    "descriptionLabel": "الوصف",
+    "descriptionEnglish": "وصف الكتاب بالإنجليزية",
+    "descriptionArabic": "وصف الكتاب بالعربي",
+    "enterDescription": "اكتب وصف الكتاب بالإنجليزية",
+    "enterDescriptionArabic": "اكتب وصف الكتاب بالعربي",
+    "price": "السعر",
+    "enterPrice": "أدخل سعر الكتاب",
+    "bookCover": "غلاف الكتاب",
+    "bookPdf": "ملف الكتاب PDF",
+    "leaveEmptyCover": "اتركه فارغًا للاحتفاظ بالغلاف الحالي.",
+    "leaveEmptyPdf": "اتركه فارغًا للاحتفاظ بملف PDF الحالي.",
+    "coverRequirements": "PNG أو JPG أو WEBP. الحد الأقصى للحجم: 5 ميجابايت.",
+    "pdfRequirements": "PDF فقط. الحد الأقصى للحجم: 20 ميجابايت.",
+    "cancelEdit": "إلغاء التعديل",
+    "updateBook": "تحديث الكتاب",
+    "uploadingBook": "جاري رفع الكتاب...",
+    "updatingBook": "جاري تحديث الكتاب...",
+    "active": "نشط",
+    "inactive": "غير نشط",
+    "patient": "مريض",
+    "patients": "مرضى",
+    "pdf": "PDF",
+    "edit": "تعديل",
+    "noDescription": "لا يوجد وصف متاح.",
+    "bookTitleRequired": "اسم الكتاب مطلوب.",
+    "arabicBookTitleRequired": "اسم الكتاب بالعربي مطلوب.",
+    "validPriceRequired": "يرجى إدخال سعر صحيح.",
+    "pdfRequired": "ملف PDF للكتاب مطلوب.",
+    "onlyPdfAllowed": "يسمح بملفات PDF فقط.",
+    "pdfMaxSize": "الحد الأقصى لحجم ملف PDF هو 20 ميجابايت.",
+    "coverRequired": "غلاف الكتاب مطلوب.",
+    "invalidCoverType": "يجب أن يكون الغلاف بصيغة JPG أو PNG أو WEBP.",
+    "coverMaxSize": "الحد الأقصى لحجم صورة الغلاف هو 5 ميجابايت.",
+    "bookIdRequired": "معرف الكتاب مطلوب.",
+    "bookNotFound": "الكتاب غير موجود.",
+    "createdSuccessfully": "تم إنشاء الكتاب بنجاح.",
+    "updatedSuccessfully": "تم تحديث الكتاب بنجاح.",
+    "createFailed": "فشل إنشاء الكتاب.",
+    "updateFailed": "فشل تحديث الكتاب.",
+    "fetchFailed": "فشل جلب الكتب."
+  },
+  "testAccess": {
+    "header": {
+      "title": "صلاحية الاختبارات",
+      "description": "إدارة صلاحية الوصول إلى الاختبارات النفسية الفردية للمرضى."
+    },
+    "card": {
+      "title": "منح صلاحية اختبار",
+      "description": "اختر المريض والاختبار المحدد الذي قام بشرائه."
+    },
+    "patient": {
+      "label": "المريض",
+      "placeholder": "اختر مريضًا",
+      "noPatients": "لم يتم العثور على مرضى"
+    },
+    "test": {
+      "label": "الاختبار",
+      "placeholder": "اختر اختبارًا",
+      "selectPatientFirst": "اختر مريضًا أولًا",
+      "loading": "جارٍ تحميل الاختبارات...",
+      "noTests": "لا توجد اختبارات متاحة لهذا المريض",
+      "allTestsGranted": "هذا المريض لديه بالفعل صلاحية الوصول إلى جميع الاختبارات النشطة."
+    },
+    "summary": {
+      "title": "جاهز لمنح الصلاحية",
+      "description": "سيحصل على صلاحية الوصول إلى"
+    },
+    "actions": {
+      "grant": "منح صلاحية الاختبار",
+      "granting": "جارٍ منح الصلاحية..."
+    },
+    "validation": {
+      "selectPatient": "يرجى اختيار مريض.",
+      "selectTest": "يرجى اختيار اختبار."
+    },
+    "server": {
+      "unauthorized": "غير مصرح لك.",
+      "unauthorizedAction": "ليس لديك صلاحية لتنفيذ هذا الإجراء.",
+      "userRequired": "المستخدم مطلوب.",
+      "userAndTestRequired": "المستخدم والاختبار مطلوبان.",
+      "userNotFound": "لم يتم العثور على المستخدم.",
+      "onlyPatients": "يمكن منح صلاحية الاختبار للمرضى فقط.",
+      "testNotFound": "لم يتم العثور على الاختبار.",
+      "testInactive": "هذا الاختبار غير نشط.",
+      "loadPatientsFailed": "فشل تحميل المرضى.",
+      "loadTestsFailed": "فشل تحميل الاختبارات المتاحة.",
+      "accessGranted": "تم منح صلاحية الوصول إلى {{title}} بنجاح.",
+      "genericError": "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "common": {
+    "edit": "تعديل",
+    "reset": "إعادة تعيين"
+  },
+  "availability": {
+    "header": {
+      "eyebrow": "جدولة المواعيد",
+      "title": "إنشاء موعد",
+      "description": "أضف الأوقات المتاحة ليتمكن المرضى من حجزها.",
+      "calendar": "عرض التقويم الخاص بي",
+      "recurring": "إضافة مواعيد متكررة",
+      "newAvailability": "توافر جديد",
+      "reset": "إعادة تعيين"
+    },
+    "date": {
+      "title": "1. اختر التاريخ",
+      "description": "اختر اليوم الذي تريد إعداد مواعيده.",
+      "selected": "التاريخ المحدد"
+    },
+    "workingHours": {
+      "title": "3. تحديد ساعات العمل لهذا اليوم",
+      "description": "يمكن أن تختلف ساعات العمل من يوم لآخر.",
+      "start": "وقت البدء",
+      "end": "وقت الانتهاء",
+      "generated": "سيتم إنشاء المواعيد تلقائيًا بين {{start}} و{{end}}."
+    },
+    "duration": {
+      "title": "4. مدة الجلسة",
+      "description": "اختر مدة كل موعد.",
+      "label": "المدة",
+      "minutes": "{{value}} دقيقة"
+    },
+    "slots": {
+      "title": "5. المواعيد المتاحة",
+      "description": "إدارة الأوقات المتاحة لهذا اليوم.",
+      "selected": "تم اختيار {{count}}",
+      "empty": {
+        "title": "لا توجد مواعيد متاحة",
+        "description": "قم بتعديل ساعات العمل أو مدة الجلسة."
+      },
+      "status": {
+        "available": "متاح",
+        "booked": "محجوز",
+        "disabled": "غير متاح"
+      }
+    },
+    "summary": {
+      "title": "ملخص التوافر",
+      "workingHours": "ساعات العمل",
+      "duration": "مدة الجلسة",
+      "slots": "المواعيد المتاحة"
+    },
+    "list": {
+      "empty": {
+        "title": "لا يوجد توافر حتى الآن",
+        "description": "أنشئ أول فترة توافر لك."
+      }
+    },
+    "actions": {
+      "selectAll": "تحديد الكل",
+      "clear": "مسح",
+      "saving": "جارٍ الحفظ...",
+      "save": "حفظ التوافر",
+      "update": "تحديث التوافر"
+    },
+    "messages": {
+      "checkingBookedAppointments": "جارٍ التحقق من المواعيد المحجوزة..."
+    },
+    "loading": {
+      "bookedAppointments": "جارٍ التحقق من المواعيد المحجوزة..."
+    },
+    "units": {
+      "minutes": "دقيقة",
+      "slots": "مواعيد"
+    },
+    "success": {
+      "created": "تم إنشاء التوافر بنجاح",
+      "updated": "تم تحديث التوافر بنجاح"
+    },
+    "errors": {
+      "unauthorized": "غير مصرح لك",
+      "doctorOnlyCreate": "الأطباء فقط يمكنهم إنشاء التوافر",
+      "doctorOnlyUpdate": "الأطباء فقط يمكنهم تحديث التوافر",
+      "doctorOnlyView": "الأطباء فقط يمكنهم عرض التوافر",
+      "invalidData": "بيانات غير صالحة",
+      "notFound": "التوافر غير موجود",
+      "alreadyExists": "يوجد توافر بالفعل لهذا التاريخ",
+      "invalidWorkingHours": "ساعات العمل غير صالحة",
+      "endBeforeStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء",
+      "durationTooLong": "لا يمكن أن تكون المدة أطول من ساعات العمل",
+      "duplicateSlots": "لا يُسمح بتكرار المواعيد",
+      "invalidSlot": "موعد غير صالح",
+      "slotOutsideHours": "يوجد موعد أو أكثر خارج ساعات العمل",
+      "slotDurationMismatch": "يوجد موعد أو أكثر لا يتوافق مع المدة المحددة",
+      "slotExceedsHours": "يوجد موعد أو أكثر يتجاوز ساعات العمل",
+      "removeBookedSlot": "لا يمكنك إزالة موعد محجوز",
+      "bookedSlot": "هذا الموعد يحتوي بالفعل على حجز",
+      "noAvailabilitySelected": "لم يتم تحديد توافر للتحديث",
+      "completeInformation": "يرجى إكمال بيانات التوافر",
+      "selectSlot": "يرجى اختيار موعد متاح واحد على الأقل",
+      "saveFailed": "حدث خطأ أثناء حفظ التوافر",
+      "createFailed": "حدث خطأ أثناء إنشاء التوافر",
+      "updateFailed": "حدث خطأ أثناء تحديث التوافر",
+      "loadFailed": "فشل في جلب التوافر",
+      "bookedSlotsFailed": "حدث خطأ أثناء تحميل المواعيد المحجوزة"
+    },
+    "server": {
+      "unauthorized": "غير مصرح لك.",
+      "onlyDoctorsCreate": "الأطباء فقط يمكنهم إنشاء التوافر.",
+      "onlyDoctorsUpdate": "الأطباء فقط يمكنهم تحديث التوافر.",
+      "onlyDoctorsView": "الأطباء فقط يمكنهم عرض التوافر.",
+      "invalidData": "بيانات غير صالحة.",
+      "dateRequired": "التاريخ مطلوب.",
+      "startTimeRequired": "وقت البدء مطلوب.",
+      "endTimeRequired": "وقت الانتهاء مطلوب.",
+      "invalidStartTime": "وقت البدء غير صالح.",
+      "invalidEndTime": "وقت الانتهاء غير صالح.",
+      "durationRequired": "المدة غير صالحة.",
+      "slotsRequired": "يرجى اختيار موعد واحد على الأقل.",
+      "endAfterStart": "يجب أن يكون وقت الانتهاء بعد وقت البدء.",
+      "durationTooLong": "لا يمكن أن تكون المدة أطول من ساعات العمل.",
+      "duplicateSlots": "لا يُسمح بتكرار المواعيد.",
+      "slotOutsideHours": "الموعد {{slot}} خارج ساعات العمل.",
+      "slotDurationMismatch": "الموعد {{slot}} لا يتوافق مع المدة المحددة.",
+      "slotExceedsHours": "الموعد {{slot}} يتجاوز ساعات العمل.",
+      "availabilityExists": "يوجد توافر بالفعل لهذا التاريخ.",
+      "created": "تم إنشاء التوافر بنجاح.",
+      "notFound": "التوافر غير موجود.",
+      "invalidWorkingHours": "ساعات العمل غير صالحة.",
+      "invalidSlot": "الموعد غير صالح: {{slot}}.",
+      "cannotRemoveBooked": "لا يمكنك إزالة موعد محجوز.",
+      "updated": "تم تحديث التوافر بنجاح.",
+      "createFailed": "حدث خطأ أثناء إنشاء التوافر.",
+      "updateFailed": "حدث خطأ أثناء تحديث التوافر.",
+      "fetchFailed": "فشل في جلب التوافر.",
+      "bookedSlotsFailed": "حدث خطأ أثناء تحميل المواعيد المحجوزة."
+    }
+  },
+  "appointments": {
+    "header": {
+      "eyebrow": "جدولة المواعيد",
+      "title": "إنشاء موعد",
+      "description": "أضف الأوقات المتاحة ليتمكن المرضى من حجزها."
+    },
+    "workingHours": {
+      "title": "3. تحديد ساعات العمل لهذا اليوم",
+      "description": "يمكن أن تختلف ساعات العمل لكل يوم محدد.",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية",
+      "timeSlotsInfo": "سيتم إنشاء المواعيد تلقائيًا بين {{startTime}} و{{endTime}}."
+    },
+    "sessionDuration": {
+      "title": "4. مدة الجلسة",
+      "description": "اختر مدة كل موعد.",
+      "duration": "المدة",
+      "minutes": "دقيقة"
+    },
+    "availableTimeSlots": {
+      "title": "5. المواعيد المتاحة",
+      "description": "إدارة الأوقات المتاحة لهذا اليوم.",
+      "selected": "محدد",
+      "available": "متاح",
+      "booked": "محجوز",
+      "disabled": "غير متاح",
+      "noTimeSlots": "لا توجد مواعيد متاحة",
+      "adjustWorkingHours": "قم بتعديل ساعات العمل أو مدة الجلسة."
+    },
+    "availabilitySummary": {
+      "title": "ملخص التوفر",
+      "workingHours": "ساعات العمل",
+      "sessionDuration": "مدة الجلسة",
+      "availableSlots": "المواعيد المتاحة"
+    },
+    "availabilityList": {
+      "noAvailability": "لا يوجد توفر حتى الآن",
+      "createFirst": "أنشئ أول جدول للتوفر."
+    },
+    "actions": {
+      "edit": "تعديل",
+      "newAvailability": "توافر جديد",
+      "reset": "إعادة تعيين",
+      "selectAll": "تحديد الكل",
+      "clear": "مسح",
+      "saving": "جاري الحفظ...",
+      "updateAvailability": "تحديث التوافر",
+      "saveAvailability": "حفظ التوافر"
+    },
+    "server": {
+      "unauthorized": "غير مصرح لك",
+      "onlyDoctorsCreate": "الأطباء فقط يمكنهم إنشاء التوفر",
+      "onlyDoctorsUpdate": "الأطباء فقط يمكنهم تعديل التوفر",
+      "onlyDoctorsView": "الأطباء فقط يمكنهم عرض التوفر",
+      "invalidData": "البيانات غير صالحة",
+      "endTimeAfterStart": "يجب أن يكون وقت النهاية بعد وقت البداية",
+      "durationTooLong": "لا يمكن أن تكون مدة الجلسة أطول من ساعات العمل",
+      "duplicateSlots": "لا يُسمح بتكرار المواعيد",
+      "slotOutsideHours": "الموعد {{slot}} خارج ساعات العمل",
+      "slotDurationMismatch": "الموعد {{slot}} لا يتوافق مع مدة الجلسة المحددة",
+      "slotExceedsHours": "الموعد {{slot}} يتجاوز ساعات العمل",
+      "availabilityExists": "يوجد توفر بالفعل لهذا التاريخ",
+      "createdSuccessfully": "تم إنشاء التوفر بنجاح",
+      "createError": "حدث خطأ أثناء إنشاء التوفر",
+      "availabilityNotFound": "لم يتم العثور على التوفر",
+      "invalidWorkingHours": "ساعات العمل غير صالحة",
+      "invalidSlot": "الموعد غير صالح: {{slot}}",
+      "cannotRemoveBookedSlot": "لا يمكنك حذف موعد محجوز",
+      "updatedSuccessfully": "تم تحديث التوفر بنجاح",
+      "updateError": "حدث خطأ أثناء تحديث التوفر",
+      "fetchError": "فشل تحميل التوفر",
+      "bookedSlotsError": "حدث خطأ أثناء تحميل المواعيد المحجوزة"
+    },
+    "messages": {
+      "checkingBookedAppointments": "جاري التحقق من المواعيد المحجوزة...",
+      "noAvailabilitySelected": "لم يتم تحديد توافر للتحديث",
+      "completeAvailability": "يرجى إكمال بيانات التوافر",
+      "selectAtLeastOneSlot": "يرجى تحديد وقت متاح واحد على الأقل",
+      "cannotRemoveBookedSlot": "لا يمكنك إزالة وقت محجوز بالفعل",
+      "saveError": "حدث خطأ أثناء حفظ التوافر",
+      "savedSuccessfully": "تم حفظ التوافر بنجاح"
+    },
+    "page": {
+      "header": {
+        "eyebrow": "المواعيد",
+        "title": "جميع المواعيد",
+        "description": "راجع طلبات المواعيد، وأكد الحجوزات، وأعد جدولة المواعيد أو قم بإلغائها عند الحاجة.",
+        "createAppointment": "إنشاء موعد"
+      },
+      "stats": {
+        "total": "الإجمالي",
+        "pending": "قيد الانتظار",
+        "confirmed": "مؤكد",
+        "cancelled": "ملغي"
+      },
+      "toolbar": {
+        "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف أو المعرف...",
+        "filterStatus": "تصفية حسب الحالة",
+        "allStatuses": "جميع الحالات",
+        "pending": "قيد الانتظار",
+        "confirmed": "مؤكد",
+        "cancelled": "ملغي",
+        "completed": "مكتمل"
+      },
+      "table": {
+        "loading": "جاري تحميل المواعيد...",
+        "showing": "عرض",
+        "of": "من",
+        "appointments": "مواعيد",
+        "patient": "المريض",
+        "dateTime": "التاريخ والوقت",
+        "appointment": "الموعد",
+        "noAppointmentsFound": "لم يتم العثور على مواعيد",
+        "changeSearchOrFilters": "حاول تغيير البحث أو عوامل التصفية."
+      },
+      "actions": {
+        "confirm": "تأكيد",
+        "reschedule": "إعادة الجدولة",
+        "cancelAppointment": "إلغاء الموعد"
+      },
+      "messages": {
+        "failedToLoad": "فشل تحميل المواعيد",
+        "appointmentConfirmed": "تم تأكيد الموعد",
+        "appointmentCancelled": "تم إلغاء الموعد",
+        "confirmationDescription": "تم تأكيد موعد {{patientName}}.",
+        "cancellationDescription": "تم إلغاء موعد {{patientName}}.",
+        "failedToUpdateStatus": "فشل تحديث حالة الموعد",
+        "appointmentRescheduled": "تمت إعادة جدولة الموعد",
+        "rescheduleDescription": "تم نقل موعد {{patientName}}."
+      }
+    }
+  },
+  "users": {
+    "page": {
+      "header": {
+        "title": "المستخدمون",
+        "description": "إدارة المرضى والأطباء",
+        "totalUsers": "إجمالي المستخدمين"
+      },
+      "toolbar": {
+        "searchPlaceholder": "البحث بالاسم أو البريد الإلكتروني أو الهاتف...",
+        "allRoles": "جميع الأدوار",
+        "patients": "المرضى",
+        "doctors": "الأطباء",
+        "allStatuses": "جميع الحالات",
+        "approved": "معتمد",
+        "pending": "قيد الانتظار"
+      },
+      "table": {
+        "user": "المستخدم",
+        "contact": "بيانات الاتصال",
+        "address": "العنوان",
+        "role": "الدور",
+        "status": "الحالة",
+        "joined": "تاريخ الانضمام",
+        "actions": "الإجراءات"
+      },
+      "empty": {
+        "title": "لم يتم العثور على مستخدمين",
+        "description": "حاول تغيير البحث أو الفلاتر."
+      },
+      "user": {
+        "male": "ذكر",
+        "female": "أنثى",
+        "genderNotSpecified": "النوع غير محدد",
+        "noAddress": "لا يوجد عنوان",
+        "joined": "انضم في"
+      },
+      "status": {
+        "approved": "معتمد",
+        "pending": "قيد الانتظار"
+      },
+      "actions": {
+        "approve": "اعتماد",
+        "unapprove": "إلغاء الاعتماد",
+        "delete": "حذف",
+        "deleteUser": "حذف المستخدم؟",
+        "deleteDescription": "لا يمكن التراجع عن هذا الإجراء. قد يتم أيضًا حذف جميع البيانات المرتبطة بهذا المستخدم.",
+        "cancel": "إلغاء",
+        "deleting": "جارٍ الحذف..."
+      }
+    }
+  },
+  "sessions": {
+    "page": {
+      "addSession": "جلسة جديدة",
+      "header": {
+        "label": "الجلسات",
+        "title": "الجلسات",
+        "description": "إدارة الجلسات العلاجية والملاحظات والمرفقات وحالة الجلسات."
+      },
+      "toolbar": {
+        "searchPlaceholder": "البحث في الجلسات...",
+        "status": "الحالة",
+        "allStatuses": "جميع الحالات",
+        "completed": "مكتملة",
+        "scheduled": "مجدولة",
+        "draft": "مسودة",
+        "cancelled": "ملغاة",
+        "noShow": "لم يحضر",
+        "type": "النوع",
+        "allTypes": "جميع الأنواع",
+        "initialSession": "جلسة أولى",
+        "followUp": "جلسة متابعة",
+        "individual": "فردية",
+        "emergency": "طوارئ",
+        "other": "أخرى"
+      },
+      "table": {
+        "patient": "المريض",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "duration": "المدة",
+        "mood": "الحالة المزاجية",
+        "sessionType": "نوع الجلسة",
+        "actions": "الإجراءات",
+        "loading": "جاري تحميل الجلسات...",
+        "noSessions": "لم يتم العثور على جلسات.",
+        "minutes": "دقيقة"
+      },
+      "actions": {
+        "edit": "تعديل",
+        "delete": "حذف",
+        "deleteSuccess": "تم حذف الجلسة بنجاح.",
+        "deleteFailed": "فشل حذف الجلسة."
+      }
+    }
+  },
+  "dashboard3": {
+    "admin": {
+      "sessions": {
+        "newSession": {
+          "label": "الجلسات",
+          "title": "إنشاء جلسة",
+          "description": "أدخل بيانات الموعد والملاحظات والمرفقات. تظل المسودات خاصة حتى تقوم بنشرها.",
+          "backToSessions": "العودة إلى الجلسات"
+        },
+        "editSession": {
+          "label": "الجلسات",
+          "title": "تعديل الجلسة",
+          "description": "قم بتحديث تفاصيل الموعد والملاحظات والمرفقات. سيتم حفظ التغييرات على هذه الجلسة.",
+          "backToSessions": "العودة إلى الجلسات"
+        },
+        "publishing": {
+          "publishing": "النشر",
+          "saving": "جاري الحفظ...",
+          "saveSession": "حفظ الجلسة",
+          "cancel": "إلغاء"
+        },
+        "details": {
+          "title": "تفاصيل الجلسة",
+          "description": "المعلومات الأساسية حول جلسة العلاج هذه.",
+          "patient": "المريض",
+          "choosePatient": "اختر المريض",
+          "appointment": "الموعد",
+          "chooseAppointment": "اختر الموعد",
+          "selectPatientFirst": "اختر المريض أولاً",
+          "noAppointment": "لا يوجد موعد",
+          "walkIn": "بدون موعد",
+          "sessionType": "نوع الجلسة",
+          "selectType": "اختر النوع",
+          "date": "التاريخ",
+          "time": "الوقت",
+          "duration": "المدة",
+          "selectDuration": "اختر المدة",
+          "diagnosisEnglish": "التشخيص - الإنجليزية",
+          "diagnosisArabic": "التشخيص - العربية",
+          "mood": {
+            "title": "الحالة المزاجية للمريض",
+            "veryGood": "جيد جدًا",
+            "good": "جيد",
+            "neutral": "محايد",
+            "bad": "سيئ",
+            "veryBad": "سيئ جدًا"
+          }
+        },
+        "attachments": {
+          "title": "المرفقات",
+          "description": "قم برفع المستندات أو ملفات PDF أو الصور أو الملاحظات الصوتية لهذه الجلسة.",
+          "processing": "جاري المعالجة...",
+          "dragDrop": "اسحب الملفات وأفلتها هنا",
+          "fileTypes": "PNG، JPG، PDF، DOCX بحجم يصل إلى 10 ميجابايت",
+          "browseFiles": "تصفح الملفات",
+          "download": "تحميل المرفق",
+          "delete": "حذف المرفق",
+          "attachmentNotSaved": "لم يتم حفظ المرفق بعد",
+          "uploadSuccess": "تم رفع الملف بنجاح",
+          "uploadError": "فشل رفع الملف",
+          "deleteSuccess": "تم حذف المرفق بنجاح",
+          "deleteError": "فشل حذف المرفق",
+          "downloadError": "فشل تحميل المرفق"
+        }
+      }
+    }
+  },
+  "dashboard4": {
+    "admin": {
+      "testResults": {
+        "header": {
+          "label": "الاختبارات النفسية",
+          "title": "نتائج الاختبارات",
+          "description": "مراجعة الاختبارات النفسية التي أكملها المرضى، مع درجاتهم ونتائجهم والإجابات التي اختاروها."
+        },
+        "search": {
+          "placeholder": "البحث باسم المريض أو البريد الإلكتروني أو الاختبار..."
+        },
+        "table": {
+          "patient": "المريض",
+          "test": "الاختبار",
+          "status": "الحالة",
+          "score": "الدرجة",
+          "result": "النتيجة",
+          "answers": "الإجابات",
+          "date": "التاريخ",
+          "actions": "الإجراءات",
+          "view": "عرض النتائج",
+          "loading": "جاري تحميل نتائج الاختبارات...",
+          "empty": "لم يتم العثور على نتائج اختبارات."
+        },
+        "status": {
+          "notStarted": "لم يبدأ",
+          "inProgress": "قيد التنفيذ",
+          "completed": "مكتمل"
+        },
+        "details": {
+          "back": "العودة إلى نتائج الاختبارات",
+          "header": {
+            "label": "نتيجة الاختبار",
+            "title": "تفاصيل نتيجة الاختبار"
+          },
+          "patient": {
+            "title": "المريض",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف"
+          },
+          "test": {
+            "title": "معلومات الاختبار",
+            "description": "وصف الاختبار"
+          },
+          "result": {
+            "title": "ملخص النتيجة",
+            "status": "الحالة",
+            "score": "الدرجة",
+            "result": "النتيجة",
+            "completedAt": "تاريخ الإكمال",
+            "inProgress": "قيد التنفيذ",
+            "notStarted": "لم يبدأ",
+            "completed": "مكتمل"
+          },
+          "answers": {
+            "title": "إجابات المريض",
+            "question": "السؤال",
+            "selectedAnswer": "الإجابة المختارة",
+            "points": "النقاط",
+            "empty": "لم يتم إرسال أي إجابات لهذا الاختبار."
+          },
+          "loading": "جاري تحميل نتيجة الاختبار...",
+          "error": "تعذر تحميل نتيجة هذا الاختبار."
+        }
+      }
+    },
+    "sidebar": {
+      "dashboard": "لوحة التحكم",
+      "doctorDashboard": "لوحة تحكم الطبيب",
+      "testResults": "نتائج الاختبارات",
+      "categories": "التصنيفات",
+      "tests": "الاختبارات",
+      "bookAccess": "صلاحيات الكتب",
+      "books": "الكتب",
+      "testAccess": "صلاحيات الاختبارات",
+      "appointments": "المواعيد",
+      "users": "المستخدمون",
+      "sessions": "الجلسات",
+      "bookAppointment": "حجز موعد",
+      "myAppointments": "مواعيدي",
+      "myBooks": "كتبي",
+      "psychologicalTests": "الاختبارات النفسية",
+      "myProfile": "ملفي الشخصي",
+      "patientWorkspace": "مساحة عمل المريض"
+    }
+  },
+  "home": {
+    "hero": {
+      "workTime": "عيادة علم النفس الإكلينيكي · الأحد – الخميس · 9:00 صباحًا – 5:00 مساءً",
+      "header": {
+        "line1": "عقل أكثر هدوءًا،",
+        "line2": "جلسة واحدة في كل",
+        "line3": "مرة"
+      },
+      "description": " هي العيادة الخاصة للدكتورة ياسمين مديح. احجز مواعيدك، وتابع سجل جلساتك، وأكمل التقييمات النفسية المعتمدة — كل ذلك في بوابة واحدة هادئة وآمنة.",
+      "buttons": {
+        "bookAppointment": "احجز موعدك",
+        "meetDoctor": "تعرّف على د. ياسمين"
+      },
+      "experience": {
+        "years": {
+          "title": "14 سنة",
+          "subtitle": "من الخبرة"
+        },
+        "clients": {
+          "title": "+400",
+          "subtitle": "عميل تم دعمهم"
+        },
+        "rating": {
+          "title": "9.9/10",
+          "subtitle": "تقييم العملاء"
+        }
+      },
+      "image": {
+        "alt": "عيادة Serene Mind",
+        "nextOpening": "أقرب موعد متاح",
+        "nextOpeningDetails": "السبت 09:00 · في العيادة أو عبر Google Meet"
+      }
+    },
+    "aboutDoctor": {
+      "brief": {
+        "badge": "استشارية الصحة النفسية والإرشاد الأسري",
+        "name": "د. ياسمين مديح",
+        "subtitle": "استشارية الصحة النفسية والإرشاد الأسري • عضو اتحاد المعالجين النفسيين العرب • مدربة دولية معتمدة في العلاقات الزوجية",
+        "description": "دوري هو مساعدتك على أن تعيش حياة أفضل جودة، وأن تبني علاقات أكثر صحة مع نفسك ومع الآخرين. سأساعدك على التصالح مع نفسك، وتجاوز الماضي، ورؤية الصورة الأكبر بوضوح، والبدء في رحلتك نحو التغيير الإيجابي — من أجلك وبسببك.",
+        "specialties": {
+          "mentalHealth": "الصحة النفسية والإرشاد النفسي",
+          "familyEducational": "الإرشاد الأسري والتربوي",
+          "marriageRelationship": "الإرشاد الزواجي والعلاقات",
+          "selfDevelopment": "تطوير الذات وإدارة التغيير",
+          "traumaSupport": "دعم المشاعر السلبية والصدمات النفسية",
+          "womensMentalHealth": "الصحة النفسية للمرأة"
+        },
+        "credentials": {
+          "professionalDoctorate": "الدكتوراه المهنية:",
+          "doctorateValue": "الصحة النفسية — United Ford College، لندن، المملكة المتحدة",
+          "professionalMasters": "الماجستير المهني:",
+          "mastersValue": "الإرشاد الأسري والتربوي",
+          "lifeCoach": "مدربة حياة:",
+          "lifeCoachValue": "معتمدة من CPD",
+          "internationalTraining": "التدريب الدولي للمدربين:",
+          "internationalTrainingValue": "ITOT – ITC – BTC – IPTA"
+        }
+      }
+    },
+    "services": {
+      "header": {
+        "eyebrow": "الخدمات",
+        "title": "رعاية تتناسب مع أسلوب حياتك",
+        "description": "تبدأ كل رحلة بتقييم أولي مدته 80 دقيقة، ثم تستمر بوتيرة تناسبك وتختارها بنفسك."
+      },
+      "cards": {
+        "individualTherapy": {
+          "title": "الإرشاد النفسي الفردي",
+          "description": "جلسات فردية مخصصة لمساعدتك على فهم نفسك، والتعامل مع التحديات النفسية، وبناء استراتيجيات أكثر صحة للتكيف."
+        },
+        "couplesFamily": {
+          "title": "الإرشاد الزواجي والأسري",
+          "description": "جلسات داعمة تهدف إلى تحسين التواصل، وحل الخلافات، وبناء علاقات زوجية وأسرية أكثر صحة واستقرارًا."
+        },
+        "adolescentCare": {
+          "title": "الإرشاد النفسي للمراهقين",
+          "description": "دعم نفسي مناسب للمرحلة العمرية يساعد المراهقين على التعامل مع التحديات النفسية والاجتماعية والدراسية والنمائية."
+        },
+        "psychologicalAssessment": {
+          "title": "التقييم النفسي",
+          "description": "تقييمات نفسية متخصصة باستخدام أدوات معتمدة للمساعدة على فهم الاحتياجات النفسية والانفعالية والسلوكية بشكل أفضل."
+        },
+        "burnoutRecovery": {
+          "title": "دعم التوتر والاحتراق النفسي",
+          "description": "إرشاد يساعدك على فهم التوتر والاحتراق النفسي، واستعادة التوازن الانفعالي، وبناء حدود وعادات يومية أكثر صحة."
+        },
+        "followUpAftercare": {
+          "title": "المتابعة والدعم المستمر",
+          "description": "جلسات متابعة مستمرة لدعم تقدمك، والحفاظ على التغييرات الإيجابية، والتعامل مع أي تحديات جديدة في طريقك."
+        }
+      }
+    },
+    "whyChooseUs": {
+      "header": {
+        "eyebrow": "لماذا تختارنا",
+        "title": "عيادة صغيرة. معايير جادة.",
+        "description": "لا مراكز اتصال، ولا معالجون متغيرون. طبيب واحد، وسكرتير يعرف اسمك، وقياس مستمر يساعدنا على متابعة تقدمك بوضوح وصدق."
+      },
+      "features": {
+        "continuity": {
+          "title": "طبيب واحد، متابعة مستمرة",
+          "description": "لن يتم تحويلك بين معالجين مختلفين. نفس المعالج في كل جلسة."
+        },
+        "progress": {
+          "title": "تقدم قابل للقياس",
+          "description": "تساعد الاختبارات النفسية المعيارية على متابعة التغيير، لتصبح نتائج التحسن واضحة وليست مجرد توقعات."
+        },
+        "privacy": {
+          "title": "الخصوصية أولًا",
+          "description": "يتم تقسيم الملاحظات السريرية إلى سجلات مشتركة وخاصة، وتبقى بياناتك تحت سيطرتك."
+        },
+        "flexibility": {
+          "title": "جلسات مرنة",
+          "description": "يمكنك حضور الجلسات في العيادة أو عن بُعد من خلال استشارة فيديو آمنة."
+        }
+      }
+    },
+    "psychologicalTests": {
+      "header": {
+        "eyebrow": "الاختبارات النفسية",
+        "title": "تقييمات نفسية معتمدة، ونتائج واضحة وبسيطة",
+        "description": "أجرِ التقييم النفسي من خلال بوابتك خلال دقائق. تتم مراجعة كل نتيجة مع طبيبك قبل الوصول إلى أي استنتاجات.",
+        "openLibrary": "فتح مكتبة الاختبارات"
+      },
+      "tests": {
+        "anxiety": {
+          "category": "القلق",
+          "duration": "4 دقائق",
+          "title": "مقياس GAD-7 للقلق",
+          "description": "سبعة أسئلة لقياس شدة أعراض القلق العام خلال الأسبوعين الماضيين.",
+          "questions": "7 أسئلة"
+        },
+        "mood": {
+          "category": "المزاج",
+          "duration": "5 دقائق",
+          "title": "مقياس PHQ-9 للاكتئاب",
+          "description": "أداة فحص نفسية معتمدة لتقييم أعراض الاكتئاب وشدتها.",
+          "questions": "9 أسئلة"
+        },
+        "stress": {
+          "category": "الضغط النفسي",
+          "duration": "10 دقائق",
+          "title": "مقياس ماسلاش للاحتراق النفسي",
+          "description": "يقيس الإرهاق العاطفي، والتبلد النفسي، والشعور بالإنجاز الشخصي.",
+          "questions": "22 سؤالًا"
+        }
+      }
+    },
+    "testimonials": {
+      "header": {
+        "title": "آراء العملاء"
+      },
+      "testimonials": {
+        "marcus": {
+          "name": "أحمد م.",
+          "role": "عميل، من سنتين",
+          "review": "دخلت وأنا بالعافية قادر أتكلم عن نوبات الهلع اللي كانت بتجيلي. بعد سنتين، بقالّي 8 شهور من غير ولا نوبة. التدرج في العلاج فرق معايا جدًا."
+        },
+        "priya": {
+          "name": "سارة ن.",
+          "role": "عميلة، من 8 شهور",
+          "review": "لوحة نتائج الاختبارات خلتني أحس إن تقدمي بقى واضح وحقيقي. لما شفت نتيجة GAD-7 نزلت من 17 لـ6، حسيت إن فيه دليل فعلاً على التحسن اللي وصلت له."
+        },
+        "elenaTom": {
+          "name": "محمد ونور",
+          "role": "علاج زوجي",
+          "review": "د. ياسمين عمرها ما وقفت مع طرف ضد التاني. ساعدتنا نفهم بعض وادّتنا طريقة نتكلم بيها عن نفس المشكلة اللي كنا بنتخانق عليها بقالنا 6 سنين."
+        }
+      }
+    },
+    "faq": {
+      "header": {
+        "title": "الأسئلة الشائعة",
+        "description": "لسه محتار أو عندك سؤال؟",
+        "sendMessage": "ابعتلنا رسالة"
+      },
+
+      "items": {
+        "sessionDuration": {
+          "question": "الجلسة بتستغرق قد إيه؟",
+          "answer": "الجلسة العادية مدتها 50 دقيقة، والتقييم الأولي بيستغرق 80 دقيقة، أما جلسات الأزواج فمدتها 75 دقيقة."
+        },
+
+        "onlineSessions": {
+          "question": "هل فيه جلسات أونلاين؟",
+          "answer": "أيوه، تقدر تعمل الجلسات أونلاين بشكل آمن من خلال Google Meet لو الجلسات عن بُعد أنسب ليك."
+        },
+
+        "confidentiality": {
+          "question": "هل معلوماتي وبياناتي بتكون سرية؟",
+          "answer": "طبعًا. كل بياناتك ومعلوماتك بتتخزن بشكل آمن، وبيتم التعامل معاها بسرية تامة وفقًا للمعايير المهنية."
+        },
+
+        "cancelReschedule": {
+          "question": "أقدر ألغي أو أغيّر ميعاد الجلسة؟",
+          "answer": "أيوه، يفضل تبلغنا قبل ميعاد الجلسة بـ24 ساعة على الأقل لو محتاج تلغي أو تغيّر الموعد من غير رسوم."
+        },
+
+        "psychologicalTests": {
+          "question": "هل الاختبارات النفسية بتعتبر بديل للتشخيص؟",
+          "answer": "لأ. الاختبارات بتساعدنا نفهم حالتك بشكل أفضل وبتوفر معلومات مهمة، لكن النتيجة دايمًا بيتم مراجعتها مع الأخصائي النفسي قبل الوصول لأي استنتاج."
+        }
+      }
+    },
+    "footer": {
+      "brand": {
+        "name": "عيادة د.ياسمين مديح",
+        "description": "رعاية نفسية قائمة على أسس علمية، نقدمها باهتمام ودفء. عيادة نفسية يديرها طبيب واحد، مع بوابة إلكترونية للمرضى لحجز المواعيد ومتابعة الجلسات والتقييمات النفسية."
+      },
+      "links": {
+        "title": "استكشف",
+        "home": "الرئيسية",
+        "patientSignIn": "تسجيل دخول المريض",
+        "createAccount": "إنشاء حساب"
+      },
+      "contact": {
+        "title": "العيادة"
+      },
+      "bottom": {
+        "copyright": "© 2026 عيادة د.ياسمين مديح. جميع الحقوق محفوظة.",
+        "privacyPolicy": "سياسة الخصوصية",
+        "terms": "الشروط والأحكام",
+        "accessibility": "إمكانية الوصول"
+      }
+    }
+  },
+  "auth": {
+    "brand": "د.ياسمين مديح",
+    "testimonial": {
+      "quote": "مش لازم تواجه كل حاجة لوحدك.",
+      "author": "د. ياسمين مديح",
+      "subtitle": "أخصائية نفسية إكلينيكية"
+    },
+    "stats": {
+      "experience": {
+        "value": "+10",
+        "label": "سنين خبرة"
+      },
+      "clients": {
+        "value": "+2K",
+        "label": "عميل ساعدناهم"
+      },
+      "rating": {
+        "value": "4.9",
+        "label": "متوسط التقييم"
+      }
+    },
+    "card": {
+      "tabs": {
+        "login": "تسجيل الدخول",
+        "register": "إنشاء حساب"
+      },
+      "login": {
+        "title": "أهلاً بيك تاني",
+        "description": "سجّل دخولك لحسابك",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "forgotPassword": "نسيت كلمة المرور؟",
+        "login": "تسجيل الدخول",
+        "loggingIn": "جاري تسجيل الدخول...",
+        "or": "أو",
+        "noAccount": "معندكش حساب؟",
+        "signUp": "إنشاء حساب",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+        "success": "تم تسجيل الدخول بنجاح!",
+        "error": "حصلت مشكلة. حاول تاني."
+      },
+      "register": {
+        "title": "إنشاء حساب",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "address": "العنوان",
+        "email": "البريد الإلكتروني",
+        "gender": "اختار النوع",
+        "male": "ذكر",
+        "female": "أنثى",
+        "phone": "رقم الموبايل",
+        "password": "كلمة المرور",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "createAccount": "إنشاء الحساب",
+        "creatingAccount": "جاري إنشاء الحساب...",
+        "or": "أو",
+        "alreadyAccount": "عندك حساب بالفعل؟",
+        "login": "تسجيل الدخول",
+        "success": "تم إنشاء الحساب بنجاح!",
+        "error": "حصلت مشكلة. حاول تاني.",
+        "automaticLoginFailed": "الحساب اتعمل، لكن تسجيل الدخول التلقائي فشل."
+      }
+    }
+  },
+  "tests4": {
+    "take": {
+      "noTestSelected": "لم يتم اختيار اختبار",
+      "answerAllQuestions": "يرجى الإجابة عن جميع الأسئلة قبل إنهاء الاختبار.",
+      "patientTestIdMissing": "معرّف اختبار المريض غير موجود.",
+      "submitError": "حدث خطأ أثناء إرسال الاختبار.",
+      "unableToLoad": "تعذر تحميل هذا الاختبار.",
+      "defaultDescription": "يرجى الإجابة عن الأسئلة التالية.",
+
+      "progress": {
+        "question": "السؤال",
+        "of": "من",
+        "complete": "مكتمل"
+      },
+
+      "navigation": {
+        "previous": "السابق",
+        "next": "التالي",
+        "finish": "إنهاء الاختبار",
+        "submitting": "جارٍ الإرسال..."
+      }
+    }
+  }
+}

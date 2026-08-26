@@ -25,6 +25,7 @@ export async function getTestById(testId: string) {
       where: {
         id: testId,
       },
+
       include: {
         category: true,
 
@@ -45,7 +46,11 @@ export async function getTestById(testId: string) {
 
     return {
       success: true as const,
-      data: test,
+
+      data: {
+        ...test,
+        price: Number(test.price),
+      },
     };
   } catch (error) {
     console.error("GET_TEST_BY_ID_ERROR:", error);

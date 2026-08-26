@@ -1,14 +1,26 @@
+// StatsGrid.tsx
+
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-
-import { Users, CalendarDays, ClipboardList } from "lucide-react";
+import { CalendarDays, ClipboardList, Users } from "lucide-react";
 
 import StatCard from "./StatCard";
 
 import { getDashboardStats } from "@/app/actions/admin-actions/dashboard/get-dashboard-stats";
 
-const StatsGrid = () => {
+interface Props {
+  translations: {
+    patients: string;
+    patientsSubtitle: string;
+    sessions: string;
+    sessionsSubtitle: string;
+    tests: string;
+    testsSubtitle: string;
+  };
+}
+
+const StatsGrid = ({ translations }: Props) => {
   const [dashboardStats, setDashboardStats] = useState({
     patients: 0,
     sessions: 0,
@@ -35,31 +47,28 @@ const StatsGrid = () => {
     () => [
       {
         key: "patients",
-        title: "Patients",
-        subtitle: "Total registered patients",
+        title: translations.patients,
+        subtitle: translations.patientsSubtitle,
         count: dashboardStats.patients,
         icon: Users,
       },
       {
         key: "sessions",
-        title: "Sessions",
-        subtitle: "Total clinic sessions",
+        title: translations.sessions,
+        subtitle: translations.sessionsSubtitle,
         count: dashboardStats.sessions,
         icon: CalendarDays,
       },
       {
         key: "tests",
-        title: "Tests",
-        subtitle: "Total psychological tests",
+        title: translations.tests,
+        subtitle: translations.testsSubtitle,
         count: dashboardStats.tests,
         icon: ClipboardList,
       },
     ],
-    [dashboardStats],
+    [dashboardStats, translations],
   );
-
-  console.log("dashboardStats:", dashboardStats);
-  console.log("stats:", stats);
 
   return (
     <section className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">

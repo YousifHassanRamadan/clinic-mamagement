@@ -1,3 +1,5 @@
+// components/feature/dashboard/appointments/BookingSummary.tsx
+
 "use client";
 
 import { useState } from "react";
@@ -6,6 +8,7 @@ import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+
 import { bookAppointment } from "@/app/actions/patient-actions/appoinments/book-appointment";
 
 interface Props {
@@ -15,6 +18,19 @@ interface Props {
   slotId: string | undefined;
   notes: string;
   onSuccess: () => void;
+  translations: {
+    title: string;
+    noDate: string;
+    noTime: string;
+    minutes: string;
+    onsite: string;
+    online: string;
+    cancellation: string;
+    booking: string;
+    confirm: string;
+    selectDate: string;
+    selectTime: string;
+  };
 }
 
 const BookingSummary = ({
@@ -24,17 +40,18 @@ const BookingSummary = ({
   slotId,
   notes,
   onSuccess,
+  translations,
 }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleBooking = async () => {
     if (!date) {
-      toast.error("Please select a date");
+      toast.error(translations.selectDate);
       return;
     }
 
     if (!slotId || !time) {
-      toast.error("Please select an available time");
+      toast.error(translations.selectTime);
       return;
     }
 
@@ -59,7 +76,7 @@ const BookingSummary = ({
 
   return (
     <Card className="block h-fit rounded-3xl p-6 xl:sticky xl:top-6">
-      <h3 className="mb-6 text-xl font-semibold">Summary</h3>
+      <h3 className="mb-6 text-xl font-semibold">{translations.title}</h3>
 
       <div className="space-y-5">
         <div className="flex gap-3">
@@ -67,33 +84,45 @@ const BookingSummary = ({
 
           <span>
             {date
-              ? date.toLocaleDateString("en-US", {
-                  weekday: "long",
-                  month: "short",
-                  day: "2-digit",
-                  year: "numeric",
-                })
-              : "No date selected"}
+              ? date.toLocaleDateString(
+                  typeof document !== "undefined" &&
+                    document.documentElement.lang === "ar"
+                    ? "ar-EG"
+                    : "en-US",
+                  {
+                    weekday: "long",
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  },
+                )
+              : translations.noDate}
           </span>
         </div>
 
         <div className="flex gap-3">
           <Clock3 className="mt-1 h-5 w-5 text-primary" />
 
-          <span>{time ? `${time} • 50 minutes` : "No time selected"}</span>
+          <span>
+            {time
+              ? `${time} • 50 ${translations.minutes}`
+              : translations.noTime}
+          </span>
         </div>
 
         <div className="flex gap-3">
           <MapPin className="mt-1 h-5 w-5 text-primary" />
 
           <span>
-            {sessionType === "ONSITE" ? "On-site at the clinic" : "Google Meet"}
+            {sessionType === "ONSITE"
+              ? translations.onsite
+              : translations.online}
           </span>
         </div>
       </div>
 
       <div className="my-6 rounded-2xl bg-primary/5 p-4 text-sm text-muted-foreground">
-        Free cancellation up to 24 hours before the session.
+        {translations.cancellation}
       </div>
 
       <Button
@@ -104,7 +133,7 @@ const BookingSummary = ({
       >
         <Check className="mr-2 h-4 w-4" />
 
-        {loading ? "Booking..." : "Confirm booking"}
+        {loading ? translations.booking : translations.confirm}
       </Button>
     </Card>
   );

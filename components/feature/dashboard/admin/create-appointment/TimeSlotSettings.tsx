@@ -1,3 +1,5 @@
+// TimeSlotSettings.tsx
+
 "use client";
 
 import { Clock3 } from "lucide-react";
@@ -16,11 +18,18 @@ import { SessionDuration } from "./types";
 interface TimeSlotSettingsProps {
   duration: SessionDuration;
   onDurationChange: (value: SessionDuration) => void;
+  translations: {
+    title: string;
+    description: string;
+    duration: string;
+    minutes: string;
+  };
 }
 
 const TimeSlotSettings = ({
   duration,
   onDurationChange,
+  translations: t,
 }: TimeSlotSettingsProps) => {
   return (
     <div className="rounded-2xl border bg-card p-5 shadow-sm">
@@ -30,16 +39,14 @@ const TimeSlotSettings = ({
         </div>
 
         <div>
-          <h2 className="text-sm font-semibold">4. Session duration</h2>
+          <h2 className="text-sm font-semibold">{t.title}</h2>
 
-          <p className="mt-1 text-xs text-muted-foreground">
-            Choose how long each appointment slot should be.
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t.description}</p>
         </div>
       </div>
 
       <div className="space-y-2">
-        <Label className="text-xs">Duration</Label>
+        <Label className="text-xs">{t.duration}</Label>
 
         <Select
           value={String(duration)}
@@ -47,15 +54,15 @@ const TimeSlotSettings = ({
             onDurationChange(Number(value) as SessionDuration)
           }
         >
-          <SelectTrigger className="h-10 rounded-xl">
+          <SelectTrigger className="h-10 rounded-xl p-4">
             <SelectValue />
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="30">30 minutes</SelectItem>
-            <SelectItem value="45">45 minutes</SelectItem>
-            <SelectItem value="60">60 minutes</SelectItem>
-            <SelectItem value="90">90 minutes</SelectItem>
+            <SelectItem value="30">30 {t.minutes}</SelectItem>
+            <SelectItem value="45">45 {t.minutes}</SelectItem>
+            <SelectItem value="60">60 {t.minutes}</SelectItem>
+            <SelectItem value="90">90 {t.minutes}</SelectItem>
           </SelectContent>
         </Select>
       </div>

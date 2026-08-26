@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
+
 import { authConfig } from "./auth.config";
 
 const { auth, handlers, signIn, signOut } = NextAuth({
@@ -47,28 +48,6 @@ const { auth, handlers, signIn, signOut } = NextAuth({
       },
     }),
   ],
-
-  callbacks: {
-    ...authConfig.callbacks,
-
-    async jwt({ token, user }) {
-      if (user) {
-        token.sub = user.id;
-        token.role = user.role;
-      }
-
-      return token;
-    },
-
-    async session({ session, token }) {
-      if (session.user && token.sub) {
-        session.user.id = token.sub;
-        session.user.role = token.role;
-      }
-
-      return session;
-    },
-  },
 });
 
 export { auth, handlers, signIn, signOut };

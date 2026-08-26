@@ -8,7 +8,16 @@ export async function getCategories() {
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+
+      select: {
+        id: true,
+        name: true,
+        nameAr: true,
+        description: true,
+        descriptionAr: true,
+        createdAt: true,
+        updatedAt: true,
+
         _count: {
           select: {
             tests: true,
@@ -18,14 +27,14 @@ export async function getCategories() {
     });
 
     return {
-      success: true,
+      success: true as const,
       data: categories,
     };
   } catch (error) {
     console.error("GET_CATEGORIES_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       data: [],
       message: "Failed to fetch categories",
     };
@@ -35,7 +44,7 @@ export async function getCategories() {
 export async function getCategoryById(categoryId: string) {
   if (!categoryId) {
     return {
-      success: false,
+      success: false as const,
       data: null,
       message: "Category ID is required",
     };
@@ -46,30 +55,33 @@ export async function getCategoryById(categoryId: string) {
       where: {
         id: categoryId,
       },
+
       select: {
         id: true,
         name: true,
+        nameAr: true,
         description: true,
+        descriptionAr: true,
       },
     });
 
     if (!category) {
       return {
-        success: false,
+        success: false as const,
         data: null,
         message: "Category not found",
       };
     }
 
     return {
-      success: true,
+      success: true as const,
       data: category,
     };
   } catch (error) {
     console.error("GET_CATEGORY_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       data: null,
       message: "Failed to fetch category",
     };
@@ -79,7 +91,12 @@ export async function getCategoryById(categoryId: string) {
 export type CategoryWithCount = {
   id: string;
   name: string;
+  nameAr: string | null;
   description: string | null;
+  descriptionAr: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+
   _count: {
     tests: number;
   };

@@ -14,21 +14,27 @@ interface Props {
 
   isFirst?: boolean;
   isLast?: boolean;
+
+  translations: {
+    previous: string;
+    next: string;
+    finish: string;
+    submitting: string;
+  };
 }
 
 const QuestionNavigation = ({
   onPrevious,
   onNext,
   onFinish,
-
   disabled = false,
   submitting = false,
-
   isFirst = false,
   isLast = false,
+  translations,
 }: Props) => {
   return (
-    <div className="flex items-center justify-between pt-4">
+    <div className="flex items-center justify-between gap-4 pt-4">
       <Button
         type="button"
         variant="outline"
@@ -36,8 +42,9 @@ const QuestionNavigation = ({
         disabled={isFirst || submitting}
         className="rounded-xl"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Previous
+        <ArrowLeft className="me-2 h-4 w-4 rtl:rotate-180" />
+
+        {translations.previous}
       </Button>
 
       <Button
@@ -46,9 +53,15 @@ const QuestionNavigation = ({
         disabled={disabled || submitting}
         className="rounded-xl"
       >
-        {submitting ? "Submitting..." : isLast ? "Finish Test" : "Next"}
+        {submitting
+          ? translations.submitting
+          : isLast
+            ? translations.finish
+            : translations.next}
 
-        {!isLast && !submitting && <ArrowRight className="ml-2 h-4 w-4" />}
+        {!isLast && !submitting && (
+          <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
+        )}
       </Button>
     </div>
   );

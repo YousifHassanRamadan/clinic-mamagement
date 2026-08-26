@@ -1,3 +1,5 @@
+// app/actions/admin-actions/user/get-users.ts
+
 "use server";
 
 import { Role } from "@/app/generated/prisma/enums";
@@ -19,19 +21,19 @@ export const getUsers = async ({
               {
                 firstName: {
                   contains: query,
-                  mode: "insensitive",
+                  mode: "insensitive" as const,
                 },
               },
               {
                 lastName: {
                   contains: query,
-                  mode: "insensitive",
+                  mode: "insensitive" as const,
                 },
               },
               {
                 email: {
                   contains: query,
-                  mode: "insensitive",
+                  mode: "insensitive" as const,
                 },
               },
               {

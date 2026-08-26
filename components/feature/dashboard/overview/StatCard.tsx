@@ -1,6 +1,8 @@
+// components/feature/dashboard/overview/StatCard.tsx
+
 import { Card } from "@/components/ui/card";
 
-import { StatCardType } from "./types";
+import type { StatCardType } from "./types";
 
 interface Props {
   stat: StatCardType;

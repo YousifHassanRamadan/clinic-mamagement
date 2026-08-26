@@ -1,15 +1,22 @@
+// components/feature/home/hero-section/chip-work-time/chip-work-time.tsx
+
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
 import { cn } from "@/lib/utils";
 import React from "react";
 
 import { Shield } from "lucide-react";
 
-const ChipWorkTime = () => {
+interface ChipWorkTimeProps {
+  translations: string;
+}
+
+const ChipWorkTime = ({ translations }: ChipWorkTimeProps) => {
   return (
-    <Bubble variant={"popover"}>
-      <BubbleContent className={cn("text-xs flex items-center gap-2 py-1.5")}>
-        <Shield className="h-4 w-4 text-primary" />
-        Licensed clinical psychology · Sunday – Thursday · 9:00 Am – 5:00 Pm
+    <Bubble variant="popover">
+      <BubbleContent className={cn("flex items-center gap-2 py-1.5 text-xs")}>
+        <Shield className="h-4 w-4 shrink-0 text-primary" />
+
+        {translations}
       </BubbleContent>
     </Bubble>
   );

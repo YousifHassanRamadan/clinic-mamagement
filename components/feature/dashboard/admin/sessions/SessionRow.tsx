@@ -1,3 +1,5 @@
+// components/feature/dashboard/admin/sessions/SessionRow.tsx
+
 "use client";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,10 +12,32 @@ import MoodBadge from "./MoodBadge";
 
 import type { SessionWithRelations } from "./types";
 
+interface Translations {
+  patient: string;
+  status: string;
+  date: string;
+  duration: string;
+  mood: string;
+  sessionType: string;
+  actions: string;
+  loading: string;
+  noSessions: string;
+  minutes: string;
+}
+
+interface ActionTranslations {
+  edit: string;
+  delete: string;
+  deleteSuccess: string;
+  deleteFailed: string;
+}
+
 interface Props {
   session: SessionWithRelations;
   mobile?: boolean;
   onDeleted?: () => void;
+  translations: Translations;
+  actionTranslations: ActionTranslations;
 }
 
 const getInitials = (firstName: string, lastName: string) => {
@@ -42,7 +66,13 @@ const formatSessionType = (type: string) => {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 };
 
-const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
+const SessionRow = ({
+  session,
+  mobile = false,
+  onDeleted,
+  translations,
+  actionTranslations,
+}: Props) => {
   const patientName = `${session.patient.firstName} ${session.patient.lastName}`;
 
   const patientAvatar = getInitials(
@@ -52,7 +82,6 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
 
   const date = formatDate(session.sessionDate);
   const time = formatTime(session.sessionDate);
-
   const type = formatSessionType(session.sessionType);
 
   if (mobile) {
@@ -73,15 +102,15 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4 text-sm  ">
+          <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
-              <p className="text-muted-foreground">Status</p>
+              <p className="text-muted-foreground">{translations.status}</p>
 
               <SessionStatusBadge status={session.status} />
             </div>
 
             <div>
-              <p className="text-muted-foreground">Mood</p>
+              <p className="text-muted-foreground">{translations.mood}</p>
 
               {session.mood ? (
                 <MoodBadge mood={session.mood} />
@@ -91,7 +120,7 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
             </div>
 
             <div>
-              <p className="text-muted-foreground">Date</p>
+              <p className="text-muted-foreground">{translations.date}</p>
 
               <p>{date}</p>
 
@@ -99,19 +128,27 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
             </div>
 
             <div>
-              <p className="text-muted-foreground">Duration</p>
+              <p className="text-muted-foreground">{translations.duration}</p>
 
-              <p>{session.duration} min</p>
+              <p>
+                {session.duration} {translations.minutes}
+              </p>
             </div>
 
             <div className="col-span-2">
-              <p className="text-muted-foreground">Session Type</p>
+              <p className="text-muted-foreground">
+                {translations.sessionType}
+              </p>
 
               <p>{type}</p>
             </div>
           </div>
 
-          <SessionActions sessionId={session.id} onDeleted={onDeleted} />
+          <SessionActions
+            sessionId={session.id}
+            onDeleted={onDeleted}
+            translations={actionTranslations}
+          />
         </CardContent>
       </Card>
     );
@@ -145,7 +182,9 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
         <p className="text-sm text-muted-foreground">{time}</p>
       </TableCell>
 
-      <TableCell>{session.duration} min</TableCell>
+      <TableCell>
+        {session.duration} {translations.minutes}
+      </TableCell>
 
       <TableCell>
         {session.mood ? (
@@ -158,7 +197,11 @@ const SessionRow = ({ session, mobile = false, onDeleted }: Props) => {
       <TableCell>{type}</TableCell>
 
       <TableCell>
-        <SessionActions sessionId={session.id} onDeleted={onDeleted} />
+        <SessionActions
+          sessionId={session.id}
+          onDeleted={onDeleted}
+          translations={actionTranslations}
+        />
       </TableCell>
     </TableRow>
   );

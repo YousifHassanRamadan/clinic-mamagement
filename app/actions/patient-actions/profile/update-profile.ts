@@ -85,11 +85,19 @@ export async function updateProfile(input: ProfileFormValues) {
 
       select: {
         id: true,
+
         firstName: true,
+        firstNameAr: true,
+
         lastName: true,
+        lastNameAr: true,
+
         email: true,
         phone: true,
+
         address: true,
+        addressAr: true,
+
         gender: true,
         image: true,
         role: true,

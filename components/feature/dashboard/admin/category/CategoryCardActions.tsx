@@ -9,7 +9,19 @@ import { useRouter } from "next/navigation";
 
 import { deleteCategory } from "@/app/actions/admin-actions/handle-category/delete-category";
 
-const CategoryCardActions = ({ catId }: { catId: string }) => {
+interface Props {
+  catId: string;
+
+  translations: {
+    edit: string;
+    delete: string;
+    deleting: string;
+    deleteFailed: string;
+    somethingWentWrong: string;
+  };
+}
+
+const CategoryCardActions = ({ catId, translations }: Props) => {
   const router = useRouter();
 
   const [isDeleting, setIsDeleting] = useState(false);
@@ -27,7 +39,7 @@ const CategoryCardActions = ({ catId }: { catId: string }) => {
       const result = await deleteCategory(catId);
 
       if (!result.success) {
-        toast.error(result.message || "Failed to delete category");
+        toast.error(result.message || translations.deleteFailed);
         return;
       }
 
@@ -36,7 +48,7 @@ const CategoryCardActions = ({ catId }: { catId: string }) => {
       router.refresh();
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong");
+      toast.error(translations.somethingWentWrong);
     } finally {
       setIsDeleting(false);
     }
@@ -53,7 +65,7 @@ const CategoryCardActions = ({ catId }: { catId: string }) => {
         disabled={isDeleting}
       >
         <Pencil className="mr-2 h-4 w-4" />
-        Edit
+        {translations.edit}
       </Button>
 
       <Button
@@ -67,12 +79,12 @@ const CategoryCardActions = ({ catId }: { catId: string }) => {
         {isDeleting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Deleting...
+            {translations.deleting}
           </>
         ) : (
           <>
             <Trash2 className="mr-2 h-4 w-4" />
-            Delete
+            {translations.delete}
           </>
         )}
       </Button>

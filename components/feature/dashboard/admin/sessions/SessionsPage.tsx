@@ -1,6 +1,8 @@
+// components/feature/dashboard/admin/sessions/SessionsPage.tsx
+
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { SessionStatus, SessionType } from "@/app/generated/prisma/enums";
 
@@ -12,23 +14,82 @@ import SessionsToolbar from "./SessionsToolbar";
 import SessionsTable from "./SessionsTable";
 import AddSession from "./AddSession";
 
-const SessionsPage = () => {
-  const [sessions, setSessions] = useState<SessionWithRelations[]>([]);
+interface Translations {
+  header: {
+    label: string;
+    title: string;
+    description: string;
+  };
 
+  addSession: string;
+
+  toolbar: {
+    searchPlaceholder: string;
+    status: string;
+    allStatuses: string;
+    completed: string;
+    scheduled: string;
+    draft: string;
+    cancelled: string;
+    noShow: string;
+    type: string;
+    allTypes: string;
+    initialSession: string;
+    followUp: string;
+    individual: string;
+    emergency: string;
+    other: string;
+  };
+
+  table: {
+    patient: string;
+    status: string;
+    date: string;
+    duration: string;
+    mood: string;
+    sessionType: string;
+    actions: string;
+    loading: string;
+    noSessions: string;
+    minutes: string;
+  };
+
+  actions: {
+    edit: string;
+    delete: string;
+    deleteSuccess: string;
+    deleteFailed: string;
+  };
+}
+
+interface Props {
+  translations: Translations;
+}
+
+const SessionsPage = ({ translations }: Props) => {
+  const [sessions, setSessions] = useState<SessionWithRelations[]>([]);
   const [loading, setLoading] = useState(true);
 
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
 
   const [status, setStatus] = useState<SessionStatus | "all">("all");
-
   const [sessionType, setSessionType] = useState<SessionType | "all">("all");
 
-  const fetchSessions = async () => {
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [search]);
+
+  const fetchSessions = useCallback(async () => {
     try {
       setLoading(true);
 
       const result = await getSessions({
-        search,
+        search: debouncedSearch,
         status,
         sessionType,
       });
@@ -44,29 +105,30 @@ const SessionsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [debouncedSearch, status, sessionType]);
 
   useEffect(() => {
     fetchSessions();
-  }, [search, status, sessionType]);
+  }, [fetchSessions]);
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Clinical Record
+            {translations.header.label}
           </span>
 
-          <h1 className="mt-2 text-3xl font-bold">Sessions</h1>
+          <h1 className="mt-2 text-3xl font-bold">
+            {translations.header.title}
+          </h1>
 
           <p className="mt-2 max-w-2xl text-muted-foreground">
-            Every appointment, its outcome, and the notes attached to it.
-            Private notes remain hidden from the patient portal.
+            {translations.header.description}
           </p>
         </div>
 
-        <AddSession />
+        <AddSession label={translations.addSession} />
       </div>
 
       <SessionsToolbar
@@ -76,12 +138,15 @@ const SessionsPage = () => {
         onSearchChange={setSearch}
         onStatusChange={setStatus}
         onSessionTypeChange={setSessionType}
+        translations={translations.toolbar}
       />
 
       <SessionsTable
         sessions={sessions}
         loading={loading}
         onDeleted={fetchSessions}
+        translations={translations.table}
+        actionTranslations={translations.actions}
       />
     </div>
   );

@@ -1,51 +1,103 @@
-import { CheckCircle2, ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { specialties } from "@/constants/home/home";
+// components/feature/home/about-doctor/breif/breif.tsx
 
-const Breif = () => {
+import { CheckCircle2 } from "lucide-react";
+
+interface BreifProps {
+  translations: {
+    badge: string;
+    name: string;
+    subtitle: string;
+    description: string;
+
+    specialties: {
+      mentalHealth: string;
+      familyEducational: string;
+      marriageRelationship: string;
+      selfDevelopment: string;
+      traumaSupport: string;
+      womensMentalHealth: string;
+    };
+
+    credentials: {
+      professionalDoctorate: string;
+      professionalMasters: string;
+      lifeCoach: string;
+      internationalTraining: string;
+      doctorateValue: string;
+      mastersValue: string;
+      lifeCoachValue: string;
+      internationalTrainingValue: string;
+    };
+  };
+}
+
+const Breif = ({ translations }: BreifProps) => {
+  const specialties = [
+    translations.specialties.mentalHealth,
+    translations.specialties.familyEducational,
+    translations.specialties.marriageRelationship,
+    translations.specialties.selfDevelopment,
+    translations.specialties.traumaSupport,
+    translations.specialties.womensMentalHealth,
+  ];
+
   return (
-    <div className="max-w-2xl">
-      {/* Badge */}
+    <div className="w-full max-w-2xl">
       <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-primary">
-        Your Psychologist
+        {translations.badge}
       </p>
 
-      {/* Name */}
-      <h2 className="text-5xl font-bold text-foreground">
-        Dr. Amara Lindqvist
+      <h2 className="text-3xl font-bold text-foreground sm:text-4xl lg:text-5xl">
+        {translations.name}
       </h2>
 
-      {/* Subtitle */}
-      <p className="mt-3 text-lg text-muted-foreground">
-        Clinical Psychologist, PhD • PSY-48219 • California Board of Psychology
+      <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+        {translations.subtitle}
       </p>
 
-      {/* Description */}
-      <p className="mt-8 text-md leading-8 text-muted-foreground">
-        For 14 years I have helped adults and adolescents move through anxiety,
-        burnout, trauma and relationship strain. My work blends CBT, ACT and
-        Schema Therapy with one simple belief: therapy should feel safe before
-        it feels challenging.
+      <p className="mt-6 text-sm leading-7 text-muted-foreground sm:mt-8 sm:text-base sm:leading-8">
+        {translations.description}
       </p>
 
-      {/* Specialties */}
-      <div className="mt-10 grid grid-cols-2 gap-x-10 gap-y-5">
+      <div className="mt-8 grid grid-cols-1 gap-x-10 gap-y-4 sm:mt-10 sm:grid-cols-2 sm:gap-y-5">
         {specialties.map((item) => (
           <div key={item} className="flex items-center gap-3">
-            <CheckCircle2 className="h-5 w-5 text-success" />
+            <CheckCircle2 className="h-5 w-5 shrink-0 text-success" />
+
             <span className="text-sm text-foreground">{item}</span>
           </div>
         ))}
       </div>
 
-      {/* Button */}
-      <Button
-        variant="outline"
-        className="mt-10 rounded-lg px-7 py-6 text-base"
-      >
-        Full profile & certificates
-        <ArrowRight className="ml-2 h-4 w-4" />
-      </Button>
+      <div className="mt-8 space-y-3 text-sm leading-7 text-muted-foreground">
+        <p>
+          <span className="font-semibold text-foreground">
+            {translations.credentials.professionalDoctorate}
+          </span>{" "}
+          {translations.credentials.doctorateValue}
+        </p>
+
+        <p>
+          <span className="font-semibold text-foreground">
+            {translations.credentials.professionalMasters}
+          </span>{" "}
+          {translations.credentials.mastersValue}
+        </p>
+
+        <p>
+          <span className="font-semibold text-foreground">
+            {translations.credentials.lifeCoach}
+          </span>{" "}
+          {translations.credentials.lifeCoachValue}
+        </p>
+
+        <p>
+          <span className="font-semibold text-foreground">
+            {translations.credentials.internationalTraining}
+          </span>{" "}
+          {translations.credentials.internationalTrainingValue}
+        </p>
+      </div>
     </div>
   );
 };

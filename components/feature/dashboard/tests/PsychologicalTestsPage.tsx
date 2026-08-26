@@ -1,98 +1,36 @@
-"use client";
+// PsychologicalTestsPage.tsx
 
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { cookies } from "next/headers";
 
-import { Button } from "@/components/ui/button";
+import { getTranslations } from "@/i18n/getTranslations";
 
-import TestsFilter from "./TestsFilter";
-import TestsGrid from "./TestsGrid";
-import { getTestCategories } from "@/app/actions/patient-actions/tests/get-test-categories";
-import { getTests } from "@/app/actions/patient-actions/tests/get-tests";
+import PsychologicalTestsClient from "./PsychologicalTestsClient";
 
-export interface TestCategoryItem {
-  id: string;
-  name: string;
-  description: string | null;
-  _count: {
-    tests: number;
-  };
-}
+const PsychologicalTestsPage = async () => {
+  const cookieStore = await cookies();
 
-export interface PsychologicalTestItem {
-  id: string;
-  title: string;
-  description: string | null;
-  category: {
-    id: string;
-    name: string;
-  } | null;
-  _count: {
-    questions: number;
-  };
-}
+  const locale = cookieStore.get("locale")?.value ?? "en";
 
-const PsychologicalTestsPage = () => {
-  const [category, setCategory] = useState("ALL");
-
-  const [categories, setCategories] = useState<TestCategoryItem[]>([]);
-  const [tests, setTests] = useState<PsychologicalTestItem[]>([]);
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const [categoriesResult, testsResult] = await Promise.all([
-          getTestCategories(),
-          getTests(),
-        ]);
-
-        if (!categoriesResult.success) {
-          toast.error(categoriesResult.message);
-        } else {
-          setCategories(categoriesResult.categories);
-        }
-
-        if (!testsResult.success) {
-          toast.error(testsResult.message);
-        } else {
-          setTests(testsResult.tests);
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load psychological tests");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
+  const t = await getTranslations(locale);
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Psychological Tests</h1>
-
-          <p className="mt-2 text-muted-foreground">
-            Short, validated screenings. Your results go directly to your
-            therapist.
-          </p>
-        </div>
-
-        <Button className="rounded-xl">View Results</Button>
-      </div>
-
-      <TestsFilter
-        value={category}
-        onChange={setCategory}
-        categories={categories}
-      />
-
-      <TestsGrid category={category} tests={tests} loading={loading} />
-    </div>
+    <PsychologicalTestsClient
+      locale={locale}
+      translations={{
+        title: t("tests.title"),
+        description: t("tests.description"),
+        viewResults: t("tests.viewResults"),
+        all: t("tests.all"),
+        noTests: t("tests.noTests"),
+        loadFailed: t("tests.loadFailed"),
+        questions: t("tests.questions"),
+        startTest: t("tests.startTest"),
+        buyNow: t("tests.buyNow"),
+        noDescription: t("tests.noDescription"),
+        uncategorized: t("tests.uncategorized"),
+        buyMessage: t("tests.buyMessage"),
+      }}
+    />
   );
 };
 

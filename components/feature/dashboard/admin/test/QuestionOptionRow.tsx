@@ -1,35 +1,61 @@
+// QuestionOptionRow.tsx
+
 "use client";
 
 import { Trash2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
-import type { TestOption } from "./types";
+interface QuestionOption {
+  id: string;
+  text: string;
+  textAr: string;
+  points: number;
+  order: number;
+}
 
 interface Props {
-  option: TestOption;
-  onChange: (text: string, points: number) => void;
+  option: QuestionOption;
+  onChange: (text: string, textAr: string, points: number) => void;
   onDelete: () => void;
 }
 
 const QuestionOptionRow = ({ option, onChange, onDelete }: Props) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className="grid grid-cols-[auto_1fr_1fr_auto_auto] items-center gap-2">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-xs font-medium">
+        {option.order}
+      </span>
+
       <Input
         value={option.text}
-        onChange={(event) => onChange(event.target.value, option.points)}
-        placeholder="Option text"
-        className="rounded-xl p-3"
+        onChange={(event) =>
+          onChange(event.target.value, option.textAr, option.points)
+        }
+        placeholder="Option in English"
+        dir="ltr"
+        className="min-w-0 rounded-xl p-3"
+      />
+
+      <Input
+        value={option.textAr}
+        onChange={(event) =>
+          onChange(option.text, event.target.value, option.points)
+        }
+        placeholder="الخيار بالعربي"
+        dir="rtl"
+        className="min-w-0 rounded-xl p-3"
       />
 
       <Input
         type="number"
         value={option.points}
-        onChange={(event) => onChange(option.text, Number(event.target.value))}
+        onChange={(event) =>
+          onChange(option.text, option.textAr, Number(event.target.value))
+        }
+        className="w-20 rounded-xl p-3 text-center"
         min={0}
-        placeholder="Points"
-        className="w-28 rounded-xl p-3"
       />
 
       <Button

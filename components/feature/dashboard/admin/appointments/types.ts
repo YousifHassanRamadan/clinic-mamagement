@@ -11,13 +11,15 @@ export interface AdminAppointment {
   patientName: string;
   patientInitials: string;
 
+  email?: string;
+  phone?: string;
+
   date: string;
   time: string;
 
   status: AppointmentStatus;
 
   reason?: string;
-  phone?: string;
 
   createdAt: string;
 }

@@ -1,3 +1,5 @@
+// AppointmentItem.tsx
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 interface Appointment {

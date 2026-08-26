@@ -73,6 +73,10 @@ export async function getAppointments() {
 
         patientInitials,
 
+        email: appointment.user.email,
+
+        phone: appointment.user.phone,
+
         date: appointment.date.toLocaleDateString("en-GB", {
           day: "2-digit",
           month: "short",

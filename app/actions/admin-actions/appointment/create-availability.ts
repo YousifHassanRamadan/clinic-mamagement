@@ -1,28 +1,37 @@
+// create-availability.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+import { getTranslations } from "@/i18n/getTranslations";
+import { type Locale } from "@/i18n/config";
 
 import {
   createAvailabilitySchema,
   type CreateAvailabilityInput,
 } from "@/schemas/availability.schema";
 
-export async function createAvailability(values: CreateAvailabilityInput) {
+export async function createAvailability(
+  values: CreateAvailabilityInput,
+  locale: Locale,
+) {
+  const t = await getTranslations(locale);
+
   try {
     const session = await auth();
 
     if (!session?.user?.id) {
       return {
         success: false,
-        message: "Unauthorized",
+        message: t("appointments.server.unauthorized"),
       };
     }
 
     if (session.user.role !== "DOCTOR") {
       return {
         success: false,
-        message: "Only doctors can create availability",
+        message: t("appointments.server.onlyDoctorsCreate"),
       };
     }
 
@@ -31,41 +40,26 @@ export async function createAvailability(values: CreateAvailabilityInput) {
     if (!parsed.success) {
       return {
         success: false,
-        message: parsed.error.issues[0]?.message ?? "Invalid data",
+        message:
+          parsed.error.issues[0]?.message ??
+          t("appointments.server.invalidData"),
       };
     }
 
     const { date, startTime, endTime, duration, slots } = parsed.data;
 
-    // =========================
-    // Validate date
-    // =========================
-
-    const availabilityDate = new Date(`${date}T00:00:00`);
-
-    if (Number.isNaN(availabilityDate.getTime())) {
-      return {
-        success: false,
-        message: "Invalid date",
-      };
-    }
-
-    // =========================
-    // Convert times to minutes
-    // =========================
+    const availabilityDate = new Date(`${date}T00:00:00.000Z`);
 
     const [startHour, startMinute] = startTime.split(":").map(Number);
-
     const [endHour, endMinute] = endTime.split(":").map(Number);
 
     const startTotalMinutes = startHour * 60 + startMinute;
-
     const endTotalMinutes = endHour * 60 + endMinute;
 
     if (startTotalMinutes >= endTotalMinutes) {
       return {
         success: false,
-        message: "End time must be after start time",
+        message: t("appointments.server.endTimeAfterStart"),
       };
     }
 
@@ -74,20 +68,16 @@ export async function createAvailability(values: CreateAvailabilityInput) {
     if (duration > totalMinutes) {
       return {
         success: false,
-        message: "Duration cannot be longer than working hours",
+        message: t("appointments.server.durationTooLong"),
       };
     }
-
-    // =========================
-    // Validate selected slots
-    // =========================
 
     const uniqueSlots = [...new Set(slots)];
 
     if (uniqueSlots.length !== slots.length) {
       return {
         success: false,
-        message: "Duplicate time slots are not allowed",
+        message: t("appointments.server.duplicateSlots"),
       };
     }
 
@@ -96,39 +86,38 @@ export async function createAvailability(values: CreateAvailabilityInput) {
 
       const slotTotalMinutes = slotHour * 60 + slotMinute;
 
-      // Slot must start inside working hours
       if (
         slotTotalMinutes < startTotalMinutes ||
         slotTotalMinutes >= endTotalMinutes
       ) {
         return {
           success: false,
-          message: `Slot ${slot} is outside working hours`,
+          message: t("appointments.server.slotOutsideHours", {
+            slot,
+          }),
         };
       }
 
-      // Slot must align with the duration
       const offset = slotTotalMinutes - startTotalMinutes;
 
       if (offset % duration !== 0) {
         return {
           success: false,
-          message: `Slot ${slot} does not match the selected duration`,
+          message: t("appointments.server.slotDurationMismatch", {
+            slot,
+          }),
         };
       }
 
-      // Slot must have enough time before endTime
       if (slotTotalMinutes + duration > endTotalMinutes) {
         return {
           success: false,
-          message: `Slot ${slot} exceeds working hours`,
+          message: t("appointments.server.slotExceedsHours", {
+            slot,
+          }),
         };
       }
     }
-
-    // =========================
-    // Check existing availability
-    // =========================
 
     const existingAvailability = await prisma.availability.findUnique({
       where: {
@@ -142,26 +131,17 @@ export async function createAvailability(values: CreateAvailabilityInput) {
     if (existingAvailability) {
       return {
         success: false,
-        message: "Availability already exists for this date",
+        message: t("appointments.server.availabilityExists"),
       };
     }
-
-    // =========================
-    // Create availability
-    // =========================
 
     await prisma.availability.create({
       data: {
         doctorId: session.user.id,
-
         date: availabilityDate,
-
-        startTime: new Date(`${date}T${startTime}:00`),
-
-        endTime: new Date(`${date}T${endTime}:00`),
-
+        startTime: new Date(`${date}T${startTime}:00.000Z`),
+        endTime: new Date(`${date}T${endTime}:00.000Z`),
         duration,
-
         slots: {
           create: uniqueSlots.map((time) => ({
             time,
@@ -172,14 +152,14 @@ export async function createAvailability(values: CreateAvailabilityInput) {
 
     return {
       success: true,
-      message: "Availability created successfully",
+      message: t("appointments.server.createdSuccessfully"),
     };
   } catch (error) {
     console.error("CREATE_AVAILABILITY_ERROR:", error);
 
     return {
       success: false,
-      message: "Something went wrong while creating availability",
+      message: t("appointments.server.createError"),
     };
   }
 }

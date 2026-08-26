@@ -1,12 +1,25 @@
+// components/feature/home/hero-section/hero-header/hero-header.tsx
+
 import React from "react";
 
-const HeroHeader = () => {
+interface HeroHeaderProps {
+  translations: {
+    line1: string;
+    line2: string;
+    line3: string;
+  };
+}
+
+const HeroHeader = ({ translations }: HeroHeaderProps) => {
   return (
-    <div className="text-6xl font-bold">
-      <p className=" text-foreground">
-        A calmer mind,
+    <div className="text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+      <p className="text-foreground">
+        {translations.line1}
+
         <span className="block text-primary">
-          one session at a<span className="block text-primary">time</span>
+          {translations.line2}
+
+          <span className="block text-primary">{translations.line3}</span>
         </span>
       </p>
     </div>
