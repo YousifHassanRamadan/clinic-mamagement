@@ -2,8 +2,14 @@
 
 "use server";
 
+import { cookies } from "next/headers";
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+import {
+  BOOK_READER_COOKIE,
+  createBookReaderToken,
+} from "@/lib/book-reader-token";
 
 export async function getMyBookReader(bookId: string) {
   try {
@@ -60,6 +66,18 @@ export async function getMyBookReader(bookId: string) {
         message: "You don't have access to this book.",
       };
     }
+
+    const token = createBookReaderToken(session.user.id, access.book.id);
+
+    const cookieStore = await cookies();
+
+    cookieStore.set(BOOK_READER_COOKIE, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 15 * 60,
+    });
 
     return {
       success: true as const,

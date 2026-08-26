@@ -31,7 +31,6 @@ export async function getMyBooks() {
     const books = await prisma.book.findMany({
       where: {
         isActive: true,
-
         accesses: {
           some: {
             userId: session.user.id,

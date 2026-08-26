@@ -1,8 +1,9 @@
+// app/dashboard/patient/my-books/[bookId]/read/page.tsx
+
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 
 import BookReader from "@/components/feature/dashboard/books/reader/book-reader";
-
 import { getMyBookReader } from "@/app/actions/patient-actions/books/get-my-book-reader";
 
 interface Props {
@@ -21,6 +22,7 @@ const ReadBookPage = async ({ params }: Props) => {
   }
 
   const cookieStore = await cookies();
+
   const locale = cookieStore.get("locale")?.value ?? "en";
 
   const title =

@@ -1,3 +1,5 @@
+// reader-page.tsx
+
 interface Props {
   bookId: string;
   pageNumber: number;
@@ -13,7 +15,7 @@ const ReaderPage = ({
   zoom,
   watermark,
 }: Props) => {
-  const src = `/api/books/${bookId}/pages/${pageNumber}`;
+  const src = `/api/books/pages/${pageNumber}`;
 
   return (
     <div className="flex min-h-full justify-center px-3 py-6 sm:px-6">
@@ -32,14 +34,12 @@ const ReaderPage = ({
           className="pointer-events-none block h-auto w-full select-none"
         />
 
-        {/* Watermark */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden">
           <div className="rotate-[-30deg] whitespace-nowrap text-2xl font-bold tracking-widest text-black/10 sm:text-4xl">
             {watermark}
           </div>
         </div>
 
-        {/* Page number */}
         <div className="absolute bottom-3 right-3 rounded-md bg-black/50 px-2 py-1 text-xs text-white">
           {pageNumber} / {totalPages}
         </div>

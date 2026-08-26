@@ -1,4 +1,4 @@
-// book-reader.tsx
+// components/feature/dashboard/books/reader/book-reader.tsx
 
 "use client";
 
@@ -43,6 +43,7 @@ const BookReader = ({ book }: Props) => {
   };
 
   const [currentPage, setCurrentPage] = useState(getInitialPage);
+
   const [zoom, setZoom] = useState(1);
 
   const updatePageInUrl = useCallback(
@@ -150,12 +151,22 @@ const BookReader = ({ book }: Props) => {
       event.preventDefault();
     };
 
+    const preventDrag = (event: DragEvent) => {
+      event.preventDefault();
+    };
+
     document.addEventListener("contextmenu", preventContextMenu);
+
     document.addEventListener("copy", preventCopy);
+
+    document.addEventListener("dragstart", preventDrag);
 
     return () => {
       document.removeEventListener("contextmenu", preventContextMenu);
+
       document.removeEventListener("copy", preventCopy);
+
+      document.removeEventListener("dragstart", preventDrag);
     };
   }, []);
 
@@ -170,7 +181,11 @@ const BookReader = ({ book }: Props) => {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div
+      className="min-h-screen bg-muted/30 select-none"
+      onCopy={(event) => event.preventDefault()}
+      onContextMenu={(event) => event.preventDefault()}
+    >
       <ReaderHeader title={book.title} />
 
       <main className="relative min-h-[calc(100vh-56px)] overflow-auto pb-24">
