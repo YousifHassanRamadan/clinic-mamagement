@@ -1,4 +1,4 @@
-// reader-page.tsx
+// components/feature/dashboard/books/reader/reader-page.tsx
 
 interface Props {
   bookId: string;
@@ -15,7 +15,7 @@ const ReaderPage = ({
   zoom,
   watermark,
 }: Props) => {
-  const src = `/api/books/pages/${pageNumber}`;
+  const src = `/api/books/${bookId}/pages/${pageNumber}`;
 
   return (
     <div className="flex min-h-full justify-center px-3 py-6 sm:px-6">

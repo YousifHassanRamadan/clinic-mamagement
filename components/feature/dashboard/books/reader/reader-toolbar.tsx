@@ -1,3 +1,5 @@
+// components/feature/dashboard/books/reader/reader-toolbar.tsx
+
 import { Minus, Plus, RotateCcw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

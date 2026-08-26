@@ -8,11 +8,10 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
 import {
   BOOK_READER_COOKIE,
-  createBookReaderToken,
   verifyBookReaderToken,
 } from "@/lib/book-reader-token";
 
-export async function getMyBookReader(bookId?: string) {
+export async function getMyBookReader() {
   try {
     const session = await auth();
 
@@ -24,23 +23,28 @@ export async function getMyBookReader(bookId?: string) {
     }
 
     const cookieStore = await cookies();
+    const readerToken = cookieStore.get(BOOK_READER_COOKIE)?.value;
 
-    const existingToken = cookieStore.get(BOOK_READER_COOKIE)?.value;
-
-    let targetBookId = bookId;
-
-    if (!targetBookId && existingToken) {
-      const tokenData = verifyBookReaderToken(existingToken);
-
-      if (tokenData && tokenData.userId === session.user.id) {
-        targetBookId = tokenData.bookId;
-      }
-    }
-
-    if (!targetBookId) {
+    if (!readerToken) {
       return {
         success: false as const,
-        message: "Book ID is required",
+        message: "Reader session not found",
+      };
+    }
+
+    const tokenData = verifyBookReaderToken(readerToken);
+
+    if (!tokenData) {
+      return {
+        success: false as const,
+        message: "Reader session expired",
+      };
+    }
+
+    if (tokenData.userId !== session.user.id) {
+      return {
+        success: false as const,
+        message: "Invalid reader session",
       };
     }
 
@@ -48,10 +52,9 @@ export async function getMyBookReader(bookId?: string) {
       where: {
         userId_bookId: {
           userId: session.user.id,
-          bookId: targetBookId,
+          bookId: tokenData.bookId,
         },
       },
-
       select: {
         approval: true,
 
@@ -76,23 +79,11 @@ export async function getMyBookReader(bookId?: string) {
     });
 
     if (!access || !access.approval || !access.book || !access.book.isActive) {
-      cookieStore.delete(BOOK_READER_COOKIE);
-
       return {
         success: false as const,
         message: "You don't have access to this book.",
       };
     }
-
-    const token = createBookReaderToken(session.user.id, access.book.id);
-
-    cookieStore.set(BOOK_READER_COOKIE, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      path: "/",
-      maxAge: 15 * 60,
-    });
 
     return {
       success: true as const,

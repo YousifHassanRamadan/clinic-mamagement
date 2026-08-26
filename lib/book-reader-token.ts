@@ -1,6 +1,4 @@
-// lib/book-reader-token.ts
-
-import { createHmac, timingSafeEqual } from "crypto";
+import { createHmac, timingSafeEqual, randomUUID } from "crypto";
 
 const TOKEN_TTL_SECONDS = 15 * 60;
 
@@ -29,7 +27,7 @@ export function createBookReaderToken(userId: string, bookId: string) {
   const payload: BookReaderTokenPayload = {
     userId,
     bookId,
-    sessionId: crypto.randomUUID(),
+    sessionId: randomUUID(),
     exp: Math.floor(Date.now() / 1000) + TOKEN_TTL_SECONDS,
   };
 
@@ -44,7 +42,13 @@ export function createBookReaderToken(userId: string, bookId: string) {
 
 export function verifyBookReaderToken(token: string) {
   try {
-    const [encodedPayload, signature] = token.split(".");
+    const parts = token.split(".");
+
+    if (parts.length !== 2) {
+      return null;
+    }
+
+    const [encodedPayload, signature] = parts;
 
     if (!encodedPayload || !signature) {
       return null;
@@ -52,8 +56,8 @@ export function verifyBookReaderToken(token: string) {
 
     const expectedSignature = sign(encodedPayload);
 
-    const actualBuffer = Buffer.from(signature);
-    const expectedBuffer = Buffer.from(expectedSignature);
+    const actualBuffer = Buffer.from(signature, "utf8");
+    const expectedBuffer = Buffer.from(expectedSignature, "utf8");
 
     if (
       actualBuffer.length !== expectedBuffer.length ||
@@ -66,7 +70,12 @@ export function verifyBookReaderToken(token: string) {
       Buffer.from(encodedPayload, "base64url").toString("utf8"),
     ) as BookReaderTokenPayload;
 
-    if (!payload.userId || !payload.bookId || !payload.sessionId) {
+    if (
+      !payload.userId ||
+      !payload.bookId ||
+      !payload.sessionId ||
+      !Number.isInteger(payload.exp)
+    ) {
       return null;
     }
 

@@ -1,3 +1,5 @@
+// components/feature/dashboard/books/reader/reader-navigation.tsx
+
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";

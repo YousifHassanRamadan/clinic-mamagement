@@ -1,35 +1,34 @@
-// Book Card - Read Book Button
-
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import { getMyBookReader } from "@/app/actions/patient-actions/books/get-my-book-reader";
+import { startBookReader } from "@/app/actions/patient-actions/books/start-book-reader";
 
-const ReadBookButton = ({
-  bookId,
-  isArabic,
-  translations,
-}: {
+interface Props {
   bookId: string;
   isArabic: boolean;
   translations: {
     readBook: string;
   };
-}) => {
+}
+
+const ReadBookButton = ({ bookId, isArabic, translations }: Props) => {
   const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   const handleRead = () => {
     startTransition(async () => {
-      const result = await getMyBookReader(bookId);
+      const result = await startBookReader(bookId);
 
       if (!result.success) {
+        console.error("START BOOK READER ERROR:", result.message);
+
         return;
       }
 

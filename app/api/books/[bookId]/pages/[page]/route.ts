@@ -1,4 +1,4 @@
-// app/api/books/pages/[page]/route.ts
+// app/api/books/[bookId]/pages/[page]/route.ts
 
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -12,6 +12,7 @@ import {
 
 interface RouteProps {
   params: Promise<{
+    bookId: string;
     page: string;
   }>;
 }
@@ -70,8 +71,9 @@ function checkRateLimit(key: string) {
 
 export async function GET(request: Request, { params }: RouteProps) {
   try {
-    const cookieStore = await cookies();
+    const { bookId, page } = await params;
 
+    const cookieStore = await cookies();
     const token = cookieStore.get(BOOK_READER_COOKIE)?.value;
 
     if (!token) {
@@ -88,6 +90,15 @@ export async function GET(request: Request, { params }: RouteProps) {
     if (!tokenData) {
       return new NextResponse("Invalid reader session", {
         status: 401,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      });
+    }
+
+    if (bookId !== tokenData.bookId) {
+      return new NextResponse("Access denied", {
+        status: 403,
         headers: {
           "Cache-Control": "no-store",
         },
@@ -112,13 +123,14 @@ export async function GET(request: Request, { params }: RouteProps) {
       });
     }
 
-    const { page } = await params;
-
     const pageNumber = Number(page);
 
     if (!Number.isInteger(pageNumber) || pageNumber < 1) {
       return new NextResponse("Invalid page number", {
         status: 400,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
@@ -129,7 +141,6 @@ export async function GET(request: Request, { params }: RouteProps) {
           bookId: tokenData.bookId,
         },
       },
-
       select: {
         approval: true,
 
@@ -147,24 +158,36 @@ export async function GET(request: Request, { params }: RouteProps) {
     if (!access?.approval) {
       return new NextResponse("Access denied", {
         status: 403,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
     if (!access.book?.isActive) {
       return new NextResponse("Book is not available", {
         status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
     if (pageNumber > access.book.pageCount) {
       return new NextResponse("Page does not exist", {
         status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
     if (!access.book.cloudinaryPublicId) {
       return new NextResponse("Book file not found", {
         status: 404,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
@@ -173,7 +196,6 @@ export async function GET(request: Request, { params }: RouteProps) {
       resource_type: "image",
       type: "upload",
       format: "jpg",
-
       transformation: [
         {
           page: pageNumber,
@@ -188,8 +210,17 @@ export async function GET(request: Request, { params }: RouteProps) {
     });
 
     if (!response.ok) {
+      console.error("CLOUDINARY_PAGE_ERROR:", {
+        bookId: tokenData.bookId,
+        pageNumber,
+        status: response.status,
+      });
+
       return new NextResponse("Failed to load book page", {
         status: 502,
+        headers: {
+          "Cache-Control": "no-store",
+        },
       });
     }
 
@@ -197,18 +228,12 @@ export async function GET(request: Request, { params }: RouteProps) {
 
     return new NextResponse(imageBuffer, {
       status: 200,
-
       headers: {
         "Content-Type": response.headers.get("content-type") || "image/jpeg",
-
         "Cache-Control": "private, no-store, max-age=0, must-revalidate",
-
         "X-Content-Type-Options": "nosniff",
-
         "Content-Disposition": "inline",
-
         "X-Frame-Options": "SAMEORIGIN",
-
         "Referrer-Policy": "same-origin",
       },
     });
