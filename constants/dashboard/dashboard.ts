@@ -233,17 +233,17 @@ export const quickActions = [
   {
     titleKey: "appointment.book",
     icon: CalendarPlus,
-    href: "/dashboard/appointments/new",
+    href: "/dashboard/patient/appointments/new",
   },
   {
     titleKey: "assessment.take",
     icon: ClipboardCheck,
-    href: "/dashboard/tests",
+    href: "/dashboard/patient/tests",
   },
   {
     titleKey: "profile.edit",
     icon: UserRound,
-    href: "/dashboard/profile",
+    href: "/dashboard/patient/profile",
   },
 ] as const;
 

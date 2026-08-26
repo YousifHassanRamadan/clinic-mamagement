@@ -49,7 +49,9 @@ const WelcomeSection = async () => {
       </div>
 
       <Button asChild variant="secondary" className="rounded-xl">
-        <Link href="/dashboard/appointments/new">{t("appointment.book")}</Link>
+        <Link href="/dashboard/patient/appointments/new">
+          {t("appointment.book")}
+        </Link>
       </Button>
     </section>
   );
