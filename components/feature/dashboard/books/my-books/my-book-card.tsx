@@ -1,7 +1,6 @@
 // components/feature/dashboard/books/my-books/my-book-card.tsx
 
 import Image from "next/image";
-import Link from "next/link";
 
 import { BookOpen, Calendar } from "lucide-react";
 
@@ -9,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 
 import type { MyBook } from "@/app/actions/patient-actions/books/get-my-books";
+import ReadBookButton from "./read book-button";
 
 interface Props {
   book: MyBook;
@@ -69,13 +69,13 @@ const MyBookCard = ({ book, locale, translations }: Props) => {
       </CardContent>
 
       <CardFooter className="p-5 pt-0">
-        <Button asChild className="w-full">
-          <Link href={`/dashboard/patient/my-books/${book.id}/read`}>
-            <BookOpen className={isArabic ? "ml-2 h-4 w-4" : "mr-2 h-4 w-4"} />
-
-            {translations.readBook}
-          </Link>
-        </Button>
+        <ReadBookButton
+          bookId={book.id}
+          isArabic={isArabic}
+          translations={{
+            readBook: translations.readBook,
+          }}
+        />
       </CardFooter>
     </Card>
   );

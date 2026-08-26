@@ -9,9 +9,10 @@ import { auth } from "@/providers/auth/auth";
 import {
   BOOK_READER_COOKIE,
   createBookReaderToken,
+  verifyBookReaderToken,
 } from "@/lib/book-reader-token";
 
-export async function getMyBookReader(bookId: string) {
+export async function getMyBookReader(bookId?: string) {
   try {
     const session = await auth();
 
@@ -22,7 +23,21 @@ export async function getMyBookReader(bookId: string) {
       };
     }
 
-    if (!bookId) {
+    const cookieStore = await cookies();
+
+    const existingToken = cookieStore.get(BOOK_READER_COOKIE)?.value;
+
+    let targetBookId = bookId;
+
+    if (!targetBookId && existingToken) {
+      const tokenData = verifyBookReaderToken(existingToken);
+
+      if (tokenData && tokenData.userId === session.user.id) {
+        targetBookId = tokenData.bookId;
+      }
+    }
+
+    if (!targetBookId) {
       return {
         success: false as const,
         message: "Book ID is required",
@@ -33,7 +48,7 @@ export async function getMyBookReader(bookId: string) {
       where: {
         userId_bookId: {
           userId: session.user.id,
-          bookId,
+          bookId: targetBookId,
         },
       },
 
@@ -61,6 +76,8 @@ export async function getMyBookReader(bookId: string) {
     });
 
     if (!access || !access.approval || !access.book || !access.book.isActive) {
+      cookieStore.delete(BOOK_READER_COOKIE);
+
       return {
         success: false as const,
         message: "You don't have access to this book.",
@@ -68,8 +85,6 @@ export async function getMyBookReader(bookId: string) {
     }
 
     const token = createBookReaderToken(session.user.id, access.book.id);
-
-    const cookieStore = await cookies();
 
     cookieStore.set(BOOK_READER_COOKIE, token, {
       httpOnly: true,

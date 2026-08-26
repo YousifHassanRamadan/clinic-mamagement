@@ -1,4 +1,4 @@
-// app/dashboard/patient/my-books/[bookId]/read/page.tsx
+// app/dashboard/patient/my-books/read/page.tsx
 
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
@@ -6,22 +6,20 @@ import { cookies } from "next/headers";
 import BookReader from "@/components/feature/dashboard/books/reader/book-reader";
 import { getMyBookReader } from "@/app/actions/patient-actions/books/get-my-book-reader";
 
-interface Props {
-  params: Promise<{
-    bookId: string;
-  }>;
-}
+const ReadBookPage = async () => {
+  const cookieStore = await cookies();
 
-const ReadBookPage = async ({ params }: Props) => {
-  const { bookId } = await params;
+  const readerToken = cookieStore.get("book_reader_session")?.value;
 
-  const result = await getMyBookReader(bookId);
+  if (!readerToken) {
+    redirect("/dashboard/patient/my-books");
+  }
+
+  const result = await getMyBookReader();
 
   if (!result.success) {
     redirect("/dashboard/patient/my-books");
   }
-
-  const cookieStore = await cookies();
 
   const locale = cookieStore.get("locale")?.value ?? "en";
 
