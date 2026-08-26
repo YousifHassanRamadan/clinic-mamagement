@@ -19,7 +19,7 @@ export async function GET(request: Request, { params }: RouteProps) {
 
     const session = await auth();
 
-    console.log("BOOK API SESSION:", session);
+    // console.log("BOOK API SESSION:", session);
 
     if (!session?.user?.id) {
       return new NextResponse("Unauthorized", {
@@ -133,7 +133,7 @@ export async function GET(request: Request, { params }: RouteProps) {
       ],
     });
 
-    console.log("BOOK PAGE URL:", pageUrl);
+    // console.log("BOOK PAGE URL:", pageUrl);
 
     // ==========================================
     // FETCH PAGE FROM CLOUDINARY

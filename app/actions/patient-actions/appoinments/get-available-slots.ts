@@ -7,17 +7,17 @@ interface GetAvailableSlotsInput {
 }
 
 export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
-  console.log("========================================");
-  console.log("🚀 GET_AVAILABLE_SLOTS START");
-  console.log("📅 Received date:", date);
-  console.log("========================================");
+  // console.log("========================================");
+  // console.log("🚀 GET_AVAILABLE_SLOTS START");
+  // console.log("📅 Received date:", date);
+  // console.log("========================================");
 
   try {
     // =========================
     // 1. Validate date
     // =========================
     if (!date) {
-      console.log("❌ Date is missing");
+      // console.log("❌ Date is missing");
 
       return {
         success: false,
@@ -35,12 +35,12 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
 
     const endOfDay = new Date(`${date}T23:59:59.999+03:00`);
 
-    console.log("🕐 Start of day:", startOfDay);
-    console.log("🕐 End of day:", endOfDay);
+    // console.log("🕐 Start of day:", startOfDay);
+    // console.log("🕐 End of day:", endOfDay);
 
-    console.log("🌍 Start ISO:", startOfDay.toISOString());
+    // console.log("🌍 Start ISO:", startOfDay.toISOString());
 
-    console.log("🌍 End ISO:", endOfDay.toISOString());
+    // console.log("🌍 End ISO:", endOfDay.toISOString());
 
     // =========================
     // 3. Find doctor
@@ -60,10 +60,10 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
       },
     });
 
-    console.log("👨‍⚕️ Doctor result:", doctor);
+    // console.log("👨‍⚕️ Doctor result:", doctor);
 
     if (!doctor) {
-      console.log("❌ No doctor found");
+      // console.log("❌ No doctor found");
 
       return {
         success: true,
@@ -71,17 +71,17 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
       };
     }
 
-    console.log("✅ Doctor found:", {
-      id: doctor.id,
-      name: `${doctor.firstName} ${doctor.lastName}`,
-      email: doctor.email,
-      approval: doctor.approval,
-    });
+    // console.log("✅ Doctor found:", {
+    //   id: doctor.id,
+    //   name: `${doctor.firstName} ${doctor.lastName}`,
+    //   email: doctor.email,
+    //   approval: doctor.approval,
+    // });
 
     // =========================
     // 4. Find availability
     // =========================
-    console.log("🔎 Searching availability...");
+    // console.log("🔎 Searching availability...");
 
     const availability = await prisma.availability.findFirst({
       where: {
@@ -104,13 +104,13 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
       },
     });
 
-    console.log("📋 Availability result:", availability);
+    // console.log("📋 Availability result:", availability);
 
     // =========================
     // 5. Check availability
     // =========================
     if (!availability) {
-      console.log("❌ No availability found for:", date);
+      // console.log("❌ No availability found for:", date);
 
       // DEBUG:
       // Get ALL availability records for this doctor
@@ -126,7 +126,7 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
         },
       });
 
-      console.log("🧪 ALL DOCTOR AVAILABILITIES:", allAvailabilities);
+      // console.log("🧪 ALL DOCTOR AVAILABILITIES:", allAvailabilities);
 
       return {
         success: true,
@@ -134,19 +134,19 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
       };
     }
 
-    console.log("✅ Availability found:", {
-      id: availability.id,
-      date: availability.date,
-      startTime: availability.startTime,
-      endTime: availability.endTime,
-      duration: availability.duration,
-      isAvailable: availability.isAvailable,
-    });
+    // console.log("✅ Availability found:", {
+    //   id: availability.id,
+    //   date: availability.date,
+    //   startTime: availability.startTime,
+    //   endTime: availability.endTime,
+    //   duration: availability.duration,
+    //   isAvailable: availability.isAvailable,
+    // });
 
     // =========================
     // 6. Log all slots
     // =========================
-    console.log("🕒 ALL SLOTS:", availability.slots);
+    // console.log("🕒 ALL SLOTS:", availability.slots);
 
     // =========================
     // 7. Filter available slots
@@ -155,16 +155,16 @@ export async function getAvailableSlots({ date }: GetAvailableSlotsInput) {
       (slot) => slot.isAvailable,
     );
 
-    console.log("✅ AVAILABLE SLOTS:", availableSlots);
+    // console.log("✅ AVAILABLE SLOTS:", availableSlots);
 
     // =========================
     // 8. Final response
     // =========================
-    console.log("📤 Returning slots:", availableSlots);
+    // console.log("📤 Returning slots:", availableSlots);
 
-    console.log("========================================");
-    console.log("✅ GET_AVAILABLE_SLOTS END");
-    console.log("========================================");
+    // console.log("========================================");
+    // console.log("✅ GET_AVAILABLE_SLOTS END");
+    // console.log("========================================");
 
     return {
       success: true,
