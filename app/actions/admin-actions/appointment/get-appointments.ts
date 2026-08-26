@@ -64,6 +64,35 @@ export async function getAppointments() {
       const patientInitials =
         `${appointment.user.firstName.charAt(0)}${appointment.user.lastName.charAt(0)}`.toUpperCase();
 
+      const appointmentDate = appointment.date;
+
+      const year = appointmentDate.getUTCFullYear();
+      const month = appointmentDate.getUTCMonth();
+      const day = appointmentDate.getUTCDate();
+
+      const hours = appointmentDate.getUTCHours();
+      const minutes = appointmentDate.getUTCMinutes();
+
+      // Date فقط بدون أي timezone conversion
+      const displayDate = new Date(
+        Date.UTC(year, month, day),
+      ).toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+      });
+
+      // نحافظ على الساعة المخزنة كما هي، لكن نحولها إلى AM/PM
+      const displayTime = new Date(
+        Date.UTC(1970, 0, 1, hours, minutes),
+      ).toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+        timeZone: "UTC",
+      });
+
       return {
         id: appointment.id,
 
@@ -77,17 +106,9 @@ export async function getAppointments() {
 
         phone: appointment.user.phone,
 
-        date: appointment.date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
+        date: displayDate,
 
-        time: appointment.date.toLocaleTimeString("en-GB", {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        }),
+        time: displayTime,
 
         status: appointment.status,
 

@@ -1,5 +1,3 @@
-// create-availability.ts
-
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -48,7 +46,28 @@ export async function createAvailability(
 
     const { date, startTime, endTime, duration, slots } = parsed.data;
 
+    /*
+     * IMPORTANT:
+     *
+     * date/startTime/endTime are clinic-local scheduling values.
+     * We store the clock time exactly as selected by the doctor.
+     *
+     * Do NOT use:
+     * new Date(`${date}T${startTime}:00`)
+     *
+     * because that applies the server timezone.
+     *
+     * Using Z here makes the stored UTC clock values deterministic:
+     * 09:00 -> 09:00 UTC
+     * 16:00 -> 16:00 UTC
+     * 17:00 -> 17:00 UTC
+     */
+
     const availabilityDate = new Date(`${date}T00:00:00.000Z`);
+
+    const startTimeDate = new Date(`${date}T${startTime}:00.000Z`);
+
+    const endTimeDate = new Date(`${date}T${endTime}:00.000Z`);
 
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -138,10 +157,17 @@ export async function createAvailability(
     await prisma.availability.create({
       data: {
         doctorId: session.user.id,
+
         date: availabilityDate,
-        startTime: new Date(`${date}T${startTime}:00.000Z`),
-        endTime: new Date(`${date}T${endTime}:00.000Z`),
+
+        // Store exactly the selected clock time.
+        startTime: startTimeDate,
+
+        // Store exactly the selected clock time.
+        endTime: endTimeDate,
+
         duration,
+
         slots: {
           create: uniqueSlots.map((time) => ({
             time,

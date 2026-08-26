@@ -18,6 +18,44 @@ interface Props {
   appointment: PatientAppointment;
 }
 
+/**
+ * The appointment date is stored as UTC,
+ * but the UTC clock values represent Egypt local time.
+ *
+ * Therefore we read UTC values directly and never
+ * apply the browser timezone.
+ */
+const formatAppointmentDate = (date: Date, locale: "en" | "ar") => {
+  const year = date.getUTCFullYear();
+  const month = date.getUTCMonth();
+  const day = date.getUTCDate();
+
+  return new Date(Date.UTC(year, month, day)).toLocaleDateString(
+    locale === "ar" ? "ar-EG" : "en-US",
+    {
+      weekday: "long",
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+      timeZone: "UTC",
+    },
+  );
+};
+
+const formatAppointmentTime = (date: Date, locale: "en" | "ar") => {
+  const hours = date.getUTCHours();
+  const minutes = date.getUTCMinutes();
+
+  const tempDate = new Date(Date.UTC(1970, 0, 1, hours, minutes));
+
+  return tempDate.toLocaleTimeString(locale === "ar" ? "ar-EG" : "en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+    timeZone: "UTC",
+  });
+};
+
 const AppointmentItem = ({ appointment }: Props) => {
   const [locale, setLocale] = useState<"en" | "ar">("en");
 
@@ -42,23 +80,9 @@ const AppointmentItem = ({ appointment }: Props) => {
 
   const appointmentDate = new Date(appointment.date);
 
-  const formattedDate = appointmentDate.toLocaleDateString(
-    locale === "ar" ? "ar-EG" : "en-US",
-    {
-      weekday: "long",
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    },
-  );
+  const formattedDate = formatAppointmentDate(appointmentDate, locale);
 
-  const formattedTime = appointmentDate.toLocaleTimeString(
-    locale === "ar" ? "ar-EG" : "en-US",
-    {
-      hour: "numeric",
-      minute: "2-digit",
-    },
-  );
+  const formattedTime = formatAppointmentTime(appointmentDate, locale);
 
   return (
     <Card className="rounded-3xl p-6 transition hover:shadow-md">

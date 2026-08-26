@@ -1,5 +1,3 @@
-// TimeSlotGrid.tsx
-
 "use client";
 
 import { Check, X } from "lucide-react";
@@ -26,6 +24,19 @@ interface TimeSlotGridProps {
     adjustWorkingHours: string;
   };
 }
+
+const formatDisplayTime = (time: string) => {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) {
+    return time;
+  }
+
+  const period = hours >= 12 ? "PM" : "AM";
+  const displayHour = hours % 12 || 12;
+
+  return `${displayHour}:${String(minutes).padStart(2, "0")} ${period}`;
+};
 
 const TimeSlotGrid = ({
   slots,
@@ -110,15 +121,15 @@ const TimeSlotGrid = ({
                   {isBooked ? (
                     <>
                       <X className="h-4 w-4" />
-                      <span>{slot.time}</span>
+                      <span>{formatDisplayTime(slot.time)}</span>
                     </>
                   ) : selected ? (
                     <>
                       <Check className="h-4 w-4" />
-                      <span>{slot.time}</span>
+                      <span>{formatDisplayTime(slot.time)}</span>
                     </>
                   ) : (
-                    <span>{slot.time}</span>
+                    <span>{formatDisplayTime(slot.time)}</span>
                   )}
                 </button>
               );

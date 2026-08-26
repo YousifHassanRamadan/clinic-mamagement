@@ -1,5 +1,3 @@
-// components/feature/dashboard/appointments/TimeSlots.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -28,6 +26,42 @@ interface Props {
     noAvailable: string;
   };
 }
+
+/**
+ * Convert HH:mm -> h:mm AM/PM
+ *
+ * IMPORTANT:
+ * This function does NOT use Date.
+ * Therefore there is NO timezone conversion.
+ *
+ * 09:00 -> 9:00 AM
+ * 12:00 -> 12:00 PM
+ * 14:00 -> 2:00 PM
+ * 16:00 -> 4:00 PM
+ */
+const formatSlotTime = (time: string) => {
+  const [hourString, minuteString] = time.split(":");
+
+  const hour = Number(hourString);
+  const minute = Number(minuteString);
+
+  if (
+    !Number.isInteger(hour) ||
+    !Number.isInteger(minute) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return time;
+  }
+
+  const period = hour >= 12 ? "PM" : "AM";
+
+  const displayHour = hour % 12 || 12;
+
+  return `${displayHour}:${String(minute).padStart(2, "0")} ${period}`;
+};
 
 const TimeSlots = ({
   date,
@@ -98,7 +132,7 @@ const TimeSlots = ({
               className="h-12 rounded-xl"
               onClick={() => setSelectedTime(slot.time, slot.id)}
             >
-              {slot.time}
+              {formatSlotTime(slot.time)}
             </Button>
           ))}
         </div>
