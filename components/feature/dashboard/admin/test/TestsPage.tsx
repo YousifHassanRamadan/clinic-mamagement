@@ -1,3 +1,5 @@
+// TestsPage.tsx
+
 import { cookies } from "next/headers";
 
 import { getTranslations } from "@/i18n/getTranslations";
@@ -106,6 +108,7 @@ const TestsPage = async () => {
       empty: t("tests2.version2.questions.empty"),
       failedToLoad: t("tests2.version2.questions.failedToLoad"),
       failedToCreate: t("tests2.version2.questions.failedToCreate"),
+      closeTest: t("tests2.version2.questions.closeTest"),
     },
 
     question: {

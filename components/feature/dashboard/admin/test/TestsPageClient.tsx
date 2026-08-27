@@ -32,51 +32,36 @@ export interface TestsTranslations {
     editTitle: string;
     createDescription: string;
     editDescription: string;
-
     title: string;
     titlePlaceholder: string;
-
     titleAr: string;
     titleArPlaceholder: string;
-
     description: string;
     descriptionPlaceholder: string;
-
     descriptionAr: string;
     descriptionArPlaceholder: string;
-
     category: string;
     selectCategory: string;
-
     price: string;
     pricePlaceholder: string;
     currency: string;
-
     scoreRanges: string;
     scoreRangesDescription: string;
     addRange: string;
-
     minScore: string;
     maxScore: string;
-
     result: string;
     resultPlaceholder: string;
-
     resultAr: string;
     resultArPlaceholder: string;
-
     remove: string;
-
     active: string;
     activeDescription: string;
-
     cancel: string;
     creating: string;
     saving: string;
-
     createTest: string;
     saveChanges: string;
-
     close: string;
     testIdRequired: string;
     noChanges: string;
@@ -119,6 +104,7 @@ export interface TestsTranslations {
     empty: string;
     failedToLoad: string;
     failedToCreate: string;
+    closeTest: string;
   };
 
   question: {
@@ -156,11 +142,8 @@ interface Category {
 
 const TestsPageClient = ({ translations }: Props) => {
   const [search, setSearch] = useState("");
-
   const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
-
   const [categoryId, setCategoryId] = useState("");
-
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
