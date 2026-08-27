@@ -166,7 +166,7 @@ const QuestionBuilder = ({ translations }: Props) => {
   return (
     <section className="rounded-2xl border bg-card shadow-sm">
       <div className="flex flex-col gap-4 border-b p-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className="min-w-0">
           <h2 className="font-serif text-lg font-semibold">
             {translations.questions.title}
           </h2>
@@ -176,13 +176,13 @@ const QuestionBuilder = ({ translations }: Props) => {
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:shrink-0">
           {selectedTestId && (
             <Button
               type="button"
               variant="outline"
               onClick={closeTest}
-              className="rounded-xl"
+              className="w-full rounded-xl sm:w-auto"
             >
               <X className="mr-2 h-4 w-4" />
               {translations.questions.closeTest}
@@ -193,7 +193,7 @@ const QuestionBuilder = ({ translations }: Props) => {
             type="button"
             onClick={addQuestion}
             disabled={isAddingQuestion || !selectedTestId}
-            className="rounded-xl"
+            className="w-full rounded-xl sm:w-auto"
           >
             {isAddingQuestion ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
