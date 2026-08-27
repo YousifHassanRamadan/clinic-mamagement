@@ -1,5 +1,3 @@
-// app/dashboard/admin/test-results/page.tsx
-
 import TestResultsPage from "@/components/feature/dashboard/admin/test-results/TestResultsPage";
 
 import { cookies } from "next/headers";
@@ -21,6 +19,7 @@ const AdminTestResultsPage = async () => {
 
   return (
     <TestResultsPage
+      locale={locale}
       translations={{
         header: {
           label: t("dashboard4.admin.testResults.header.label"),

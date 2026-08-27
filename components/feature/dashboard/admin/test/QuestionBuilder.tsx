@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ interface Props {
       empty: string;
       failedToLoad: string;
       failedToCreate: string;
+      closeTest: string;
     };
 
     question: {
@@ -53,6 +54,9 @@ interface Props {
 
 const QuestionBuilder = ({ translations }: Props) => {
   const selectedTestId = useTestModalStore((state) => state.selectedTestId);
+  const clearSelectedTest = useTestModalStore(
+    (state) => state.clearSelectedTest,
+  );
 
   const [questions, setQuestions] = useState<TestQuestion[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -96,6 +100,11 @@ const QuestionBuilder = ({ translations }: Props) => {
   useEffect(() => {
     loadQuestions();
   }, [selectedTestId]);
+
+  const closeTest = () => {
+    clearSelectedTest();
+    setQuestions([]);
+  };
 
   const addQuestion = async () => {
     if (isAddingQuestion || !selectedTestId) return;
@@ -168,6 +177,18 @@ const QuestionBuilder = ({ translations }: Props) => {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          {selectedTestId && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={closeTest}
+              className="rounded-xl"
+            >
+              <X className="mr-2 h-4 w-4" />
+              {translations.questions.closeTest}
+            </Button>
+          )}
+
           <Button
             type="button"
             onClick={addQuestion}

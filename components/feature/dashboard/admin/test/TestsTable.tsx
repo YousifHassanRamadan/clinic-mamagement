@@ -88,6 +88,45 @@ const TestsTable = ({ search, status, categoryId, translations }: Props) => {
     };
   }, [search, status, categoryId]);
 
+  useEffect(() => {
+    const handleTestsRefresh = () => {
+      let cancelled = false;
+
+      const refreshTests = async () => {
+        try {
+          const result = await getTests({
+            search,
+            status,
+            categoryId,
+          });
+
+          if (cancelled) return;
+
+          if (!result.success) {
+            setTests([]);
+            return;
+          }
+
+          setTests(result.data);
+        } catch (error) {
+          console.error("REFRESH_TESTS_ERROR:", error);
+        }
+      };
+
+      refreshTests();
+
+      return () => {
+        cancelled = true;
+      };
+    };
+
+    window.addEventListener("tests:refresh", handleTestsRefresh);
+
+    return () => {
+      window.removeEventListener("tests:refresh", handleTestsRefresh);
+    };
+  }, [search, status, categoryId]);
+
   const handleDelete = (testId: string) => {
     setTests((currentTests) =>
       currentTests.filter((test) => test.id !== testId),

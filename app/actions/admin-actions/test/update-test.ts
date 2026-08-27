@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
 import { createTestSchema } from "@/schemas/test.schema";
+import { revalidatePath } from "next/cache";
 
 export async function updateTest(testId: string, input: unknown) {
   if (!testId) {
@@ -114,6 +115,9 @@ export async function updateTest(testId: string, input: unknown) {
         },
       });
     });
+
+    revalidatePath("/dashboard/admin/tests");
+    revalidatePath("/dashboard/admin/test-results");
 
     return {
       success: true,

@@ -1,5 +1,3 @@
-// components/feature/dashboard/admin/test-results/TestResultDetailsPage.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -52,6 +50,7 @@ interface Translations {
 
 interface Props {
   patientTestId: string;
+  locale: "en" | "ar";
   translations: Translations;
 }
 
@@ -85,12 +84,14 @@ type ResultData = {
   answers: {
     id: string;
     points: number;
+
     question: {
       id: string;
       question: string;
       questionAr: string | null;
       order: number;
     };
+
     option: {
       id: string;
       text: string;
@@ -98,13 +99,20 @@ type ResultData = {
       points: number;
       order: number;
     };
+
     createdAt: Date;
   }[];
 };
 
-const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
+const TestResultDetailsPage = ({
+  patientTestId,
+  locale,
+  translations,
+}: Props) => {
   const [data, setData] = useState<ResultData | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const isArabic = locale === "ar";
 
   useEffect(() => {
     let cancelled = false;
@@ -167,14 +175,64 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
     );
   }
 
-  const patientName = `${data.patient.firstName} ${data.patient.lastName}`;
+  const getPatientName = () => {
+    if (isArabic) {
+      const firstName =
+        data.patient.firstNameAr?.trim() || data.patient.firstName;
+      const lastName = data.patient.lastNameAr?.trim() || data.patient.lastName;
+
+      return `${firstName} ${lastName}`;
+    }
+
+    return `${data.patient.firstName} ${data.patient.lastName}`;
+  };
+
+  const getTestTitle = () => {
+    if (isArabic) {
+      return data.test.titleAr?.trim() || data.test.title;
+    }
+
+    return data.test.title;
+  };
+
+  const getTestDescription = () => {
+    if (isArabic) {
+      return data.test.descriptionAr?.trim() || data.test.description;
+    }
+
+    return data.test.description;
+  };
+
+  const getQuestionText = (
+    question: ResultData["answers"][number]["question"],
+  ) => {
+    if (isArabic) {
+      return question.questionAr?.trim() || question.question;
+    }
+
+    return question.question;
+  };
+
+  const getOptionText = (option: ResultData["answers"][number]["option"]) => {
+    if (isArabic) {
+      return option.textAr?.trim() || option.text;
+    }
+
+    return option.text;
+  };
+
+  const patientName = getPatientName();
+  const testTitle = getTestTitle();
+  const testDescription = getTestDescription();
 
   const getStatusLabel = () => {
     switch (data.status) {
       case "COMPLETED":
         return translations.result.completed;
+
       case "IN_PROGRESS":
         return translations.result.inProgress;
+
       default:
         return translations.result.notStarted;
     }
@@ -184,8 +242,10 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
     switch (data.status) {
       case "COMPLETED":
         return "bg-success/10 text-success";
+
       case "IN_PROGRESS":
         return "bg-warning/10 text-warning";
+
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -199,7 +259,7 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
             {translations.header.label}
           </span>
 
-          <h1 className="mt-2 text-3xl font-bold">{data.test.title}</h1>
+          <h1 className="mt-2 text-3xl font-bold">{testTitle}</h1>
 
           <p className="mt-2 text-muted-foreground">{patientName}</p>
         </div>
@@ -259,9 +319,9 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
             <h2 className="font-semibold">{translations.test.title}</h2>
           </div>
 
-          {data.test.description && (
+          {testDescription && (
             <p className="mt-5 text-sm leading-7 text-muted-foreground">
-              {data.test.description}
+              {testDescription}
             </p>
           )}
         </div>
@@ -312,7 +372,7 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
 
             <p className="mt-2 text-sm">
               {data.completedAt
-                ? new Intl.DateTimeFormat(undefined, {
+                ? new Intl.DateTimeFormat(isArabic ? "ar-EG" : "en-US", {
                     dateStyle: "medium",
                     timeStyle: "short",
                   }).format(new Date(data.completedAt))
@@ -337,7 +397,7 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
               {translations.answers.empty}
             </div>
           ) : (
-            data.answers
+            [...data.answers]
               .sort((a, b) => a.question.order - b.question.order)
               .map((answer, index) => (
                 <div key={answer.id} className="p-6">
@@ -352,7 +412,7 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
                       </p>
 
                       <p className="mt-2 font-medium leading-7">
-                        {answer.question.question}
+                        {getQuestionText(answer.question)}
                       </p>
 
                       <div className="mt-5 rounded-xl border bg-muted/30 p-4">
@@ -360,7 +420,9 @@ const TestResultDetailsPage = ({ patientTestId, translations }: Props) => {
                           {translations.answers.selectedAnswer}
                         </p>
 
-                        <p className="mt-2 font-medium">{answer.option.text}</p>
+                        <p className="mt-2 font-medium">
+                          {getOptionText(answer.option)}
+                        </p>
                       </div>
 
                       <div className="mt-4 flex items-center justify-between text-sm">

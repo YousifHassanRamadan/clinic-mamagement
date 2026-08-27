@@ -1,5 +1,3 @@
-// app/dashboard/admin/test-results/[patientTestId]/page.tsx
-
 import TestResultDetailsPage from "@/components/feature/dashboard/admin/test-results/TestResultDetailsPage";
 
 import { cookies } from "next/headers";
@@ -30,6 +28,7 @@ const AdminTestResultDetailsPage = async ({ params }: Props) => {
   return (
     <TestResultDetailsPage
       patientTestId={patientTestId}
+      locale={locale}
       translations={{
         back: t("dashboard4.admin.testResults.details.back"),
 

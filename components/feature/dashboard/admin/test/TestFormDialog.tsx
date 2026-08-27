@@ -1,3 +1,5 @@
+// TestFormDialog.tsx
+
 "use client";
 
 import { X } from "lucide-react";
@@ -102,6 +104,40 @@ interface TestFormDialogProps {
   translations: TestFormTranslations;
 }
 
+const emptyFormValues: CreateTestInput = {
+  title: "",
+  titleAr: "",
+  description: "",
+  descriptionAr: "",
+  categoryId: "",
+  price: 0,
+  isActive: true,
+  ranges: [
+    {
+      minScore: 0,
+      maxScore: 0,
+      result: "",
+      resultAr: "",
+    },
+  ],
+};
+
+const normalizeFormData = (data: CreateTestInput): CreateTestInput => ({
+  title: data.title ?? "",
+  titleAr: data.titleAr ?? "",
+  description: data.description ?? "",
+  descriptionAr: data.descriptionAr ?? "",
+  categoryId: data.categoryId ?? "",
+  price: Number(data.price ?? 0),
+  isActive: Boolean(data.isActive),
+  ranges: (data.ranges ?? []).map((range) => ({
+    minScore: Number(range.minScore ?? 0),
+    maxScore: Number(range.maxScore ?? 0),
+    result: range.result ?? "",
+    resultAr: range.resultAr ?? "",
+  })),
+});
+
 const TestFormDialog = ({
   open,
   onOpenChange,
@@ -120,30 +156,10 @@ const TestFormDialog = ({
     control,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<CreateTestInput>({
     resolver: zodResolver(createTestSchema),
-
-    defaultValues: {
-      title: "",
-      titleAr: "",
-
-      description: "",
-      descriptionAr: "",
-
-      categoryId: "",
-      price: 0,
-      isActive: true,
-
-      ranges: [
-        {
-          minScore: 0,
-          maxScore: 0,
-          result: "",
-          resultAr: "",
-        },
-      ],
-    },
+    defaultValues: emptyFormValues,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -154,29 +170,11 @@ const TestFormDialog = ({
   useEffect(() => {
     if (!open) return;
 
+    let cancelled = false;
+
     const loadTest = async () => {
       if (!isEdit) {
-        reset({
-          title: "",
-          titleAr: "",
-
-          description: "",
-          descriptionAr: "",
-
-          categoryId: "",
-          price: 0,
-          isActive: true,
-
-          ranges: [
-            {
-              minScore: 0,
-              maxScore: 0,
-              result: "",
-              resultAr: "",
-            },
-          ],
-        });
-
+        reset(emptyFormValues);
         return;
       }
 
@@ -187,33 +185,43 @@ const TestFormDialog = ({
 
       const result = await getTestById(testId);
 
+      if (cancelled) return;
+
       if (!result.success) {
         toast.error(result.message);
         return;
       }
 
-      reset({
-        title: result.data.title,
-        description: result.data.description ?? "",
-
-        titleAr: result.data.titleAr ?? "",
-        descriptionAr: result.data.descriptionAr ?? "",
-
-        categoryId: result.data.categoryId ?? "",
-        price: Number(result.data.price),
-        isActive: result.data.isActive,
-
-        ranges: result.data.resultRanges.map((range) => ({
-          minScore: Number(range.minScore),
-          maxScore: Number(range.maxScore),
-          result: range.result,
-          resultAr: range.resultAr ?? "",
-        })),
-      });
+      reset(
+        normalizeFormData({
+          title: result.data.title,
+          description: result.data.description ?? "",
+          titleAr: result.data.titleAr ?? "",
+          descriptionAr: result.data.descriptionAr ?? "",
+          categoryId: result.data.categoryId ?? "",
+          price: Number(result.data.price),
+          isActive: result.data.isActive,
+          ranges: result.data.resultRanges.map((range) => ({
+            minScore: Number(range.minScore),
+            maxScore: Number(range.maxScore),
+            result: range.result,
+            resultAr: range.resultAr ?? "",
+          })),
+        }),
+      );
     };
 
     loadTest();
+
+    return () => {
+      cancelled = true;
+    };
   }, [open, isEdit, testId, reset, translations.testIdRequired]);
+
+  const refreshTests = () => {
+    window.dispatchEvent(new Event("tests:refresh"));
+    router.refresh();
+  };
 
   const onSubmit = async (data: CreateTestInput) => {
     if (isEdit) {
@@ -222,18 +230,7 @@ const TestFormDialog = ({
         return;
       }
 
-      const hasChanges =
-        data.title !== (initialData?.title ?? "") ||
-        data.titleAr !== (initialData?.titleAr ?? "") ||
-        data.description !== (initialData?.description ?? "") ||
-        data.descriptionAr !== (initialData?.descriptionAr ?? "") ||
-        data.categoryId !== (initialData?.categoryId ?? "") ||
-        data.price !== (initialData?.price ?? 0) ||
-        data.isActive !== (initialData?.isActive ?? true) ||
-        JSON.stringify(data.ranges) !==
-          JSON.stringify(initialData?.ranges ?? []);
-
-      if (!hasChanges) {
+      if (!isDirty) {
         toast.info(translations.noChanges);
         return;
       }
@@ -247,8 +244,10 @@ const TestFormDialog = ({
 
       toast.success(result.message);
 
-      router.refresh();
+      reset(normalizeFormData(data));
       onOpenChange(false);
+
+      refreshTests();
 
       return;
     }
@@ -262,8 +261,9 @@ const TestFormDialog = ({
 
     toast.success(result.message);
 
-    router.refresh();
     onOpenChange(false);
+
+    refreshTests();
   };
 
   return (
@@ -627,7 +627,7 @@ const TestFormDialog = ({
 
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || (isEdit && !isDirty)}
               className="rounded-xl"
             >
               {isSubmitting

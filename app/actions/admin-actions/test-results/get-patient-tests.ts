@@ -1,5 +1,3 @@
-// app/actions/admin-actions/test-results/get-patient-tests.ts
-
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -82,6 +80,7 @@ export async function getPatientTests(search = "") {
             ],
           }
         : undefined,
+
       include: {
         patient: {
           select: {
@@ -93,6 +92,7 @@ export async function getPatientTests(search = "") {
             email: true,
           },
         },
+
         test: {
           select: {
             id: true,
@@ -101,12 +101,14 @@ export async function getPatientTests(search = "") {
             price: true,
           },
         },
+
         answers: {
           select: {
             id: true,
           },
         },
       },
+
       orderBy: {
         createdAt: "desc",
       },
@@ -114,13 +116,17 @@ export async function getPatientTests(search = "") {
 
     return {
       success: true,
+
       data: patientTests.map((item) => ({
         id: item.id,
+
         patient: item.patient,
+
         test: {
           ...item.test,
           price: Number(item.test.price),
         },
+
         status: item.status,
         score: item.score,
         result: item.result,

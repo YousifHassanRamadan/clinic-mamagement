@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { createTestSchema } from "@/schemas/test.schema";
 import { auth } from "@/providers/auth/auth";
+import { revalidatePath } from "next/cache";
 
 export async function createTest(input: unknown) {
   const validation = createTestSchema.safeParse(input);
@@ -88,6 +89,9 @@ export async function createTest(input: unknown) {
 
       return createdTest;
     });
+
+    revalidatePath("/dashboard/admin/tests");
+    revalidatePath("/dashboard/admin/test-results");
 
     return {
       success: true,

@@ -1,8 +1,19 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { auth } from "@/providers/auth/auth";
+import { revalidatePath } from "next/cache";
 
 export async function deleteTest(testId: string) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
+  }
+
   if (!testId) {
     return {
       success: false,
@@ -29,6 +40,9 @@ export async function deleteTest(testId: string) {
         id: testId,
       },
     });
+
+    revalidatePath("/dashboard/admin/tests");
+    revalidatePath("/dashboard/admin/test-results");
 
     return {
       success: true,

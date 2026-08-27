@@ -1,5 +1,3 @@
-// components/feature/dashboard/admin/test-results/TestResultsPage.tsx
-
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -41,11 +39,13 @@ interface Translations {
 }
 
 interface Props {
+  locale: "en" | "ar";
   translations: Translations;
 }
 
 type PatientTestItem = {
   id: string;
+
   patient: {
     id: string;
     firstName: string;
@@ -54,12 +54,14 @@ type PatientTestItem = {
     lastNameAr: string | null;
     email: string;
   };
+
   test: {
     id: string;
     title: string;
     titleAr: string | null;
     price: number;
   };
+
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
   score: number | null;
   result: string | null;
@@ -69,10 +71,12 @@ type PatientTestItem = {
   createdAt: Date;
 };
 
-const TestResultsPage = ({ translations }: Props) => {
+const TestResultsPage = ({ locale, translations }: Props) => {
   const [items, setItems] = useState<PatientTestItem[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const isArabic = locale === "ar";
 
   const fetchResults = useCallback(async () => {
     try {
@@ -102,10 +106,21 @@ const TestResultsPage = ({ translations }: Props) => {
   }, [fetchResults]);
 
   const getPatientName = (patient: PatientTestItem["patient"]) => {
+    if (isArabic) {
+      const firstName = patient.firstNameAr?.trim() || patient.firstName;
+      const lastName = patient.lastNameAr?.trim() || patient.lastName;
+
+      return `${firstName} ${lastName}`;
+    }
+
     return `${patient.firstName} ${patient.lastName}`;
   };
 
   const getTestTitle = (test: PatientTestItem["test"]) => {
+    if (isArabic) {
+      return test.titleAr?.trim() || test.title;
+    }
+
     return test.title;
   };
 
@@ -113,8 +128,10 @@ const TestResultsPage = ({ translations }: Props) => {
     switch (status) {
       case "COMPLETED":
         return translations.status.completed;
+
       case "IN_PROGRESS":
         return translations.status.inProgress;
+
       default:
         return translations.status.notStarted;
     }
@@ -124,8 +141,10 @@ const TestResultsPage = ({ translations }: Props) => {
     switch (status) {
       case "COMPLETED":
         return "bg-success/10 text-success";
+
       case "IN_PROGRESS":
         return "bg-warning/10 text-warning";
+
       default:
         return "bg-muted text-muted-foreground";
     }
@@ -261,7 +280,7 @@ const TestResultsPage = ({ translations }: Props) => {
                     <td className="px-5 py-4">{item.answersCount}</td>
 
                     <td className="px-5 py-4 text-sm text-muted-foreground">
-                      {new Intl.DateTimeFormat(undefined, {
+                      {new Intl.DateTimeFormat(isArabic ? "ar-EG" : "en-US", {
                         dateStyle: "medium",
                       }).format(new Date(item.createdAt))}
                     </td>
