@@ -149,7 +149,7 @@ export const sidebarItems: SidebarGroupType[] = [
       },
       {
         title: "My Profile",
-        href: "/dashboard/patient/profile",
+        href: "/dashboard/profile",
         icon: User,
         roles: ["PATIENT", "DOCTOR"],
       },
