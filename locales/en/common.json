@@ -478,7 +478,8 @@
         "loading": "Loading questions...",
         "empty": "No questions yet.",
         "failedToLoad": "Failed to load questions.",
-        "failedToCreate": "Failed to create question."
+        "failedToCreate": "Failed to create question.",
+        "closeTest": "Close Test"
       },
       "question": {
         "english": "Question in English",
