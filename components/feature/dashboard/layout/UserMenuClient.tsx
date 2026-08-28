@@ -169,7 +169,7 @@ const UserMenuClient = ({ locale, user }: Props) => {
         {/* Profile */}
         <DropdownMenuItem
           className="cursor-pointer rounded-lg py-2.5"
-          onClick={() => router.push("/dashboard/patient/profile")}
+          onClick={() => router.push("/dashboard/profile")}
         >
           <User className="mr-2 h-4 w-4 shrink-0" />
 
