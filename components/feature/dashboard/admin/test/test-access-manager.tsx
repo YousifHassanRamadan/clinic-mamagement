@@ -1,3 +1,5 @@
+// TestAccessManager.tsx
+
 "use client";
 
 import { useEffect, useState, useTransition } from "react";
@@ -73,6 +75,33 @@ const getCookieLocale = (): "en" | "ar" => {
 
   return match?.[1] === "ar" ? "ar" : "en";
 };
+
+const selectTriggerClass = `
+  h-11 w-full rounded-xl border-input bg-background px-4
+  shadow-sm
+  transition-all duration-200
+  hover:border-primary/40
+  hover:bg-muted/30
+  focus:ring-2 focus:ring-primary/20
+`;
+
+const selectContentClass = `
+  min-w-[var(--radix-select-trigger-width)]
+  overflow-hidden
+  rounded-xl
+  border
+  bg-popover
+  p-1.5
+  shadow-lg
+`;
+
+const selectItemClass = `
+  cursor-pointer rounded-lg px-3 py-2.5
+  text-sm font-medium
+  transition-colors
+  focus:bg-primary/10
+  focus:text-primary
+`;
 
 const TestAccessManager = ({ users, tests: initialTests }: Props) => {
   const [selectedUserId, setSelectedUserId] = useState("");
@@ -192,8 +221,8 @@ const TestAccessManager = ({ users, tests: initialTests }: Props) => {
       <Card className="border-border bg-card shadow-sm">
         <CardHeader>
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-              <ClipboardCheck className="h-5 w-5 text-primary" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <ClipboardCheck className="h-5 w-5" />
             </div>
 
             <div className="min-w-0">
@@ -213,47 +242,57 @@ const TestAccessManager = ({ users, tests: initialTests }: Props) => {
               {t("testAccess.patient.label")}
             </label>
 
-            <Select
-              value={selectedUserId}
-              onValueChange={setSelectedUserId}
-              disabled={isPending}
-            >
-              <SelectTrigger className="h-11 w-full">
-                <div className="flex min-w-0 items-center gap-2">
-                  <UserRound className="h-4 w-4 shrink-0 text-muted-foreground" />
-
-                  <SelectValue
-                    placeholder={t("testAccess.patient.placeholder")}
-                  />
-                </div>
-              </SelectTrigger>
-
-              <SelectContent
-                position="popper"
-                sideOffset={5}
-                className="w-[--radix-select-trigger-width] min-w-0"
+            <div className="pt-3">
+              <Select
+                value={selectedUserId}
+                onValueChange={setSelectedUserId}
+                disabled={isPending}
               >
-                {users.length === 0 ? (
-                  <SelectItem value="no-users" disabled>
-                    {t("testAccess.patient.noPatients")}
-                  </SelectItem>
-                ) : (
-                  users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      <div className="flex flex-col">
-                        <span>
-                          {user.firstName} {user.lastName}
-                        </span>
+                <SelectTrigger className={selectTriggerClass}>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <UserRound className="h-4 w-4 shrink-0 text-muted-foreground" />
 
-                        <span className="text-xs text-muted-foreground">
-                          {user.email}
-                        </span>
-                      </div>
+                    <SelectValue
+                      placeholder={t("testAccess.patient.placeholder")}
+                    />
+                  </div>
+                </SelectTrigger>
+
+                <SelectContent
+                  position="popper"
+                  sideOffset={6}
+                  className={selectContentClass}
+                >
+                  {users.length === 0 ? (
+                    <SelectItem
+                      value="no-users"
+                      disabled
+                      className={selectItemClass}
+                    >
+                      {t("testAccess.patient.noPatients")}
                     </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+                  ) : (
+                    users.map((user) => (
+                      <SelectItem
+                        key={user.id}
+                        value={user.id}
+                        className={selectItemClass}
+                      >
+                        <div className="flex min-w-0 flex-col gap-0.5">
+                          <span className="truncate font-medium">
+                            {user.firstName} {user.lastName}
+                          </span>
+
+                          <span className="truncate text-xs text-muted-foreground">
+                            {user.email}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {/* Test */}
@@ -262,65 +301,88 @@ const TestAccessManager = ({ users, tests: initialTests }: Props) => {
               {t("testAccess.test.label")}
             </label>
 
-            <Select
-              value={selectedTestId}
-              onValueChange={setSelectedTestId}
-              disabled={!selectedUserId || isLoadingTests || isPending}
-            >
-              <SelectTrigger className="h-11 w-full">
-                <div className="flex min-w-0 items-center gap-2">
-                  {isLoadingTests ? (
-                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
-                  ) : (
-                    <BookOpenCheck className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  )}
-
-                  <SelectValue
-                    placeholder={
-                      !selectedUserId
-                        ? t("testAccess.test.selectPatientFirst")
-                        : isLoadingTests
-                          ? t("testAccess.test.loading")
-                          : t("testAccess.test.placeholder")
-                    }
-                  />
-                </div>
-              </SelectTrigger>
-
-              <SelectContent
-                position="popper"
-                sideOffset={5}
-                className="w-[--radix-select-trigger-width] min-w-0"
+            <div className="pt-3">
+              <Select
+                value={selectedTestId}
+                onValueChange={setSelectedTestId}
+                disabled={!selectedUserId || isLoadingTests || isPending}
               >
-                {!selectedUserId ? (
-                  <SelectItem value="no-user" disabled>
-                    {t("testAccess.test.selectPatientFirst")}
-                  </SelectItem>
-                ) : isLoadingTests ? (
-                  <SelectItem value="loading" disabled>
-                    {t("testAccess.test.loading")}
-                  </SelectItem>
-                ) : tests.length === 0 ? (
-                  <SelectItem value="no-tests" disabled>
-                    {t("testAccess.test.noTests")}
-                  </SelectItem>
-                ) : (
-                  tests.map((test) => (
-                    <SelectItem key={test.id} value={test.id}>
-                      <div className="flex flex-col">
-                        <span>{test.title}</span>
+                <SelectTrigger className={selectTriggerClass}>
+                  <div className="flex min-w-0 items-center gap-2">
+                    {isLoadingTests ? (
+                      <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+                    ) : (
+                      <BookOpenCheck className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
 
-                        {test.category && (
-                          <span className="text-xs text-muted-foreground">
-                            {test.category.name}
-                          </span>
-                        )}
+                    <SelectValue
+                      placeholder={
+                        !selectedUserId
+                          ? t("testAccess.test.selectPatientFirst")
+                          : isLoadingTests
+                            ? t("testAccess.test.loading")
+                            : t("testAccess.test.placeholder")
+                      }
+                    />
+                  </div>
+                </SelectTrigger>
+
+                <SelectContent
+                  position="popper"
+                  sideOffset={6}
+                  className={selectContentClass}
+                >
+                  {!selectedUserId ? (
+                    <SelectItem
+                      value="no-user"
+                      disabled
+                      className={selectItemClass}
+                    >
+                      {t("testAccess.test.selectPatientFirst")}
+                    </SelectItem>
+                  ) : isLoadingTests ? (
+                    <SelectItem
+                      value="loading"
+                      disabled
+                      className={selectItemClass}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        <span>{t("testAccess.test.loading")}</span>
                       </div>
                     </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+                  ) : tests.length === 0 ? (
+                    <SelectItem
+                      value="no-tests"
+                      disabled
+                      className={selectItemClass}
+                    >
+                      {t("testAccess.test.noTests")}
+                    </SelectItem>
+                  ) : (
+                    tests.map((test) => (
+                      <SelectItem
+                        key={test.id}
+                        value={test.id}
+                        className={selectItemClass}
+                      >
+                        <div className="flex min-w-0 flex-col gap-0.5">
+                          <span className="truncate font-medium">
+                            {test.title}
+                          </span>
+
+                          {test.category && (
+                            <span className="truncate text-xs text-muted-foreground">
+                              {test.category.name}
+                            </span>
+                          )}
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
 
             {selectedUserId && !isLoadingTests && tests.length === 0 && (
               <p className="text-xs text-muted-foreground">
@@ -333,8 +395,8 @@ const TestAccessManager = ({ users, tests: initialTests }: Props) => {
           {selectedUser && selectedTest && (
             <div className="rounded-xl border border-border bg-muted/50 p-4">
               <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <CheckCircle2 className="h-5 w-5" />
                 </div>
 
                 <div className="min-w-0 space-y-1">
@@ -364,7 +426,7 @@ const TestAccessManager = ({ users, tests: initialTests }: Props) => {
             disabled={
               isPending || isLoadingTests || !selectedUserId || !selectedTestId
             }
-            className="h-11 w-full"
+            className="h-11 w-full rounded-xl"
           >
             {isPending ? (
               <>

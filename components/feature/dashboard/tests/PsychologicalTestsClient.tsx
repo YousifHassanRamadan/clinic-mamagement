@@ -113,7 +113,7 @@ const PsychologicalTestsClient = ({ locale, translations }: Props) => {
           </p>
         </div>
 
-        <Button className="rounded-xl">{translations.viewResults}</Button>
+        {/* <Button className="rounded-xl">{translations.viewResults}</Button> */}
       </div>
 
       <TestsFilter

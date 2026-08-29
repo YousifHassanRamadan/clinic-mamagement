@@ -9,6 +9,7 @@ export async function getSessionById(sessionId: string) {
       success: false,
       data: null,
       message: "Session ID is required",
+      reason: "No session ID was provided when requesting the session.",
     };
   }
 
@@ -20,6 +21,7 @@ export async function getSessionById(sessionId: string) {
         success: false,
         data: null,
         message: "Unauthorized",
+        reason: "You must be logged in to view the session.",
       };
     }
 
@@ -27,7 +29,6 @@ export async function getSessionById(sessionId: string) {
       where: {
         id: sessionId,
       },
-
       include: {
         patient: {
           select: {
@@ -37,7 +38,6 @@ export async function getSessionById(sessionId: string) {
             phone: true,
           },
         },
-
         appointment: {
           select: {
             id: true,
@@ -45,7 +45,6 @@ export async function getSessionById(sessionId: string) {
             status: true,
           },
         },
-
         attachments: true,
       },
     });
@@ -55,6 +54,7 @@ export async function getSessionById(sessionId: string) {
         success: false,
         data: null,
         message: "Session not found",
+        reason: `No clinic session was found with ID "${sessionId}".`,
       };
     }
 
@@ -64,6 +64,7 @@ export async function getSessionById(sessionId: string) {
         ...clinicSession,
         fee: Number(clinicSession.fee),
       },
+      reason: null,
     };
   } catch (error) {
     console.error("GET_SESSION_BY_ID_ERROR:", error);
@@ -72,6 +73,10 @@ export async function getSessionById(sessionId: string) {
       success: false,
       data: null,
       message: "Failed to fetch session",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while fetching the session.",
     };
   }
 }

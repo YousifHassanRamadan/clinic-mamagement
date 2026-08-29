@@ -67,6 +67,15 @@ interface Props {
   translations: Translations;
 }
 
+const selectTriggerClassName =
+  "h-11 w-full rounded-xl border-border/60 bg-background/80 px-3 shadow-sm transition-all hover:border-primary/40 hover:bg-muted/40 focus:ring-2 focus:ring-primary/20";
+
+const selectContentClassName =
+  "w-[--radix-select-trigger-width] min-w-0 overflow-hidden rounded-xl border-border/60 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md";
+
+const selectItemClassName =
+  "cursor-pointer rounded-lg px-3 py-2.5 text-sm transition-colors focus:bg-primary/10 focus:text-primary";
+
 const BookAccessManager = ({ users, translations }: Props) => {
   const [selectedUserId, setSelectedUserId] = useState("");
   const [selectedBookId, setSelectedBookId] = useState("");
@@ -178,97 +187,122 @@ const BookAccessManager = ({ users, translations }: Props) => {
               {translations.patient}
             </label>
 
-            <Select
-              value={selectedUserId}
-              onValueChange={setSelectedUserId}
-              disabled={isPending}
-            >
-              <SelectTrigger className="h-11 w-full">
-                <div className="flex min-w-0 items-center gap-2">
-                  <UserRound className="h-4 w-4 shrink-0 text-muted-foreground" />
-
-                  <SelectValue placeholder={translations.selectPatient} />
-                </div>
-              </SelectTrigger>
-
-              <SelectContent
-                position="popper"
-                sideOffset={5}
-                className="w-[--radix-select-trigger-width] min-w-0"
+            <div className="pt-3">
+              <Select
+                value={selectedUserId}
+                onValueChange={setSelectedUserId}
+                disabled={isPending}
               >
-                {users.length === 0 ? (
-                  <SelectItem value="no-users" disabled>
-                    {translations.noPatientsFound}
-                  </SelectItem>
-                ) : (
-                  users.map((user) => (
-                    <SelectItem key={user.id} value={user.id}>
-                      <div className="flex flex-col">
-                        <span>
-                          {user.firstName} {user.lastName}
-                        </span>
+                <SelectTrigger className={selectTriggerClassName}>
+                  <div className="flex min-w-0 items-center gap-2">
+                    <UserRound className="h-4 w-4 shrink-0 text-muted-foreground" />
 
-                        <span className="text-xs text-muted-foreground">
-                          {user.email}
-                        </span>
-                      </div>
+                    <SelectValue placeholder={translations.selectPatient} />
+                  </div>
+                </SelectTrigger>
+
+                <SelectContent
+                  position="popper"
+                  sideOffset={6}
+                  className={selectContentClassName}
+                >
+                  {users.length === 0 ? (
+                    <SelectItem
+                      value="no-users"
+                      disabled
+                      className={selectItemClassName}
+                    >
+                      {translations.noPatientsFound}
                     </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+                  ) : (
+                    users.map((user) => (
+                      <SelectItem
+                        key={user.id}
+                        value={user.id}
+                        className={selectItemClassName}
+                      >
+                        <div className="flex flex-col">
+                          <span>
+                            {user.firstName} {user.lastName}
+                          </span>
+
+                          <span className="text-xs text-muted-foreground">
+                            {user.email}
+                          </span>
+                        </div>
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium">{translations.book}</label>
+            <label className="text-sm font-medium ">{translations.book}</label>
 
-            <Select
-              value={selectedBookId}
-              onValueChange={setSelectedBookId}
-              disabled={!selectedUserId || isLoadingBooks || isPending}
-            >
-              <SelectTrigger className="h-11 w-full">
-                <div className="flex min-w-0 items-center gap-2">
-                  {isLoadingBooks ? (
-                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
-                  ) : (
-                    <BookOpen className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  )}
-
-                  <SelectValue
-                    placeholder={
-                      !selectedUserId
-                        ? translations.selectPatientFirst
-                        : isLoadingBooks
-                          ? translations.loadingBooks
-                          : translations.selectBook
-                    }
-                  />
-                </div>
-              </SelectTrigger>
-
-              <SelectContent
-                position="popper"
-                sideOffset={5}
-                className="w-[--radix-select-trigger-width] min-w-0"
+            <div className="pt-3">
+              {" "}
+              <Select
+                value={selectedBookId}
+                onValueChange={setSelectedBookId}
+                disabled={!selectedUserId || isLoadingBooks || isPending}
               >
-                {isLoadingBooks ? (
-                  <SelectItem value="loading" disabled>
-                    {translations.loadingBooks}
-                  </SelectItem>
-                ) : availableBooks.length === 0 ? (
-                  <SelectItem value="no-books" disabled>
-                    {translations.noAvailableBooks}
-                  </SelectItem>
-                ) : (
-                  availableBooks.map((book) => (
-                    <SelectItem key={book.id} value={book.id}>
-                      {book.title}
+                <SelectTrigger className={selectTriggerClassName}>
+                  <div className="flex min-w-0 items-center gap-2">
+                    {isLoadingBooks ? (
+                      <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
+                    ) : (
+                      <BookOpen className="h-4 w-4 shrink-0 text-muted-foreground" />
+                    )}
+
+                    <SelectValue
+                      placeholder={
+                        !selectedUserId
+                          ? translations.selectPatientFirst
+                          : isLoadingBooks
+                            ? translations.loadingBooks
+                            : translations.selectBook
+                      }
+                    />
+                  </div>
+                </SelectTrigger>
+
+                <SelectContent
+                  position="popper"
+                  sideOffset={6}
+                  className={selectContentClassName}
+                >
+                  {isLoadingBooks ? (
+                    <SelectItem
+                      value="loading"
+                      disabled
+                      className={selectItemClassName}
+                    >
+                      {translations.loadingBooks}
                     </SelectItem>
-                  ))
-                )}
-              </SelectContent>
-            </Select>
+                  ) : availableBooks.length === 0 ? (
+                    <SelectItem
+                      value="no-books"
+                      disabled
+                      className={selectItemClassName}
+                    >
+                      {translations.noAvailableBooks}
+                    </SelectItem>
+                  ) : (
+                    availableBooks.map((book) => (
+                      <SelectItem
+                        key={book.id}
+                        value={book.id}
+                        className={selectItemClassName}
+                      >
+                        {book.title}
+                      </SelectItem>
+                    ))
+                  )}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           {selectedUser && selectedBook && (

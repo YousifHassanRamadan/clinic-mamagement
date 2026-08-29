@@ -23,17 +23,13 @@ interface Props {
 const MyBookCard = ({ book, locale, translations }: Props) => {
   const isArabic = locale === "ar";
 
-  // AR: استخدم العنوان العربي إذا كان موجودًا، وإلا استخدم العنوان الإنجليزي
-  // EN: Use the Arabic title when available, otherwise use the English title
   const title = isArabic && book.titleAr ? book.titleAr : book.title;
 
-  // AR: استخدم الوصف العربي إذا كان موجودًا، وإلا استخدم الوصف الإنجليزي
-  // EN: Use the Arabic description when available, otherwise use the English description
   const description =
     isArabic && book.descriptionAr ? book.descriptionAr : book.description;
 
   return (
-    <Card className="group flex h-full flex-col overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <Card className="group flex h-full flex-col overflow-hidden p-0 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
       {/* Cover */}
       <div className="relative aspect-[3/4] w-full overflow-hidden bg-muted">
         {book.coverImage ? (

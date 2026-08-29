@@ -35,7 +35,6 @@ const Footer = async () => {
                 title: t("home.footer.links.title"),
                 home: t("home.footer.links.home"),
                 patientSignIn: t("home.footer.links.patientSignIn"),
-                createAccount: t("home.footer.links.createAccount"),
               },
 
               contact: {

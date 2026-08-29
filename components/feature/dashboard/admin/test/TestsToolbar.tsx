@@ -2,8 +2,15 @@
 
 import { Search, SlidersHorizontal, Tags } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface Category {
   id: string;
@@ -32,6 +39,15 @@ interface Props {
   onCategoryChange: (value: string) => void;
 }
 
+const selectTriggerClassName =
+  "h-10 w-full rounded-xl border-border/60 bg-background/80 px-3 shadow-sm transition-all hover:border-primary/40 hover:bg-muted/40 focus:ring-2 focus:ring-primary/20 sm:min-w-40";
+
+const selectContentClassName =
+  "w-[--radix-select-trigger-width] min-w-0 overflow-hidden rounded-xl border-border/60 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md";
+
+const selectItemClassName =
+  "cursor-pointer rounded-lg px-3 py-2.5 text-sm transition-colors focus:bg-primary/10 focus:text-primary";
+
 const getLocale = () => {
   if (typeof document === "undefined") return "en";
 
@@ -55,6 +71,16 @@ const TestsToolbar = ({
 }: Props) => {
   const locale = getLocale();
 
+  const selectedCategory = categories.find(
+    (category) => category.id === categoryId,
+  );
+
+  const selectedCategoryName = selectedCategory
+    ? locale === "ar"
+      ? selectedCategory.nameAr
+      : selectedCategory.name
+    : translations.allCategories;
+
   return (
     <div className="flex flex-col gap-3 border-b p-4 sm:p-5 lg:flex-row">
       <div className="relative min-w-0 flex-1">
@@ -65,98 +91,81 @@ const TestsToolbar = ({
           onChange={(event) => onSearchChange(event.target.value)}
           placeholder={translations.searchPlaceholder}
           className="
-            h-10 rounded-xl
-            pl-10
-            pr-4
-            rtl:pl-4
-            rtl:pr-10
-            placeholder:pl-1
-            rtl:placeholder:pl-0
-            rtl:placeholder:pr-1
-          "
+        h-10 rounded-xl
+        pl-10
+        pr-4
+        rtl:pl-4
+        rtl:pr-10
+        placeholder:pl-1
+        rtl:placeholder:pl-0
+        rtl:placeholder:pr-1
+      "
         />
       </div>
-
       <div className="flex flex-col gap-2 sm:flex-row">
-        <div className="relative">
-          <Button
-            variant="outline"
-            type="button"
-            className="h-10 w-full justify-between rounded-xl sm:min-w-36"
+        <Select
+          value={status}
+          onValueChange={(value) =>
+            onStatusChange(value as "all" | "active" | "inactive")
+          }
+        >
+          <SelectTrigger className={selectTriggerClassName}>
+            <SlidersHorizontal className="mr-2 h-4 w-4 shrink-0 text-muted-foreground rtl:ml-2 rtl:mr-0" />
+
+            <SelectValue />
+          </SelectTrigger>
+
+          <SelectContent
+            position="popper"
+            sideOffset={6}
+            className={selectContentClassName}
           >
-            <SlidersHorizontal className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+            <SelectItem value="all" className={selectItemClassName}>
+              {translations.allStatuses}
+            </SelectItem>
 
-            <select
-              value={status}
-              onChange={(event) =>
-                onStatusChange(
-                  event.target.value as "all" | "active" | "inactive",
-                )
-              }
-              className="
-                absolute inset-0 cursor-pointer appearance-none p-3 opacity-0
-                dark:bg-background dark:text-foreground
-                [&>option]:bg-background
-                [&>option]:text-foreground
-                dark:[&>option]:bg-gray-900
-                dark:[&>option]:text-white
-              "
-            >
-              <option value="all">{translations.allStatuses}</option>
-              <option value="active">{translations.active}</option>
-              <option value="inactive">{translations.inactive}</option>
-            </select>
+            <SelectItem value="active" className={selectItemClassName}>
+              {translations.active}
+            </SelectItem>
 
-            <span>
-              {status === "all"
-                ? translations.allStatuses
-                : status === "active"
-                  ? translations.active
-                  : translations.inactive}
-            </span>
-          </Button>
-        </div>
+            <SelectItem value="inactive" className={selectItemClassName}>
+              {translations.inactive}
+            </SelectItem>
+          </SelectContent>
+        </Select>
 
-        <div className="relative">
-          <Button
-            variant="outline"
-            type="button"
-            className="h-10 w-full justify-between rounded-xl sm:min-w-36"
+        <Select
+          value={categoryId || "all"}
+          onValueChange={(value) =>
+            onCategoryChange(value === "all" ? "" : value)
+          }
+        >
+          <SelectTrigger className={selectTriggerClassName}>
+            <Tags className="mr-2 h-4 w-4 shrink-0 text-muted-foreground rtl:ml-2 rtl:mr-0" />
+
+            <SelectValue>{selectedCategoryName}</SelectValue>
+          </SelectTrigger>
+
+          <SelectContent
+            position="popper"
+            sideOffset={6}
+            className={selectContentClassName}
           >
-            <Tags className="mr-2 h-4 w-4 rtl:ml-2 rtl:mr-0" />
+            <SelectItem value="all" className={selectItemClassName}>
+              {translations.allCategories}
+            </SelectItem>
 
-            <select
-              value={categoryId}
-              onChange={(event) => onCategoryChange(event.target.value)}
-              className="
-                absolute inset-0 cursor-pointer appearance-none p-3 opacity-0
-                dark:bg-background dark:text-foreground
-                [&>option]:bg-background
-                [&>option]:text-foreground
-                dark:[&>option]:bg-gray-900
-                dark:[&>option]:text-white
-              "
-            >
-              <option value="">{translations.allCategories}</option>
-
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {locale === "ar" ? category.nameAr : category.name}
-                </option>
-              ))}
-            </select>
-
-            <span className="truncate">
-              {!categoryId
-                ? translations.allCategories
-                : ((locale === "ar"
-                    ? categories.find((category) => category.id === categoryId)
-                        ?.nameAr
-                    : categories.find((category) => category.id === categoryId)
-                        ?.name) ?? translations.categories)}
-            </span>
-          </Button>
-        </div>
+            {categories.map((category) => (
+              <SelectItem
+                key={category.id}
+                value={category.id}
+                className={selectItemClassName}
+              >
+                {locale === "ar" ? category.nameAr : category.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

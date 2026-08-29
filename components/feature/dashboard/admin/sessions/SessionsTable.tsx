@@ -63,10 +63,10 @@ const SessionsTable = ({
   }
 
   return (
-    <Card className="overflow-hidden rounded-2xl">
+    <Card className="w-full overflow-hidden rounded-2xl">
       {/* Desktop */}
-      <div className="hidden overflow-x-auto lg:block">
-        <Table className="w-full table-fixed">
+      <div className="hidden w-full overflow-x-auto lg:block">
+        <Table className="w-full table-fixed text-sm">
           <colgroup>
             {/* Patient */}
             <col className="w-[21%]" />
@@ -92,31 +92,31 @@ const SessionsTable = ({
 
           <TableHeader>
             <TableRow>
-              <TableHead className="whitespace-nowrap px-4 text-start">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-start text-sm">
                 {translations.patient}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.status}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.date}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.duration}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.mood}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.sessionType}
               </TableHead>
 
-              <TableHead className="whitespace-nowrap px-4 text-center">
+              <TableHead className="w-auto whitespace-nowrap px-4 text-center text-sm">
                 {translations.actions}
               </TableHead>
             </TableRow>
@@ -137,7 +137,7 @@ const SessionsTable = ({
       </div>
 
       {/* Mobile */}
-      <div className="space-y-4 p-4 lg:hidden">
+      <div className="w-full space-y-4 p-4 lg:hidden">
         {sessions.map((session) => (
           <SessionRow
             key={session.id}

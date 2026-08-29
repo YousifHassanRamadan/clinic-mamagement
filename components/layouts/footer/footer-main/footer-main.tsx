@@ -14,7 +14,6 @@ interface Props {
       title: string;
       home: string;
       patientSignIn: string;
-      createAccount: string;
     };
     contact: {
       title: string;

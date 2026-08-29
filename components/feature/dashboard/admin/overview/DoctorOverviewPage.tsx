@@ -1,27 +1,24 @@
 import { cookies } from "next/headers";
 
+import { auth } from "@/providers/auth/auth";
 import { getTranslations } from "@/i18n/getTranslations";
 
-import ActivityCard from "./ActivityCard";
-import AttentionCard from "./AttentionCard";
 import RecentSessions from "./RecentSessions";
-import SessionChart from "./SessionChart";
 import StatsGrid from "./StatsGrid";
 import UpcomingAppointments from "./UpcomingAppointments";
 import WelcomeSection from "./WelcomeSection";
 
 const DoctorOverviewPage = async () => {
-  const cookieStore = await cookies();
+  const [cookieStore, session] = await Promise.all([cookies(), auth()]);
 
   const locale = cookieStore.get("locale")?.value === "ar" ? "ar" : "en";
 
   const t = await getTranslations(locale);
 
-  const userName = "Doctor";
+  const userName = session?.user?.name || "Doctor";
 
   const translations = {
     welcome: {
-      day: t("dashboard2.doctor.version2.welcome.day"),
       greeting: t("dashboard2.doctor.version2.welcome.greeting"),
       description: t("dashboard2.doctor.version2.welcome.description"),
       newSession: t("dashboard2.doctor.version2.welcome.newSession"),
@@ -30,10 +27,8 @@ const DoctorOverviewPage = async () => {
     stats: {
       patients: t("dashboard2.doctor.version2.stats.patients"),
       patientsSubtitle: t("dashboard2.doctor.version2.stats.patientsSubtitle"),
-
       sessions: t("dashboard2.doctor.version2.stats.sessions"),
       sessionsSubtitle: t("dashboard2.doctor.version2.stats.sessionsSubtitle"),
-
       tests: t("dashboard2.doctor.version2.stats.tests"),
       testsSubtitle: t("dashboard2.doctor.version2.stats.testsSubtitle"),
     },
@@ -64,19 +59,7 @@ const DoctorOverviewPage = async () => {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <UpcomingAppointments translations={translations.appointments} />
-
         <RecentSessions translations={translations.sessions} />
-      </div>
-
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2"></div>
-
-        {/*
-        <div className="space-y-6">
-          <AttentionCard />
-          <ActivityCard />
-        </div>
-        */}
       </div>
     </div>
   );

@@ -17,16 +17,22 @@ export async function updateSession(input: unknown) {
         success: false,
         data: null,
         message: "Unauthorized",
+        reason: "You must be logged in to update a session.",
       };
     }
 
     const parsed = updateSessionSchema.safeParse(input);
 
     if (!parsed.success) {
+      const reason =
+        parsed.error.issues[0]?.message ??
+        "The session update data is invalid.";
+
       return {
         success: false,
         data: null,
-        message: parsed.error.issues[0]?.message ?? "Invalid input",
+        message: "Invalid input",
+        reason,
       };
     }
 
@@ -55,7 +61,6 @@ export async function updateSession(input: unknown) {
       where: {
         id: sessionId,
       },
-
       select: {
         id: true,
       },
@@ -66,6 +71,7 @@ export async function updateSession(input: unknown) {
         success: false,
         data: null,
         message: "Session not found",
+        reason: `No clinic session was found with ID "${sessionId}".`,
       };
     }
 
@@ -73,7 +79,6 @@ export async function updateSession(input: unknown) {
       where: {
         id: patientId,
       },
-
       select: {
         id: true,
         role: true,
@@ -85,6 +90,7 @@ export async function updateSession(input: unknown) {
         success: false,
         data: null,
         message: "Patient not found",
+        reason: `No valid patient was found with ID "${patientId}".`,
       };
     }
 
@@ -93,7 +99,6 @@ export async function updateSession(input: unknown) {
         where: {
           id: appointmentId,
         },
-
         select: {
           id: true,
           userId: true,
@@ -105,6 +110,7 @@ export async function updateSession(input: unknown) {
           success: false,
           data: null,
           message: "Appointment not found",
+          reason: `No appointment was found with ID "${appointmentId}".`,
         };
       }
 
@@ -113,6 +119,8 @@ export async function updateSession(input: unknown) {
           success: false,
           data: null,
           message: "Appointment does not belong to this patient",
+          reason:
+            "The selected appointment belongs to a different patient. Please choose an appointment that belongs to the selected patient.",
         };
       }
     }
@@ -124,36 +132,21 @@ export async function updateSession(input: unknown) {
         where: {
           id: sessionId,
         },
-
         data: {
           patientId,
-
           appointmentId: appointmentId || null,
-
           sessionDate,
-
           duration,
-
           sessionType,
-
           diagnosis: diagnosis?.trim() || null,
-
           diagnosisAr: diagnosisAr?.trim() || null,
-
           mood: mood ?? null,
-
           publicNotes: publicNotes?.trim() || null,
-
           publicNotesAr: publicNotesAr?.trim() || null,
-
           privateClinicalNotes: privateClinicalNotes?.trim() || null,
-
           privateClinicalNotesAr: privateClinicalNotesAr?.trim() || null,
-
           shareNotes,
-
           sendSummaryEmail,
-
           fee,
 
           attachments: {
@@ -197,14 +190,12 @@ export async function updateSession(input: unknown) {
 
     return {
       success: true,
-
       data: {
         ...updatedSession,
-
         fee: Number(updatedSession.fee),
       },
-
       message: "Session updated successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("UPDATE_SESSION_ERROR:", error);
@@ -217,6 +208,8 @@ export async function updateSession(input: unknown) {
         success: false,
         data: null,
         message: "This appointment already has a session linked to it.",
+        reason:
+          "The selected appointment is already linked to another clinic session. Please choose a different appointment.",
       };
     }
 
@@ -224,6 +217,10 @@ export async function updateSession(input: unknown) {
       success: false,
       data: null,
       message: "Failed to update session",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while updating the session.",
     };
   }
 }

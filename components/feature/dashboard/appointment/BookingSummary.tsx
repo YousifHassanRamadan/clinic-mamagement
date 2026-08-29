@@ -33,6 +33,39 @@ interface Props {
   };
 }
 
+const formatTimeRange = (time: string) => {
+  const [start, end] = time.split("-").map((value) => value.trim());
+
+  const formatSingleTime = (value: string) => {
+    const [hoursString, minutesString = "00"] = value.split(":");
+
+    const hours = Number(hoursString);
+    const minutes = Number(minutesString);
+
+    if (
+      !Number.isInteger(hours) ||
+      !Number.isInteger(minutes) ||
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+    ) {
+      return value;
+    }
+
+    const period = hours >= 12 ? "PM" : "AM";
+    const hour12 = hours % 12 || 12;
+
+    return `${hour12}:${String(minutes).padStart(2, "0")} ${period}`;
+  };
+
+  if (!end) {
+    return formatSingleTime(start);
+  }
+
+  return `${formatSingleTime(start)} - ${formatSingleTime(end)}`;
+};
+
 const BookingSummary = ({
   date,
   time,
@@ -75,12 +108,12 @@ const BookingSummary = ({
   };
 
   return (
-    <Card className="block h-fit rounded-3xl p-6 xl:sticky xl:top-6">
+    <Card className="block h-fit rounded-3xl p-5 sm:p-6 2xl:sticky 2xl:top-6">
       <h3 className="mb-6 text-xl font-semibold">{translations.title}</h3>
 
       <div className="space-y-5">
         <div className="flex gap-3">
-          <CalendarDays className="mt-1 h-5 w-5 text-primary" />
+          <CalendarDays className="mt-1 h-5 w-5 shrink-0 text-primary" />
 
           <span>
             {date
@@ -101,17 +134,17 @@ const BookingSummary = ({
         </div>
 
         <div className="flex gap-3">
-          <Clock3 className="mt-1 h-5 w-5 text-primary" />
+          <Clock3 className="mt-1 h-5 w-5 shrink-0 text-primary" />
 
           <span>
             {time
-              ? `${time} • 50 ${translations.minutes}`
+              ? `${formatTimeRange(time)} • 50 ${translations.minutes}`
               : translations.noTime}
           </span>
         </div>
 
         <div className="flex gap-3">
-          <MapPin className="mt-1 h-5 w-5 text-primary" />
+          <MapPin className="mt-1 h-5 w-5 shrink-0 text-primary" />
 
           <span>
             {sessionType === "ONSITE"

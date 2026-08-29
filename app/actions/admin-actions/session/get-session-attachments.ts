@@ -16,6 +16,7 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
         success: false,
         data: [],
         message: "Unauthorized",
+        reason: "You must be logged in to fetch session attachments.",
       };
     }
 
@@ -24,6 +25,7 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
         success: false,
         data: [],
         message: "Session ID is required",
+        reason: "No session ID was provided when fetching attachments.",
       };
     }
 
@@ -31,7 +33,6 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
       where: {
         id: input.sessionId,
       },
-
       select: {
         id: true,
       },
@@ -42,6 +43,7 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
         success: false,
         data: [],
         message: "Session not found",
+        reason: `No clinic session was found with ID "${input.sessionId}".`,
       };
     }
 
@@ -49,7 +51,6 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
       where: {
         sessionId: input.sessionId,
       },
-
       select: {
         id: true,
         sessionId: true,
@@ -59,7 +60,6 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
         type: true,
         createdAt: true,
       },
-
       orderBy: {
         createdAt: "desc",
       },
@@ -68,6 +68,7 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
     return {
       success: true,
       data: attachments,
+      reason: null,
     };
   } catch (error) {
     console.error("GET_SESSION_ATTACHMENTS_ERROR:", error);
@@ -76,6 +77,10 @@ export async function getSessionAttachments(input: GetSessionAttachmentsInput) {
       success: false,
       data: [],
       message: "Failed to fetch session attachments",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while fetching session attachments.",
     };
   }
 }

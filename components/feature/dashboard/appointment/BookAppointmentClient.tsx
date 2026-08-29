@@ -129,41 +129,48 @@ const BookAppointmentClient = ({ translations }: Props) => {
   };
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[1fr_320px]">
-      <div className="space-y-6">
-        <DatePickerCard
-          date={selectedDate}
-          setDate={handleDateChange}
-          availableDates={availableDates}
-          title={translations.date.title}
-          description={translations.date.description}
-        />
+    <div className="space-y-6">
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="min-w-0 space-y-6">
+          {/* Date + Time */}
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]">
+            <DatePickerCard
+              date={selectedDate}
+              setDate={handleDateChange}
+              availableDates={availableDates}
+              title={translations.date.title}
+              description={translations.date.description}
+            />
 
-        <TimeSlots
-          date={selectedDate}
-          selectedTime={selectedTime}
-          setSelectedTime={handleTimeChange}
-          translations={translations.time}
-        />
+            <TimeSlots
+              date={selectedDate}
+              selectedTime={selectedTime}
+              setSelectedTime={handleTimeChange}
+              translations={translations.time}
+            />
+          </div>
 
-        <SessionType
+          {/* Session Type */}
+          <SessionType
+            sessionType={sessionType}
+            setSessionType={setSessionType}
+            notes={notes}
+            setNotes={setNotes}
+            translations={translations.session}
+          />
+        </div>
+
+        {/* Booking Summary */}
+        <BookingSummary
+          date={selectedDate}
+          time={selectedTime}
           sessionType={sessionType}
-          setSessionType={setSessionType}
+          slotId={selectedSlotId}
           notes={notes}
-          setNotes={setNotes}
-          translations={translations.session}
+          onSuccess={resetForm}
+          translations={translations.summary}
         />
       </div>
-
-      <BookingSummary
-        date={selectedDate}
-        time={selectedTime}
-        sessionType={sessionType}
-        slotId={selectedSlotId}
-        notes={notes}
-        onSuccess={resetForm}
-        translations={translations.summary}
-      />
     </div>
   );
 };

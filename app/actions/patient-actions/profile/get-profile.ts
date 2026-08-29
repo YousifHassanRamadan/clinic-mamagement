@@ -1,4 +1,4 @@
-// get-profile.ts
+// app/actions/patient-actions/profile/get-profile.ts
 
 "use server";
 
@@ -35,6 +35,22 @@ export async function getProfile() {
 
         address: true,
         addressAr: true,
+
+        governorate: true,
+        governorateAr: true,
+
+        city: true,
+        cityAr: true,
+
+        district: true,
+        districtAr: true,
+
+        street: true,
+        streetAr: true,
+
+        buildingNumber: true,
+        apartmentNumber: true,
+        postalCode: true,
 
         gender: true,
         image: true,

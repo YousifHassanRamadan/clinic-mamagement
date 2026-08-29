@@ -243,7 +243,7 @@ export const quickActions = [
   {
     titleKey: "profile.edit",
     icon: UserRound,
-    href: "/dashboard/patient/profile",
+    href: "/dashboard/profile",
   },
 ] as const;
 

@@ -1,9 +1,8 @@
-// app/actions/admin-actions/session/get-sessions.ts
-
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+
 import { SessionStatus, SessionType } from "@/app/generated/prisma/enums";
 
 interface GetSessionsFilters {
@@ -21,6 +20,7 @@ export async function getSessions(filters?: GetSessionsFilters) {
         success: false,
         data: [],
         message: "Unauthorized",
+        reason: "You must be logged in to fetch sessions.",
       };
     }
 
@@ -108,11 +108,11 @@ export async function getSessions(filters?: GetSessionsFilters) {
 
     return {
       success: true,
-
       data: sessions.map((s) => ({
         ...s,
         fee: Number(s.fee),
       })),
+      reason: null,
     };
   } catch (error) {
     console.error("GET_SESSIONS_ERROR:", error);
@@ -121,6 +121,10 @@ export async function getSessions(filters?: GetSessionsFilters) {
       success: false,
       data: [],
       message: "Failed to fetch sessions",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while fetching sessions.",
     };
   }
 }

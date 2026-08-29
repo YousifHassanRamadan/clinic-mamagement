@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+
 import { createSessionSchema } from "@/schemas/session.schema";
 import { combineDateAndTime } from "@/lib/session-date";
 import { Prisma } from "@/app/generated/prisma/client";
@@ -15,16 +16,21 @@ export async function createSession(input: unknown) {
         success: false,
         data: null,
         message: "Unauthorized",
+        reason: "You must be logged in to create a session.",
       };
     }
 
     const parsed = createSessionSchema.safeParse(input);
 
     if (!parsed.success) {
+      const reason =
+        parsed.error.issues[0]?.message ?? "The session data is invalid.";
+
       return {
         success: false,
         data: null,
-        message: parsed.error.issues[0]?.message ?? "Invalid input",
+        message: "Invalid input",
+        reason,
       };
     }
 
@@ -45,6 +51,7 @@ export async function createSession(input: unknown) {
         success: false,
         data: null,
         message: "Patient not found",
+        reason: `No valid patient was found with ID "${data.patientId}".`,
       };
     }
 
@@ -64,6 +71,7 @@ export async function createSession(input: unknown) {
           success: false,
           data: null,
           message: "Appointment not found",
+          reason: `No appointment was found with ID "${data.appointmentId}".`,
         };
       }
 
@@ -72,6 +80,8 @@ export async function createSession(input: unknown) {
           success: false,
           data: null,
           message: "Appointment does not belong to this patient",
+          reason:
+            "The selected appointment belongs to a different patient. Please select an appointment that belongs to the selected patient.",
         };
       }
     }
@@ -82,33 +92,19 @@ export async function createSession(input: unknown) {
       const createdSession = await tx.clinicSession.create({
         data: {
           patientId: data.patientId,
-
           appointmentId: data.appointmentId || null,
-
           sessionDate,
-
           duration: data.duration,
-
           sessionType: data.sessionType,
-
           diagnosis: data.diagnosis?.trim() || null,
-
           diagnosisAr: data.diagnosisAr?.trim() || null,
-
           mood: data.mood ?? null,
-
           publicNotes: data.publicNotes?.trim() || null,
-
           publicNotesAr: data.publicNotesAr?.trim() || null,
-
           privateClinicalNotes: data.privateClinicalNotes?.trim() || null,
-
           privateClinicalNotesAr: data.privateClinicalNotesAr?.trim() || null,
-
           shareNotes: data.shareNotes,
-
           sendSummaryEmail: data.sendSummaryEmail,
-
           fee: data.fee,
         },
       });
@@ -117,17 +113,11 @@ export async function createSession(input: unknown) {
         await tx.sessionAttachment.createMany({
           data: data.attachments.map((attachment) => ({
             sessionId: createdSession.id,
-
             name: attachment.name,
-
             url: attachment.url,
-
             size: attachment.size,
-
             type: attachment.type,
-
             publicId: attachment.publicId ?? null,
-
             resourceType: attachment.resourceType ?? null,
           })),
         });
@@ -137,7 +127,6 @@ export async function createSession(input: unknown) {
         where: {
           id: createdSession.id,
         },
-
         include: {
           patient: {
             select: {
@@ -147,9 +136,7 @@ export async function createSession(input: unknown) {
               phone: true,
             },
           },
-
           appointment: true,
-
           attachments: true,
         },
       });
@@ -157,14 +144,12 @@ export async function createSession(input: unknown) {
 
     return {
       success: true,
-
       data: {
         ...clinicSession,
-
         fee: Number(clinicSession.fee),
       },
-
       message: "Session created successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("CREATE_SESSION_ERROR:", error);
@@ -177,6 +162,8 @@ export async function createSession(input: unknown) {
         success: false,
         data: null,
         message: "This appointment already has a session linked to it.",
+        reason:
+          "The selected appointment is already linked to another clinic session. Please choose a different appointment.",
       };
     }
 
@@ -184,6 +171,10 @@ export async function createSession(input: unknown) {
       success: false,
       data: null,
       message: "Failed to create session",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while creating the session.",
     };
   }
 }

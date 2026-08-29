@@ -1,6 +1,7 @@
 "use server";
 
 import { SessionStatus } from "@/app/generated/prisma/enums";
+
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
 
@@ -15,6 +16,7 @@ export async function updateSessionStatus(
       return {
         success: false,
         message: "Unauthorized",
+        reason: "You must be logged in to update the session status.",
       };
     }
 
@@ -22,6 +24,7 @@ export async function updateSessionStatus(
       return {
         success: false,
         message: "Session ID is required",
+        reason: "No session ID was provided for the status update.",
       };
     }
 
@@ -35,6 +38,7 @@ export async function updateSessionStatus(
       return {
         success: false,
         message: "Session not found",
+        reason: `No clinic session was found with ID "${sessionId}".`,
       };
     }
 
@@ -42,7 +46,6 @@ export async function updateSessionStatus(
       where: {
         id: sessionId,
       },
-
       data: {
         status,
       },
@@ -57,6 +60,7 @@ export async function updateSessionStatus(
           : status === SessionStatus.COMPLETED
             ? "Session published successfully"
             : "Session cancelled successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("UPDATE_SESSION_STATUS_ERROR:", error);
@@ -64,6 +68,10 @@ export async function updateSessionStatus(
     return {
       success: false,
       message: "Failed to update session status",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while updating the session status.",
     };
   }
 }

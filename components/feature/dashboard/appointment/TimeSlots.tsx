@@ -1,3 +1,5 @@
+// components/feature/dashboard/appointments/TimeSlots.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -27,18 +29,6 @@ interface Props {
   };
 }
 
-/**
- * Convert HH:mm -> h:mm AM/PM
- *
- * IMPORTANT:
- * This function does NOT use Date.
- * Therefore there is NO timezone conversion.
- *
- * 09:00 -> 9:00 AM
- * 12:00 -> 12:00 PM
- * 14:00 -> 2:00 PM
- * 16:00 -> 4:00 PM
- */
 const formatSlotTime = (time: string) => {
   const [hourString, minuteString] = time.split(":");
 
@@ -57,7 +47,6 @@ const formatSlotTime = (time: string) => {
   }
 
   const period = hour >= 12 ? "PM" : "AM";
-
   const displayHour = hour % 12 || 12;
 
   return `${displayHour}:${String(minute).padStart(2, "0")} ${period}`;
@@ -102,7 +91,7 @@ const TimeSlots = ({
   }, [date]);
 
   return (
-    <Card className="block rounded-3xl p-6">
+    <Card className="block min-w-0 rounded-3xl p-4 sm:p-6">
       <h3 className="mb-6 text-xl font-semibold">{translations.title}</h3>
 
       {!date && (
@@ -122,14 +111,14 @@ const TimeSlots = ({
       )}
 
       {!loading && slots.length > 0 && (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
           {slots.map((slot) => (
             <Button
               key={slot.id}
               type="button"
               variant={selectedTime === slot.time ? "default" : "outline"}
               disabled={!slot.isAvailable}
-              className="h-12 rounded-xl"
+              className="h-12 w-full rounded-xl"
               onClick={() => setSelectedTime(slot.time, slot.id)}
             >
               {formatSlotTime(slot.time)}

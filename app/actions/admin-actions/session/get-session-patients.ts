@@ -12,6 +12,7 @@ export async function getSessionPatients() {
         success: false,
         data: [],
         message: "Unauthorized",
+        reason: "You must be logged in to fetch patients.",
       };
     }
 
@@ -33,6 +34,7 @@ export async function getSessionPatients() {
     return {
       success: true,
       data: patients,
+      reason: null,
     };
   } catch (error) {
     console.error("GET_SESSION_PATIENTS_ERROR:", error);
@@ -41,6 +43,10 @@ export async function getSessionPatients() {
       success: false,
       data: [],
       message: "Failed to fetch patients",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while fetching patients.",
     };
   }
 }

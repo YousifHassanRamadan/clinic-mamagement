@@ -86,122 +86,173 @@ const SessionRow = ({
 
   if (mobile) {
     return (
-      <Card className="rounded-xl">
+      <Card className="w-full rounded-xl">
         <CardContent className="space-y-4 p-5">
-          <div className="flex items-center gap-3">
-            <Avatar>
+          {/* Patient */}
+          <div className="flex min-w-0 items-center gap-3">
+            <Avatar className="shrink-0">
               <AvatarFallback>{patientAvatar}</AvatarFallback>
             </Avatar>
 
-            <div>
-              <h3 className="font-medium">{patientName}</h3>
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate text-sm font-medium" title={patientName}>
+                {patientName}
+              </h3>
 
-              <p className="text-sm text-muted-foreground">
+              <p className="truncate text-sm text-muted-foreground">
                 {session.patient.phone}
               </p>
             </div>
           </div>
 
+          {/* Details */}
           <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <p className="text-muted-foreground">{translations.status}</p>
+            {/* Status */}
+            <div className="min-w-0">
+              <p className="mb-1 text-sm text-muted-foreground">
+                {translations.status}
+              </p>
 
-              <SessionStatusBadge status={session.status} />
+              <div className="max-w-full overflow-hidden">
+                <SessionStatusBadge status={session.status} />
+              </div>
             </div>
 
-            <div>
-              <p className="text-muted-foreground">{translations.mood}</p>
+            {/* Mood */}
+            <div className="min-w-0">
+              <p className="mb-1 text-sm text-muted-foreground">
+                {translations.mood}
+              </p>
 
               {session.mood ? (
-                <MoodBadge mood={session.mood} />
+                <div className="max-w-full overflow-hidden">
+                  <MoodBadge mood={session.mood} />
+                </div>
               ) : (
-                <p className="text-muted-foreground">—</p>
+                <p className="text-sm text-muted-foreground">—</p>
               )}
             </div>
 
-            <div>
-              <p className="text-muted-foreground">{translations.date}</p>
+            {/* Date */}
+            <div className="min-w-0">
+              <p className="text-sm text-muted-foreground">
+                {translations.date}
+              </p>
 
-              <p>{date}</p>
+              <p className="truncate text-sm" title={date}>
+                {date}
+              </p>
 
-              <p className="text-muted-foreground">{time}</p>
+              <p className="truncate text-sm text-muted-foreground">{time}</p>
             </div>
 
-            <div>
-              <p className="text-muted-foreground">{translations.duration}</p>
+            {/* Duration */}
+            <div className="min-w-0">
+              <p className="text-sm text-muted-foreground">
+                {translations.duration}
+              </p>
 
-              <p>
+              <p className="truncate text-sm">
                 {session.duration} {translations.minutes}
               </p>
             </div>
 
-            <div className="col-span-2">
-              <p className="text-muted-foreground">
+            {/* Session Type */}
+            <div className="col-span-2 min-w-0">
+              <p className="text-sm text-muted-foreground">
                 {translations.sessionType}
               </p>
 
-              <p>{type}</p>
+              <p className="break-words text-sm" title={type}>
+                {type}
+              </p>
             </div>
           </div>
 
-          <SessionActions
-            sessionId={session.id}
-            onDeleted={onDeleted}
-            translations={actionTranslations}
-          />
+          {/* Actions */}
+          <div className="w-full">
+            <SessionActions
+              sessionId={session.id}
+              onDeleted={onDeleted}
+              translations={actionTranslations}
+            />
+          </div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <TableRow>
-      <TableCell>
-        <div className="flex items-center gap-3">
-          <Avatar>
+    <TableRow className="text-sm">
+      {/* Patient */}
+      <TableCell className="min-w-0 px-4">
+        <div className="flex min-w-0 items-center gap-3">
+          <Avatar className="shrink-0">
             <AvatarFallback>{patientAvatar}</AvatarFallback>
           </Avatar>
 
-          <div>
-            <p className="font-medium">{patientName}</p>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium" title={patientName}>
+              {patientName}
+            </p>
 
-            <p className="text-sm text-muted-foreground">
+            <p className="truncate text-sm text-muted-foreground">
               {session.patient.phone}
             </p>
           </div>
         </div>
       </TableCell>
 
-      <TableCell>
-        <SessionStatusBadge status={session.status} />
+      {/* Status */}
+      <TableCell className="min-w-0 px-4 text-center">
+        <div className="flex min-w-0 justify-center overflow-hidden">
+          <SessionStatusBadge status={session.status} />
+        </div>
       </TableCell>
 
-      <TableCell>
-        <p>{date}</p>
+      {/* Date */}
+      <TableCell className="min-w-0 px-4 text-center">
+        <p className="truncate text-sm" title={date}>
+          {date}
+        </p>
 
-        <p className="text-sm text-muted-foreground">{time}</p>
+        <p className="truncate text-sm text-muted-foreground">{time}</p>
       </TableCell>
 
-      <TableCell>
-        {session.duration} {translations.minutes}
+      {/* Duration */}
+      <TableCell className="min-w-0 px-4 text-center">
+        <span className="whitespace-nowrap text-sm">
+          {session.duration} {translations.minutes}
+        </span>
       </TableCell>
 
-      <TableCell>
+      {/* Mood */}
+      <TableCell className="min-w-0 px-4 text-center">
         {session.mood ? (
-          <MoodBadge mood={session.mood} />
+          <div className="flex justify-center overflow-hidden">
+            <MoodBadge mood={session.mood} />
+          </div>
         ) : (
-          <span className="text-muted-foreground">—</span>
+          <span className="text-sm text-muted-foreground">—</span>
         )}
       </TableCell>
 
-      <TableCell>{type}</TableCell>
+      {/* Session Type */}
+      <TableCell className="min-w-0 px-4 text-center">
+        <p className="truncate text-sm" title={type}>
+          {type}
+        </p>
+      </TableCell>
 
-      <TableCell>
-        <SessionActions
-          sessionId={session.id}
-          onDeleted={onDeleted}
-          translations={actionTranslations}
-        />
+      {/* Actions */}
+      <TableCell className="px-4 text-center">
+        <div className="flex justify-center">
+          <SessionActions
+            sessionId={session.id}
+            onDeleted={onDeleted}
+            translations={actionTranslations}
+          />
+        </div>
       </TableCell>
     </TableRow>
   );

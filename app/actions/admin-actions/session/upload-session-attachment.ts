@@ -12,6 +12,7 @@ export async function uploadSessionAttachment(formData: FormData) {
         success: false,
         data: null,
         message: "Unauthorized",
+        reason: "You must be logged in to upload a session attachment.",
       };
     }
 
@@ -22,6 +23,7 @@ export async function uploadSessionAttachment(formData: FormData) {
         success: false,
         data: null,
         message: "No file provided",
+        reason: "The upload request does not contain a valid file.",
       };
     }
 
@@ -30,6 +32,7 @@ export async function uploadSessionAttachment(formData: FormData) {
         success: false,
         data: null,
         message: "Invalid file",
+        reason: "The selected file is empty and cannot be uploaded.",
       };
     }
 
@@ -40,6 +43,9 @@ export async function uploadSessionAttachment(formData: FormData) {
         success: false,
         data: null,
         message: "File size cannot exceed 10 MB",
+        reason: `The selected file is ${(file.size / 1024 / 1024).toFixed(
+          2,
+        )} MB. The maximum allowed size is 10 MB.`,
       };
     }
 
@@ -58,11 +64,11 @@ export async function uploadSessionAttachment(formData: FormData) {
         success: false,
         data: null,
         message: "File type is not supported",
+        reason: `The file type "${file.type || "unknown"}" is not supported. Please upload an image, PDF, Word document, or supported audio file.`,
       };
     }
 
     const bytes = await file.arrayBuffer();
-
     const buffer = Buffer.from(bytes);
 
     const resourceType = file.type.startsWith("image/")
@@ -110,6 +116,7 @@ export async function uploadSessionAttachment(formData: FormData) {
         type: file.type,
       },
       message: "File uploaded successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("UPLOAD_SESSION_ATTACHMENT_ERROR:", error);
@@ -118,6 +125,10 @@ export async function uploadSessionAttachment(formData: FormData) {
       success: false,
       data: null,
       message: "Failed to upload file",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while uploading the file.",
     };
   }
 }

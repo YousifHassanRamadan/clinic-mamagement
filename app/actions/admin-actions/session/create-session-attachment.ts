@@ -14,16 +14,21 @@ export async function createSessionAttachment(input: unknown) {
         success: false,
         data: null,
         message: "Unauthorized",
+        reason: "You must be logged in to add an attachment.",
       };
     }
 
     const parsed = createAttachmentSchema.safeParse(input);
 
     if (!parsed.success) {
+      const reason =
+        parsed.error.issues[0]?.message ?? "The attachment data is invalid.";
+
       return {
         success: false,
         data: null,
-        message: parsed.error.issues[0]?.message ?? "Invalid input",
+        message: "Invalid input",
+        reason,
       };
     }
 
@@ -33,7 +38,6 @@ export async function createSessionAttachment(input: unknown) {
       where: {
         id: data.sessionId,
       },
-
       select: {
         id: true,
       },
@@ -44,6 +48,7 @@ export async function createSessionAttachment(input: unknown) {
         success: false,
         data: null,
         message: "Session not found",
+        reason: `No clinic session was found with ID "${data.sessionId}".`,
       };
     }
 
@@ -61,6 +66,7 @@ export async function createSessionAttachment(input: unknown) {
       success: true,
       data: attachment,
       message: "Attachment added successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("CREATE_SESSION_ATTACHMENT_ERROR:", error);
@@ -69,6 +75,10 @@ export async function createSessionAttachment(input: unknown) {
       success: false,
       data: null,
       message: "Failed to add attachment",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while adding the attachment.",
     };
   }
 }

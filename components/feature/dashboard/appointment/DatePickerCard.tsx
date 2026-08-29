@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Calendar } from "@/components/ui/calendar";
 import { Card } from "@/components/ui/card";
@@ -23,6 +23,12 @@ const DatePickerCard = ({
   description,
 }: Props) => {
   const [month, setMonth] = useState<Date>(date ?? new Date());
+
+  useEffect(() => {
+    if (date) {
+      setMonth(date);
+    }
+  }, [date]);
 
   const isDateAvailable = (date: Date) => {
     return availableDates.some(
@@ -53,18 +59,20 @@ const DatePickerCard = ({
   };
 
   return (
-    <Card className="block rounded-3xl p-6">
+    <Card className="block min-w-0 rounded-3xl p-4 sm:p-6">
       <h3 className="mb-5 text-xl font-semibold">{title}</h3>
 
-      <Calendar
-        mode="single"
-        month={month}
-        onMonthChange={handleMonthChange}
-        selected={date}
-        onSelect={handleDateSelect}
-        disabled={(date) => !isDateAvailable(date)}
-        className="rounded-xl border"
-      />
+      <div className="w-full overflow-x-auto">
+        <Calendar
+          mode="single"
+          month={month}
+          onMonthChange={handleMonthChange}
+          selected={date}
+          onSelect={handleDateSelect}
+          disabled={(date) => !isDateAvailable(date)}
+          className="mx-auto w-full min-w-[280px] rounded-xl border"
+        />
+      </div>
 
       <p className="mt-4 text-sm text-muted-foreground">{description}</p>
     </Card>

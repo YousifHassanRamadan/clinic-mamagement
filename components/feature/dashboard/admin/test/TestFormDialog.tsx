@@ -122,6 +122,15 @@ const emptyFormValues: CreateTestInput = {
   ],
 };
 
+const selectTriggerClassName =
+  "h-10 w-full rounded-xl border-border/60 bg-background/80 px-3 shadow-sm transition-all hover:border-primary/40 hover:bg-muted/40 focus:ring-2 focus:ring-primary/20";
+
+const selectContentClassName =
+  "w-[--radix-select-trigger-width] min-w-0 overflow-hidden rounded-xl border-border/60 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md";
+
+const selectItemClassName =
+  "cursor-pointer rounded-lg px-3 py-2.5 text-sm transition-colors focus:bg-primary/10 focus:text-primary";
+
 const normalizeFormData = (data: CreateTestInput): CreateTestInput => ({
   title: data.title ?? "",
   titleAr: data.titleAr ?? "",
@@ -381,34 +390,46 @@ const TestFormDialog = ({
               )}
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-2.5">
               <label className="text-xs font-medium">
                 {translations.category}
               </label>
 
-              <Controller
-                name="categoryId"
-                control={control}
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    disabled={isSubmitting}
-                  >
-                    <SelectTrigger className="h-10 w-full rounded-xl p-3">
-                      <SelectValue placeholder={translations.selectCategory} />
-                    </SelectTrigger>
+              <div className="pt-2">
+                <Controller
+                  name="categoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting}
+                    >
+                      <SelectTrigger className={selectTriggerClassName}>
+                        <SelectValue
+                          placeholder={translations.selectCategory}
+                        />
+                      </SelectTrigger>
 
-                    <SelectContent>
-                      {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+                      <SelectContent
+                        position="popper"
+                        sideOffset={6}
+                        className={selectContentClassName}
+                      >
+                        {categories.map((category) => (
+                          <SelectItem
+                            key={category.id}
+                            value={category.id}
+                            className={selectItemClassName}
+                          >
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </div>
 
               {errors.categoryId && (
                 <p className="text-sm text-destructive">

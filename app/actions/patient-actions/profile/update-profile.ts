@@ -1,3 +1,5 @@
+// app/actions/patient-actions/profile/update-profile.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
@@ -10,7 +12,7 @@ export async function updateProfile(input: ProfileFormValues) {
 
   if (!validation.success) {
     return {
-      success: false,
+      success: false as const,
       message: "Invalid profile data",
       errors: validation.error.flatten().fieldErrors,
     };
@@ -20,36 +22,28 @@ export async function updateProfile(input: ProfileFormValues) {
 
   if (!session?.user?.id) {
     return {
-      success: false,
+      success: false as const,
       message: "Unauthorized",
     };
   }
 
   const userId = session.user.id;
 
-  const { firstName, lastName, email, phone, address, gender } =
-    validation.data;
+  const {
+    firstName,
+    lastName,
+    phone,
+    address,
+    governorate,
+    city,
+    district,
+    street,
+    buildingNumber,
+    apartmentNumber,
+    postalCode,
+  } = validation.data;
 
   try {
-    const existingEmail = await prisma.user.findFirst({
-      where: {
-        email,
-        NOT: {
-          id: userId,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (existingEmail) {
-      return {
-        success: false,
-        message: "Email is already in use",
-      };
-    }
-
     const existingPhone = await prisma.user.findFirst({
       where: {
         phone,
@@ -64,7 +58,7 @@ export async function updateProfile(input: ProfileFormValues) {
 
     if (existingPhone) {
       return {
-        success: false,
+        success: false as const,
         message: "Phone number is already in use",
       };
     }
@@ -77,10 +71,16 @@ export async function updateProfile(input: ProfileFormValues) {
       data: {
         firstName,
         lastName,
-        email,
         phone,
+
         address: address || null,
-        gender: gender ?? null,
+        governorate: governorate || null,
+        city: city || null,
+        district: district || null,
+        street: street || null,
+        buildingNumber: buildingNumber || null,
+        apartmentNumber: apartmentNumber || null,
+        postalCode: postalCode || null,
       },
 
       select: {
@@ -98,6 +98,22 @@ export async function updateProfile(input: ProfileFormValues) {
         address: true,
         addressAr: true,
 
+        governorate: true,
+        governorateAr: true,
+
+        city: true,
+        cityAr: true,
+
+        district: true,
+        districtAr: true,
+
+        street: true,
+        streetAr: true,
+
+        buildingNumber: true,
+        apartmentNumber: true,
+        postalCode: true,
+
         gender: true,
         image: true,
         role: true,
@@ -105,7 +121,7 @@ export async function updateProfile(input: ProfileFormValues) {
     });
 
     return {
-      success: true,
+      success: true as const,
       message: "Profile updated successfully",
       data: updatedUser,
     };
@@ -113,7 +129,7 @@ export async function updateProfile(input: ProfileFormValues) {
     console.error("UPDATE_PROFILE_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       message: "Failed to update profile",
     };
   }

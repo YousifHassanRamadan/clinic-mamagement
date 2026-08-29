@@ -7,7 +7,6 @@ interface Props {
     title: string;
     home: string;
     patientSignIn: string;
-    createAccount: string;
   };
 }
 
@@ -19,10 +18,6 @@ const FooterLinks = ({ translations }: Props) => {
     },
     {
       title: translations.patientSignIn,
-      href: "/login",
-    },
-    {
-      title: translations.createAccount,
       href: "/login",
     },
   ];

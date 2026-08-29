@@ -56,7 +56,7 @@ const DashboardLayout = async ({ children, role }: Props) => {
       "/dashboard/patient/tests/results": t(
         "dashboard.sidebar.items.testResults",
       ),
-      "/dashboard/patient/profile": t("dashboard.sidebar.items.myProfile"),
+      "/dashboard/profile": t("dashboard.sidebar.items.myProfile"),
     },
   };
 

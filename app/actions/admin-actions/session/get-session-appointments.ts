@@ -12,6 +12,7 @@ export async function getSessionAppointments(patientId?: string) {
         success: false,
         data: [],
         message: "Unauthorized",
+        reason: "You must be logged in to fetch session appointments.",
       };
     }
 
@@ -21,7 +22,7 @@ export async function getSessionAppointments(patientId?: string) {
         status: {
           in: ["CONFIRMED", "COMPLETED"],
         },
-        session: null, // only appointments with no ClinicSession yet
+        session: null,
       },
       select: {
         id: true,
@@ -37,6 +38,7 @@ export async function getSessionAppointments(patientId?: string) {
     return {
       success: true,
       data: appointments,
+      reason: null,
     };
   } catch (error) {
     console.error("GET_SESSION_APPOINTMENTS_ERROR:", error);
@@ -45,6 +47,10 @@ export async function getSessionAppointments(patientId?: string) {
       success: false,
       data: [],
       message: "Failed to fetch appointments",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while fetching appointments.",
     };
   }
 }

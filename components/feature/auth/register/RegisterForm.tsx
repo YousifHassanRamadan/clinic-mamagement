@@ -18,6 +18,16 @@ import { toast } from "sonner";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+import { Check, ChevronDown } from "lucide-react";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 const registerSchema = z
   .object({
     firstName: z.string().min(2, "First name is required"),
@@ -66,11 +76,15 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
 
   const {
     register,
+    setValue,
+    watch,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
   });
+
+  const selectedGender = watch("gender");
 
   const handleRegister = async (data: RegisterFormData) => {
     try {
@@ -99,6 +113,13 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
       toast.error(translations.error);
     }
   };
+
+  const genderLabel =
+    selectedGender === "MALE"
+      ? translations.male
+      : selectedGender === "FEMALE"
+        ? translations.female
+        : translations.gender;
 
   return (
     <form className="space-y-5" onSubmit={handleSubmit(handleRegister)}>
@@ -147,16 +168,65 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         <p className="text-sm text-destructive">{errors.email.message}</p>
       )}
 
-      <select
-        {...register("gender")}
-        className="h-11 w-full appearance-none rounded-xl border border-border bg-background px-4 pe-10 text-sm shadow-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
-      >
-        <option value="">{translations.gender}</option>
+      {/* Gender Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 w-full justify-between rounded-xl border-border bg-background px-4 font-normal shadow-sm transition-all hover:bg-muted/50 focus:ring-2 focus:ring-primary/20"
+          >
+            <span
+              className={
+                selectedGender ? "text-foreground" : "text-muted-foreground"
+              }
+            >
+              {genderLabel}
+            </span>
 
-        <option value="MALE">{translations.male}</option>
+            <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform duration-200" />
+          </Button>
+        </DropdownMenuTrigger>
 
-        <option value="FEMALE">{translations.female}</option>
-      </select>
+        <DropdownMenuContent
+          align="start"
+          sideOffset={6}
+          className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-0 rounded-xl border-border/70 bg-background/95 p-1.5 shadow-xl backdrop-blur-md"
+        >
+          <DropdownMenuRadioGroup
+            value={selectedGender}
+            onValueChange={(value) => {
+              setValue("gender", value as RegisterFormData["gender"], {
+                shouldDirty: true,
+                shouldTouch: true,
+                shouldValidate: true,
+              });
+            }}
+          >
+            <DropdownMenuRadioItem
+              value="MALE"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-sm outline-none transition-colors focus:bg-muted data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
+            >
+              <span className="flex-1">{translations.male}</span>
+
+              {selectedGender === "MALE" && (
+                <Check className="ml-auto h-4 w-4 text-primary" />
+              )}
+            </DropdownMenuRadioItem>
+
+            <DropdownMenuRadioItem
+              value="FEMALE"
+              className="cursor-pointer rounded-lg px-3 py-2.5 text-sm outline-none transition-colors focus:bg-muted data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
+            >
+              <span className="flex-1">{translations.female}</span>
+
+              {selectedGender === "FEMALE" && (
+                <Check className="ml-auto h-4 w-4 text-primary" />
+              )}
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {errors.gender && (
         <p className="text-sm text-destructive">{errors.gender.message}</p>

@@ -3,7 +3,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Save } from "lucide-react";
+import { Edit, Save, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -24,6 +24,8 @@ const translations = {
   en: {
     title: "My Profile",
     description: "Keep your details up to date so the clinic can reach you.",
+    editProfile: "Edit Profile",
+    cancel: "Cancel",
     saving: "Saving...",
     saveChanges: "Save Changes",
     somethingWentWrong: "Something went wrong",
@@ -32,14 +34,14 @@ const translations = {
   ar: {
     title: "ملفي الشخصي",
     description: "حافظ على تحديث بياناتك حتى تتمكن العيادة من التواصل معك.",
+    editProfile: "تعديل الملف الشخصي",
+    cancel: "إلغاء",
     saving: "جاري الحفظ...",
     saveChanges: "حفظ التغييرات",
     somethingWentWrong: "حدث خطأ ما",
   },
 } as const;
 
-// Get the current language directly from the browser cookie.
-// جلب اللغة الحالية مباشرة من Cookie الموجودة في المتصفح.
 const getLocaleFromCookie = (): Locale => {
   const match = document.cookie
     .split("; ")
@@ -54,6 +56,7 @@ const ProfilePage = () => {
   const [locale, setLocale] = useState<Locale>("en");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -64,6 +67,13 @@ const ProfilePage = () => {
       email: "",
       phone: "",
       address: "",
+      governorate: "",
+      city: "",
+      district: "",
+      street: "",
+      buildingNumber: "",
+      apartmentNumber: "",
+      postalCode: "",
       gender: undefined,
     },
   });
@@ -95,6 +105,13 @@ const ProfilePage = () => {
         email: result.data.email,
         phone: result.data.phone,
         address: result.data.address ?? "",
+        governorate: result.data.governorate ?? "",
+        city: result.data.city ?? "",
+        district: result.data.district ?? "",
+        street: result.data.street ?? "",
+        buildingNumber: result.data.buildingNumber ?? "",
+        apartmentNumber: result.data.apartmentNumber ?? "",
+        postalCode: result.data.postalCode ?? "",
         gender: result.data.gender ?? undefined,
       });
 
@@ -107,9 +124,7 @@ const ProfilePage = () => {
   const t = translations[locale];
 
   const onSubmit = async (values: ProfileFormValues) => {
-    // Don't submit if nothing changed.
-    // لا ترسل البيانات إذا لم يحدث أي تغيير.
-    if (!isDirty) {
+    if (!editing || !isDirty) {
       return;
     }
 
@@ -132,15 +147,52 @@ const ProfilePage = () => {
           email: result.data.email,
           phone: result.data.phone,
           address: result.data.address ?? "",
+          governorate: result.data.governorate ?? "",
+          city: result.data.city ?? "",
+          district: result.data.district ?? "",
+          street: result.data.street ?? "",
+          buildingNumber: result.data.buildingNumber ?? "",
+          apartmentNumber: result.data.apartmentNumber ?? "",
+          postalCode: result.data.postalCode ?? "",
           gender: result.data.gender ?? undefined,
         });
       }
+
+      setEditing(false);
     } catch (error) {
       console.error("UPDATE_PROFILE_ERROR:", error);
       toast.error(t.somethingWentWrong);
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleStartEditing = () => {
+    setEditing(true);
+  };
+
+  const handleCancel = async () => {
+    const result = await getProfile();
+
+    if (result.success) {
+      reset({
+        firstName: result.data.firstName,
+        lastName: result.data.lastName,
+        email: result.data.email,
+        phone: result.data.phone,
+        address: result.data.address ?? "",
+        governorate: result.data.governorate ?? "",
+        city: result.data.city ?? "",
+        district: result.data.district ?? "",
+        street: result.data.street ?? "",
+        buildingNumber: result.data.buildingNumber ?? "",
+        apartmentNumber: result.data.apartmentNumber ?? "",
+        postalCode: result.data.postalCode ?? "",
+        gender: result.data.gender ?? undefined,
+      });
+    }
+
+    setEditing(false);
   };
 
   if (loading) {
@@ -160,7 +212,14 @@ const ProfilePage = () => {
   const profile = watch();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+        }
+      }}
+    >
       <div className="space-y-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>
@@ -169,15 +228,38 @@ const ProfilePage = () => {
             <p className="mt-2 text-muted-foreground">{t.description}</p>
           </div>
 
-          <Button
-            type="submit"
-            disabled={!isDirty || saving}
-            className="rounded-xl"
-          >
-            <Save className="mr-2 h-4 w-4" />
+          {!editing ? (
+            <Button
+              type="button"
+              onClick={handleStartEditing}
+              className="rounded-xl"
+            >
+              <Edit className="mr-2 h-4 w-4" />
+              {t.editProfile}
+            </Button>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                disabled={saving}
+                className="rounded-xl"
+              >
+                <X className="mr-2 h-4 w-4" />
+                {t.cancel}
+              </Button>
 
-            {saving ? t.saving : t.saveChanges}
-          </Button>
+              <Button
+                type="submit"
+                disabled={!isDirty || saving}
+                className="rounded-xl"
+              >
+                <Save className="mr-2 h-4 w-4" />
+                {saving ? t.saving : t.saveChanges}
+              </Button>
+            </div>
+          )}
         </div>
 
         <div className="grid gap-8 xl:grid-cols-[320px_1fr]">
@@ -188,7 +270,11 @@ const ProfilePage = () => {
           />
 
           <div className="space-y-8">
-            <PersonalInformation form={form} locale={locale} />
+            <PersonalInformation
+              form={form}
+              locale={locale}
+              editing={editing}
+            />
           </div>
         </div>
       </div>

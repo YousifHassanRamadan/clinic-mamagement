@@ -3,7 +3,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Clock3, User2, Stethoscope } from "lucide-react";
+import {
+  CalendarDays,
+  Clock3,
+  User2,
+  Stethoscope,
+  ChevronDown,
+} from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { Card } from "@/components/ui/card";
@@ -59,6 +65,15 @@ type SessionDetailsCardProps = {
     };
   };
 };
+
+const selectTriggerClass =
+  "h-11 w-full rounded-xl border border-input bg-background px-3 shadow-sm transition-all duration-200 hover:border-primary/40 hover:bg-accent/40 focus:ring-2 focus:ring-primary/20 data-[state=open]:border-primary data-[state=open]:ring-2 data-[state=open]:ring-primary/20";
+
+const selectContentClass =
+  "z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-xl border border-border/60 bg-popover/95 p-1.5 shadow-xl backdrop-blur-md";
+
+const selectItemClass =
+  "cursor-pointer rounded-lg px-3 py-2.5 text-sm outline-none transition-colors duration-150 focus:bg-primary/10 focus:text-primary data-[state=checked]:bg-primary/10 data-[state=checked]:font-medium data-[state=checked]:text-primary";
 
 const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
   const {
@@ -159,6 +174,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
+        {/* Patient */}
         <div className="space-y-2">
           <Label>{translations.patient}</Label>
 
@@ -170,16 +186,24 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
               })
             }
           >
-            <SelectTrigger className="h-11 rounded-xl p-3">
-              <User2 className="mr-2 h-4 w-4 text-muted-foreground" />
+            <SelectTrigger className={selectTriggerClass}>
+              <User2 className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
 
               <SelectValue placeholder={translations.choosePatient} />
+
+              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200 group-data-[state=open]:rotate-180" />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent className={selectContentClass}>
               {patients.map((patient) => (
-                <SelectItem key={patient.id} value={patient.id}>
-                  {patient.firstName} {patient.lastName}
+                <SelectItem
+                  key={patient.id}
+                  value={patient.id}
+                  className={selectItemClass}
+                >
+                  <span className="truncate">
+                    {patient.firstName} {patient.lastName}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>
@@ -192,6 +216,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           )}
         </div>
 
+        {/* Appointment */}
         <div className="space-y-2">
           <Label>{translations.appointment}</Label>
 
@@ -204,7 +229,9 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
             }
             disabled={!patientId}
           >
-            <SelectTrigger className="h-11 rounded-xl p-3">
+            <SelectTrigger
+              className={`${selectTriggerClass} disabled:cursor-not-allowed disabled:opacity-60`}
+            >
               <SelectValue
                 placeholder={
                   patientId
@@ -212,22 +239,33 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
                     : translations.selectPatientFirst
                 }
               />
+
+              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
             </SelectTrigger>
 
-            <SelectContent>
-              <SelectItem value="none">
-                {translations.noAppointment} — {translations.walkIn}
+            <SelectContent className={selectContentClass}>
+              <SelectItem value="none" className={selectItemClass}>
+                <span className="truncate">
+                  {translations.noAppointment} — {translations.walkIn}
+                </span>
               </SelectItem>
 
               {appointments.map((appointment) => (
-                <SelectItem key={appointment.id} value={appointment.id}>
-                  {new Date(appointment.date).toLocaleString()}
+                <SelectItem
+                  key={appointment.id}
+                  value={appointment.id}
+                  className={selectItemClass}
+                >
+                  <span className="truncate">
+                    {new Date(appointment.date).toLocaleString()}
+                  </span>
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
 
+        {/* Session Type */}
         <div className="space-y-2">
           <Label>{translations.sessionType}</Label>
 
@@ -243,15 +281,21 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
               )
             }
           >
-            <SelectTrigger className="h-11 rounded-xl p-3">
-              <Stethoscope className="mr-2 h-4 w-4 text-muted-foreground" />
+            <SelectTrigger className={selectTriggerClass}>
+              <Stethoscope className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
 
               <SelectValue placeholder={translations.selectType} />
+
+              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent className={selectContentClass}>
               {sessionTypes.map((type) => (
-                <SelectItem key={type.id} value={type.id}>
+                <SelectItem
+                  key={type.id}
+                  value={type.id}
+                  className={selectItemClass}
+                >
                   {type.name}
                 </SelectItem>
               ))}
@@ -259,6 +303,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           </Select>
         </div>
 
+        {/* Date */}
         <div className="space-y-2">
           <Label>{translations.date}</Label>
 
@@ -277,6 +322,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           )}
         </div>
 
+        {/* Time */}
         <div className="space-y-2">
           <Label>{translations.time}</Label>
 
@@ -291,6 +337,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           </div>
         </div>
 
+        {/* Duration */}
         <div className="space-y-2">
           <Label>{translations.duration}</Label>
 
@@ -302,13 +349,19 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
               })
             }
           >
-            <SelectTrigger className="h-11 rounded-xl p-3">
+            <SelectTrigger className={selectTriggerClass}>
               <SelectValue placeholder={translations.selectDuration} />
+
+              <ChevronDown className="ml-auto h-4 w-4 shrink-0 text-muted-foreground" />
             </SelectTrigger>
 
-            <SelectContent>
+            <SelectContent className={selectContentClass}>
               {durations.map((duration) => (
-                <SelectItem key={duration.id} value={String(duration.id)}>
+                <SelectItem
+                  key={duration.id}
+                  value={String(duration.id)}
+                  className={selectItemClass}
+                >
                   {duration.label}
                 </SelectItem>
               ))}
@@ -316,6 +369,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           </Select>
         </div>
 
+        {/* English Diagnosis */}
         <div className="space-y-2">
           <Label>{translations.diagnosisEnglish}</Label>
 
@@ -333,6 +387,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
           )}
         </div>
 
+        {/* Arabic Diagnosis */}
         <div className="space-y-2">
           <Label>{translations.diagnosisArabic}</Label>
 
@@ -351,6 +406,7 @@ const SessionDetailsCard = ({ translations }: SessionDetailsCardProps) => {
         </div>
       </div>
 
+      {/* Mood */}
       <div className="mt-8">
         <Label className="mb-3 block">{translations.mood.title}</Label>
 

@@ -77,42 +77,50 @@ model User {
   address String?
   addressAr String?
 
+  governorate String?
+  governorateAr String?
+
+  city String?
+  cityAr String?
+
+  district String?
+  districtAr String?
+
+  street String?
+  streetAr String?
+
+  buildingNumber String?
+  apartmentNumber String?
+  postalCode String?
+
   gender Gender?
 
   password String
 
-  role     Role    @default(PATIENT)
+  role Role @default(PATIENT)
   approval Boolean @default(false)
 
   emailVerified DateTime?
-  image         String?
+  image String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Auth.js
   accounts Account[]
   sessions Session[]
 
-  // Appointments
   appointments Appointment[]
 
-  // Doctor availability
   availabilities Availability[]
 
-  // Clinic sessions
   patientSessions ClinicSession[]
 
-  // Psychological tests created by doctor/admin
   testsCreated PsychologicalTest[] @relation("TestCreatedBy")
 
-  // Patient test attempts
   patientTests PatientTest[]
 
-  // Access to specific tests
   testAccesses TestAccess[]
 
-  // Access to specific books
   bookAccesses BookAccess[]
 
   @@index([role])

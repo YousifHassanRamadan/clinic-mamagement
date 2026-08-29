@@ -113,7 +113,12 @@ const BooksList = ({ books, locale, translations, onEdit }: Props) => {
             </div>
 
             {/* Price */}
-            <div className="text-lg font-semibold" dir="ltr">
+            <div
+              className={`text-lg font-semibold ${
+                locale === "ar" ? "text-right" : "text-left"
+              }`}
+              dir="ltr"
+            >
               {book.price.toLocaleString(locale === "ar" ? "ar-EG" : "en-EG", {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,

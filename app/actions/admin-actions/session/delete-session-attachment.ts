@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
 import cloudinary from "@/lib/cloudinary";
+
 import { z } from "zod";
 
 const deleteAttachmentSchema = z.object({
@@ -23,31 +24,34 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
       return {
         success: false,
         message: "Unauthorized",
+        reason: "You must be logged in to delete an attachment.",
       };
     }
 
     const parsed = deleteAttachmentSchema.safeParse(input);
 
     if (!parsed.success) {
+      const reason =
+        parsed.error.issues[0]?.message ??
+        "The attachment deletion data is invalid.";
+
       return {
         success: false,
-        message: parsed.error.issues[0]?.message ?? "Invalid input",
+        message: "Invalid input",
+        reason,
       };
     }
 
     const data = parsed.data;
 
     let publicId = data.publicId;
+
     let resourceType = data.resourceType as
       | "image"
       | "raw"
       | "video"
       | undefined;
 
-    /*
-     * If this attachment already exists in DB,
-     * use the stored Cloudinary information.
-     */
     if (data.attachmentId) {
       const attachment = await prisma.sessionAttachment.findUnique({
         where: {
@@ -66,6 +70,7 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
         return {
           success: false,
           message: "Attachment not found",
+          reason: `No attachment was found with ID "${data.attachmentId}".`,
         };
       }
 
@@ -75,21 +80,17 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
         (attachment.resourceType as "image" | "raw" | "video" | null) ??
         undefined;
 
-      /*
-       * Backward compatibility for old attachments
-       * where publicId/resourceType were not saved.
-       */
       if (!publicId) {
         const url = new URL(attachment.url);
-
         const pathParts = url.pathname.split("/").filter(Boolean);
-
         const uploadIndex = pathParts.indexOf("upload");
 
         if (uploadIndex === -1) {
           return {
             success: false,
             message: "Invalid Cloudinary URL",
+            reason:
+              "The stored attachment URL does not contain a valid Cloudinary upload path.",
           };
         }
 
@@ -108,6 +109,8 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
           return {
             success: false,
             message: "Could not determine Cloudinary public ID",
+            reason:
+              "The Cloudinary URL does not contain a valid file name from which the public ID can be determined.",
           };
         }
 
@@ -125,22 +128,18 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
       }
     }
 
-    /*
-     * Attachment was uploaded to Cloudinary but
-     * has not been saved to the database yet.
-     */
     if (!data.attachmentId) {
       if (!publicId) {
         const url = new URL(data.url);
-
         const pathParts = url.pathname.split("/").filter(Boolean);
-
         const uploadIndex = pathParts.indexOf("upload");
 
         if (uploadIndex === -1) {
           return {
             success: false,
             message: "Invalid Cloudinary URL",
+            reason:
+              "The provided attachment URL does not contain a valid Cloudinary upload path.",
           };
         }
 
@@ -159,6 +158,8 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
           return {
             success: false,
             message: "Could not determine Cloudinary public ID",
+            reason:
+              "The provided Cloudinary URL does not contain a valid file name.",
           };
         }
 
@@ -180,12 +181,11 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
       return {
         success: false,
         message: "Cloudinary asset information is missing",
+        reason:
+          "The attachment does not contain enough Cloudinary information to identify the file.",
       };
     }
 
-    /*
-     * Delete from Cloudinary first.
-     */
     const cloudinaryResult = await cloudinary.uploader.destroy(publicId, {
       resource_type: resourceType,
       invalidate: true,
@@ -200,12 +200,10 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
       return {
         success: false,
         message: "Failed to remove attachment from Cloudinary",
+        reason: `Cloudinary returned "${cloudinaryResult.result}" while deleting the asset.`,
       };
     }
 
-    /*
-     * Delete from database only if it exists there.
-     */
     if (data.attachmentId) {
       await prisma.sessionAttachment.delete({
         where: {
@@ -217,6 +215,7 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
     return {
       success: true,
       message: "Attachment removed successfully",
+      reason: null,
     };
   } catch (error) {
     console.error("DELETE_SESSION_ATTACHMENT_ERROR:", error);
@@ -224,6 +223,10 @@ export async function deleteSessionAttachment(input: DeleteAttachmentInput) {
     return {
       success: false,
       message: "Failed to remove attachment",
+      reason:
+        error instanceof Error
+          ? error.message
+          : "An unexpected error occurred while removing the attachment.",
     };
   }
 }

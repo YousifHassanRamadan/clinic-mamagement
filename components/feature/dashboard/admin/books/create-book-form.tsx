@@ -93,20 +93,38 @@ const CreateBookForm = ({
       description: book?.description ?? "",
       descriptionAr: book?.descriptionAr ?? "",
       price: book?.price ?? 0,
+      file: undefined,
+      coverImage: undefined,
     },
   });
 
   useEffect(() => {
-    if (book) {
+    if (book && isEdit) {
       reset({
         title: book.title,
         titleAr: book.titleAr ?? "",
         description: book.description ?? "",
         descriptionAr: book.descriptionAr ?? "",
         price: book.price,
+        file: undefined,
+        coverImage: undefined,
       });
     }
-  }, [book, reset]);
+  }, [book, isEdit, reset]);
+
+  const resetForm = () => {
+    reset({
+      title: "",
+      titleAr: "",
+      description: "",
+      descriptionAr: "",
+      price: 0,
+      file: undefined,
+      coverImage: undefined,
+    });
+
+    formRef.current?.reset();
+  };
 
   const onSubmit = (values: BookFormValues) => {
     const formData = new FormData();
@@ -140,18 +158,15 @@ const CreateBookForm = ({
 
       toast.success(result.message);
 
-      reset({
-        title: "",
-        titleAr: "",
-        description: "",
-        descriptionAr: "",
-        price: 0,
-      });
-
-      formRef.current?.reset();
+      resetForm();
 
       onSuccess?.();
     });
+  };
+
+  const handleCancel = () => {
+    resetForm();
+    onCancel?.();
   };
 
   return (
@@ -329,7 +344,7 @@ const CreateBookForm = ({
         <Button
           type="button"
           variant="outline"
-          onClick={onCancel}
+          onClick={handleCancel}
           disabled={isPending}
           className="w-full"
         >
@@ -342,13 +357,11 @@ const CreateBookForm = ({
         {isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-
             {isEdit ? translations.updating : translations.uploading}
           </>
         ) : (
           <>
             <Upload className="mr-2 h-4 w-4" />
-
             {isEdit ? translations.update : translations.create}
           </>
         )}

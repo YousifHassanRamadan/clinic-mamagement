@@ -64,27 +64,37 @@ const BookReader = ({ book }: Props) => {
     [pathname, router, searchParams],
   );
 
+  const goToPage = useCallback(
+    (page: number) => {
+      if (page < 1 || page > totalPages) {
+        return;
+      }
+
+      if (page === currentPage) {
+        return;
+      }
+
+      setCurrentPage(page);
+      updatePageInUrl(page);
+    },
+    [currentPage, totalPages, updatePageInUrl],
+  );
+
   const goNext = useCallback(() => {
     if (currentPage >= totalPages) {
       return;
     }
 
-    const nextPage = currentPage + 1;
-
-    setCurrentPage(nextPage);
-    updatePageInUrl(nextPage);
-  }, [currentPage, totalPages, updatePageInUrl]);
+    goToPage(currentPage + 1);
+  }, [currentPage, totalPages, goToPage]);
 
   const goPrevious = useCallback(() => {
     if (currentPage <= 1) {
       return;
     }
 
-    const previousPage = currentPage - 1;
-
-    setCurrentPage(previousPage);
-    updatePageInUrl(previousPage);
-  }, [currentPage, updatePageInUrl]);
+    goToPage(currentPage - 1);
+  }, [currentPage, goToPage]);
 
   useEffect(() => {
     const pageParam = Number(searchParams.get("page"));
@@ -117,6 +127,16 @@ const BookReader = ({ book }: Props) => {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null;
+
+      if (
+        target?.tagName === "INPUT" ||
+        target?.tagName === "TEXTAREA" ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
       if (event.key === "ArrowRight" || event.key === "ArrowDown") {
         goNext();
       }
@@ -177,7 +197,7 @@ const BookReader = ({ book }: Props) => {
 
   return (
     <div
-      className="min-h-screen bg-muted/30 select-none"
+      className="min-h-screen select-none bg-muted/30"
       onCopy={(event) => event.preventDefault()}
       onContextMenu={(event) => event.preventDefault()}
     >
@@ -205,6 +225,7 @@ const BookReader = ({ book }: Props) => {
         totalPages={totalPages}
         onPrevious={goPrevious}
         onNext={goNext}
+        onPageChange={goToPage}
       />
     </div>
   );
