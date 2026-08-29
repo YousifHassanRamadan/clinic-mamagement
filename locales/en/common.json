@@ -1277,26 +1277,36 @@
         "openLibrary": "Open the test library"
       },
       "tests": {
+        "paranoidThinking": {
+          "category": "Paranoid & Suspicious Thinking",
+          "duration": "—",
+          "title": "Paranoid Thinking & Suspiciousness Test",
+          "description": "A comprehensive assessment designed to evaluate patterns of paranoid thinking, suspicion, and mistrust.",
+          "questions": "225 Questions"
+        },
+
+        "obsessiveCompulsive": {
+          "category": "Obsessive-Compulsive Disorder (OCD)",
+          "duration": "—",
+          "title": "Yale-Brown Obsessive Compulsive Scale (Y-BOCS)",
+          "description": "A clinical scale used to assess the severity of obsessive-compulsive symptoms and their impact on daily life.",
+          "questions": "10 Questions"
+        },
+
+        "depression": {
+          "category": "Depression",
+          "duration": "—",
+          "title": "Beck Depression Inventory (BDI)",
+          "description": "A psychological assessment used to evaluate the severity of depressive symptoms and related thoughts and feelings.",
+          "questions": "21 Questions"
+        },
+
         "anxiety": {
           "category": "Anxiety",
-          "duration": "4 min",
-          "title": "GAD-7 Anxiety Screening",
-          "description": "Seven questions measuring generalized anxiety severity over the last two weeks.",
-          "questions": "7 questions"
-        },
-        "mood": {
-          "category": "Mood",
-          "duration": "5 min",
-          "title": "PHQ-9 Depression Scale",
-          "description": "Standard screening instrument for depressive symptoms and severity.",
-          "questions": "9 questions"
-        },
-        "stress": {
-          "category": "Stress",
-          "duration": "10 min",
-          "title": "Maslach Burnout Inventory",
-          "description": "Assesses emotional exhaustion, depersonalisation and personal accomplishment.",
-          "questions": "22 questions"
+          "duration": "—",
+          "title": "Taylor Manifest Anxiety Scale (TMAS)",
+          "description": "A psychological scale designed to assess manifest anxiety and symptoms associated with tension and worry.",
+          "questions": "50 Questions"
         }
       }
     },
@@ -1306,19 +1316,21 @@
       },
       "testimonials": {
         "marcus": {
-          "name": "Ahmed M.",
+          "name": "Mariam A.",
           "role": "Client, 2 years",
           "review": "I came in barely able to talk about my panic attacks. Two years later, I haven't had a single one in eight months. The gradual pace of therapy made a huge difference for me."
         },
+
         "priya": {
           "name": "Sara N.",
           "role": "Client, 8 months",
           "review": "The test results dashboard made me feel like my progress was real and visible. When I saw my GAD-7 score drop from 17 to 6, I finally felt like there was clear proof that I was getting better."
         },
+
         "elenaTom": {
-          "name": "Mohamed & Nour",
-          "role": "Couples therapy",
-          "review": "Dr. Yasmin never took sides. She helped us understand each other and gave us a better way to talk about the same issue we'd been arguing about for six years."
+          "name": "Nour A.",
+          "role": "Client, 1 year",
+          "review": "Dr. Yasmin created a safe and comfortable space where I could talk openly. Therapy helped me understand myself better and gave me healthier ways to deal with difficult situations."
         }
       }
     },

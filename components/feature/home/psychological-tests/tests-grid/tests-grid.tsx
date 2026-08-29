@@ -2,50 +2,45 @@
 
 import TestCard from "../test-card/test-card";
 
+interface TestTranslation {
+  category: string;
+  duration: string;
+  title: string;
+  description: string;
+  questions: string;
+}
+
 interface TestsGridProps {
   translations: {
-    anxiety: {
-      category: string;
-      duration: string;
-      title: string;
-      description: string;
-      questions: string;
-    };
-    mood: {
-      category: string;
-      duration: string;
-      title: string;
-      description: string;
-      questions: string;
-    };
-    stress: {
-      category: string;
-      duration: string;
-      title: string;
-      description: string;
-      questions: string;
-    };
+    paranoidThinking: TestTranslation;
+    obsessiveCompulsive: TestTranslation;
+    depression: TestTranslation;
+    anxiety: TestTranslation;
   };
 }
 
 const TestsGrid = ({ translations }: TestsGridProps) => {
   const tests = [
     {
+      id: "paranoidThinking",
+      ...translations.paranoidThinking,
+    },
+    {
+      id: "obsessiveCompulsive",
+      ...translations.obsessiveCompulsive,
+    },
+    {
+      id: "depression",
+      ...translations.depression,
+    },
+    {
       id: "anxiety",
       ...translations.anxiety,
-    },
-    {
-      id: "mood",
-      ...translations.mood,
-    },
-    {
-      id: "stress",
-      ...translations.stress,
     },
   ];
 
   return (
-    <div className="mt-14 grid gap-8 lg:grid-cols-3">
+    <div className="mt-14 grid gap-8 md:grid-cols-2 xl:grid-cols-4">
       {tests.map((test) => (
         <TestCard
           key={test.id}

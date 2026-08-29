@@ -223,6 +223,58 @@ export default async function Page() {
             },
 
             tests: {
+              paranoidThinking: {
+                category: t(
+                  "home.psychologicalTests.tests.paranoidThinking.category",
+                ),
+                duration: t(
+                  "home.psychologicalTests.tests.paranoidThinking.duration",
+                ),
+                title: t(
+                  "home.psychologicalTests.tests.paranoidThinking.title",
+                ),
+                description: t(
+                  "home.psychologicalTests.tests.paranoidThinking.description",
+                ),
+                questions: t(
+                  "home.psychologicalTests.tests.paranoidThinking.questions",
+                ),
+              },
+
+              obsessiveCompulsive: {
+                category: t(
+                  "home.psychologicalTests.tests.obsessiveCompulsive.category",
+                ),
+                duration: t(
+                  "home.psychologicalTests.tests.obsessiveCompulsive.duration",
+                ),
+                title: t(
+                  "home.psychologicalTests.tests.obsessiveCompulsive.title",
+                ),
+                description: t(
+                  "home.psychologicalTests.tests.obsessiveCompulsive.description",
+                ),
+                questions: t(
+                  "home.psychologicalTests.tests.obsessiveCompulsive.questions",
+                ),
+              },
+
+              depression: {
+                category: t(
+                  "home.psychologicalTests.tests.depression.category",
+                ),
+                duration: t(
+                  "home.psychologicalTests.tests.depression.duration",
+                ),
+                title: t("home.psychologicalTests.tests.depression.title"),
+                description: t(
+                  "home.psychologicalTests.tests.depression.description",
+                ),
+                questions: t(
+                  "home.psychologicalTests.tests.depression.questions",
+                ),
+              },
+
               anxiety: {
                 category: t("home.psychologicalTests.tests.anxiety.category"),
                 duration: t("home.psychologicalTests.tests.anxiety.duration"),
@@ -231,26 +283,6 @@ export default async function Page() {
                   "home.psychologicalTests.tests.anxiety.description",
                 ),
                 questions: t("home.psychologicalTests.tests.anxiety.questions"),
-              },
-
-              mood: {
-                category: t("home.psychologicalTests.tests.mood.category"),
-                duration: t("home.psychologicalTests.tests.mood.duration"),
-                title: t("home.psychologicalTests.tests.mood.title"),
-                description: t(
-                  "home.psychologicalTests.tests.mood.description",
-                ),
-                questions: t("home.psychologicalTests.tests.mood.questions"),
-              },
-
-              stress: {
-                category: t("home.psychologicalTests.tests.stress.category"),
-                duration: t("home.psychologicalTests.tests.stress.duration"),
-                title: t("home.psychologicalTests.tests.stress.title"),
-                description: t(
-                  "home.psychologicalTests.tests.stress.description",
-                ),
-                questions: t("home.psychologicalTests.tests.stress.questions"),
               },
             },
           }}

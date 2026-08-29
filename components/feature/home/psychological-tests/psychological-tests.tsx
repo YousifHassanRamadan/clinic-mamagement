@@ -3,6 +3,14 @@
 import PsychologicalTestsHeader from "./psychological-tests-header/psychological-tests-header";
 import TestsGrid from "./tests-grid/tests-grid";
 
+interface TestTranslation {
+  category: string;
+  duration: string;
+  title: string;
+  description: string;
+  questions: string;
+}
+
 interface PsychologicalTestsProps {
   translations: {
     header: {
@@ -13,27 +21,10 @@ interface PsychologicalTestsProps {
     };
 
     tests: {
-      anxiety: {
-        category: string;
-        duration: string;
-        title: string;
-        description: string;
-        questions: string;
-      };
-      mood: {
-        category: string;
-        duration: string;
-        title: string;
-        description: string;
-        questions: string;
-      };
-      stress: {
-        category: string;
-        duration: string;
-        title: string;
-        description: string;
-        questions: string;
-      };
+      paranoidThinking: TestTranslation;
+      obsessiveCompulsive: TestTranslation;
+      depression: TestTranslation;
+      anxiety: TestTranslation;
     };
   };
 }

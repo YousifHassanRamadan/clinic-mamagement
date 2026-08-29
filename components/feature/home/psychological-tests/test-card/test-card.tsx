@@ -1,6 +1,7 @@
 // components/feature/home/psychological-tests/test-card/test-card.tsx
 
 import { Clock3 } from "lucide-react";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
@@ -20,26 +21,59 @@ const TestCard = ({
   questions,
 }: Props) => {
   return (
-    <Card className="block group rounded-3xl p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      <div className="flex items-center justify-between">
+    <Card
+      className="
+        group flex h-full flex-col
+        rounded-2xl
+        p-4
+        shadow-sm
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-lg
+        sm:rounded-3xl
+        sm:p-6
+      "
+    >
+      {/* Category & Duration */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Badge
           variant="secondary"
-          className="rounded-full bg-primary/10 text-primary hover:bg-primary/10"
+          className="
+            w-fit
+            max-w-full
+            rounded-full
+            bg-primary/10
+            px-3
+            py-1
+            text-xs
+            text-primary
+            hover:bg-primary/10
+            sm:text-sm
+          "
         >
-          {category}
+          <span className="truncate">{category}</span>
         </Badge>
 
-        <div className="flex items-center gap-1 text-sm text-muted-foreground">
-          <Clock3 className="h-4 w-4" />
-          {duration}
-        </div>
+        {/* <div className="flex shrink-0 items-center gap-1 text-xs text-muted-foreground sm:text-sm">
+          <Clock3 className="h-4 w-4 shrink-0" />
+
+          <span>{duration}</span>
+        </div> */}
       </div>
 
-      <h3 className="mt-5 text-xl font-semibold">{title}</h3>
+      {/* Title */}
+      <h3 className="mt-4 text-lg font-semibold leading-snug sm:mt-5 sm:text-xl lg:text-2xl">
+        {title}
+      </h3>
 
-      <p className="mt-3 leading-7 text-muted-foreground">{description}</p>
+      {/* Description */}
+      <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+        {description}
+      </p>
 
-      <p className="mt-5 text-sm font-medium text-muted-foreground">
+      {/* Questions */}
+      <p className="mt-auto pt-5 text-xs font-medium text-muted-foreground sm:text-sm">
         {questions}
       </p>
     </Card>
