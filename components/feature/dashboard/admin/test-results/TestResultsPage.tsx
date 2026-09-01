@@ -1,7 +1,9 @@
+// app/(dashboard)/dashboard/admin/test-results/TestResultsPage.tsx
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Layers3 } from "lucide-react";
 import Link from "next/link";
 
 import { getPatientTests } from "@/app/actions/admin-actions/test-results/get-patient-tests";
@@ -43,6 +45,13 @@ interface Props {
   translations: Translations;
 }
 
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
 type PatientTestItem = {
   id: string;
 
@@ -63,11 +72,22 @@ type PatientTestItem = {
   };
 
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+
   score: number | null;
+
   result: string | null;
+  resultAr: string | null;
+
+  groupResults: GroupResult[] | null;
+
+  isSpecialGroupedTest: boolean;
+
   answersCount: number;
+
   startedAt: Date | null;
+
   completedAt: Date | null;
+
   createdAt: Date;
 };
 
@@ -148,6 +168,28 @@ const TestResultsPage = ({ locale, translations }: Props) => {
       default:
         return "bg-muted text-muted-foreground";
     }
+  };
+
+  const getSimpleResult = (item: PatientTestItem) => {
+    if (!item.isSpecialGroupedTest) {
+      if (isArabic) {
+        return item.resultAr?.trim() || item.result?.trim() || "—";
+      }
+
+      return item.result?.trim() || "—";
+    }
+
+    if (!item.groupResults?.length) {
+      return "—";
+    }
+
+    const firstResult = item.groupResults[0];
+
+    if (isArabic) {
+      return firstResult.resultAr?.trim() || firstResult.result?.trim() || "—";
+    }
+
+    return firstResult.result?.trim() || "—";
   };
 
   return (
@@ -252,8 +294,12 @@ const TestResultsPage = ({ locale, translations }: Props) => {
                     </td>
 
                     <td className="px-5 py-4">
-                      <div className="font-medium">
-                        {getTestTitle(item.test)}
+                      <div className="flex items-center gap-2 font-medium">
+                        {item.isSpecialGroupedTest && (
+                          <Layers3 className="h-4 w-4 shrink-0 text-primary" />
+                        )}
+
+                        <span>{getTestTitle(item.test)}</span>
                       </div>
                     </td>
 
@@ -273,7 +319,7 @@ const TestResultsPage = ({ locale, translations }: Props) => {
 
                     <td className="max-w-[220px] px-5 py-4">
                       <span className="line-clamp-2 text-sm">
-                        {item.result ?? "—"}
+                        {getSimpleResult(item)}
                       </span>
                     </td>
 

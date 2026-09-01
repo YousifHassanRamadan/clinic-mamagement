@@ -1012,8 +1012,37 @@ const groups = [
   },
 ];
 
+const SPECIAL_GROUPED_TEST_ID = "cmtb7wfhh0000f0tqg6zn7u0j";
+
+const GROUP_SIZE = 15;
+
+const GROUP_RANGES = [
+  {
+    minScore: 1,
+    maxScore: 7,
+    result: "Weak",
+    resultAr: "ضعيف",
+  },
+  {
+    minScore: 8,
+    maxScore: 10,
+    result: "Moderate",
+    resultAr: "متوسط",
+  },
+  {
+    minScore: 11,
+    maxScore: 15,
+    result: "Certain",
+    resultAr: "أكيد",
+  },
+];
+
 async function main() {
   console.log("🌱 Starting psychological test seed...");
+
+  // ==========================================
+  // FIND DOCTOR
+  // ==========================================
 
   const doctor = await prisma.user.findFirst({
     where: {
@@ -1030,34 +1059,72 @@ async function main() {
     );
   }
 
-  const category = await prisma.testCategory.upsert({
+  // ==========================================
+  // FIND PATIENT
+  // ==========================================
+
+  const patient = await prisma.user.findFirst({
     where: {
-      id:
-        (
-          await prisma.testCategory.findFirst({
-            where: {
-              name: categoryData.name,
-            },
-            select: {
-              id: true,
-            },
-          })
-        )?.id ?? "__new__",
+      role: "PATIENT",
     },
-    update: categoryData,
-    create: categoryData,
+    select: {
+      id: true,
+    },
   });
 
-  let test = await prisma.psychologicalTest.findFirst({
+  if (!patient) {
+    throw new Error(
+      "No PATIENT user found. Create a patient account before running this seed.",
+    );
+  }
+
+  // ==========================================
+  // CATEGORY
+  // ==========================================
+
+  const existingCategory = await prisma.testCategory.findFirst({
     where: {
-      title: testData.title,
+      name: categoryData.name,
+    },
+    select: {
+      id: true,
     },
   });
+
+  const category = existingCategory
+    ? await prisma.testCategory.update({
+        where: {
+          id: existingCategory.id,
+        },
+        data: categoryData,
+      })
+    : await prisma.testCategory.create({
+        data: categoryData,
+      });
+
+  // ==========================================
+  // TEST
+  // ==========================================
+
+  let test = await prisma.psychologicalTest.findUnique({
+    where: {
+      id: SPECIAL_GROUPED_TEST_ID,
+    },
+  });
+
+  if (!test) {
+    test = await prisma.psychologicalTest.findFirst({
+      where: {
+        title: testData.title,
+      },
+    });
+  }
 
   if (!test) {
     test = await prisma.psychologicalTest.create({
       data: {
         ...testData,
+        id: SPECIAL_GROUPED_TEST_ID,
         price: 0,
         isActive: true,
         categoryId: category.id,
@@ -1079,21 +1146,29 @@ async function main() {
     });
   }
 
-  /*
-   * Remove existing questions for this Version 2 test
-   * so the seed can be safely re-run without duplicates.
-   */
+  // ==========================================
+  // REMOVE OLD QUESTIONS
+  // ==========================================
+
   await prisma.question.deleteMany({
     where: {
       testId: test.id,
     },
   });
 
+  // ==========================================
+  // REMOVE OLD RESULT RANGES
+  // ==========================================
+
   await prisma.testResultRange.deleteMany({
     where: {
       testId: test.id,
     },
   });
+
+  // ==========================================
+  // CREATE 225 QUESTIONS
+  // ==========================================
 
   let questionOrder = 1;
 
@@ -1105,6 +1180,7 @@ async function main() {
           question: question.en,
           questionAr: question.ar,
           order: questionOrder,
+
           options: {
             create: [
               {
@@ -1135,76 +1211,172 @@ async function main() {
     0,
   );
 
-  /*
-   * Total score:
-   * 225 questions × 1 point maximum = 225
-   */
-  await prisma.testResultRange.createMany({
-    data: [
-      {
+  if (totalQuestions !== 225) {
+    throw new Error(
+      `Expected exactly 225 questions, but found ${totalQuestions}.`,
+    );
+  }
+
+  if (groups.length !== 15) {
+    throw new Error(
+      `Expected exactly 15 sections, but found ${groups.length}.`,
+    );
+  }
+
+  if (groups.some((group) => group.questions.length !== GROUP_SIZE)) {
+    throw new Error("Every section must contain exactly 15 questions.");
+  }
+
+  // ==========================================
+  // GIVE PATIENT ACCESS TO THE TEST
+  // ==========================================
+
+  await prisma.testAccess.upsert({
+    where: {
+      userId_testId: {
+        userId: patient.id,
         testId: test.id,
-        minScore: 0,
-        maxScore: 44,
-        result:
-          "Low indication of suspicious and maladaptive personality patterns",
-        resultAr:
-          "مؤشر منخفض على أنماط التفكير الشكاك والأنماط السلوكية غير التكيفية",
-        order: 1,
       },
-      {
-        testId: test.id,
-        minScore: 45,
-        maxScore: 89,
-        result:
-          "Mild indication of suspicious and maladaptive personality patterns",
-        resultAr:
-          "مؤشر بسيط على بعض أنماط التفكير الشكاك والأنماط السلوكية غير التكيفية",
-        order: 2,
-      },
-      {
-        testId: test.id,
-        minScore: 90,
-        maxScore: 134,
-        result:
-          "Moderate indication of suspicious and maladaptive personality patterns",
-        resultAr:
-          "مؤشر متوسط على أنماط التفكير الشكاك والأنماط السلوكية غير التكيفية",
-        order: 3,
-      },
-      {
-        testId: test.id,
-        minScore: 135,
-        maxScore: 179,
-        result:
-          "High indication of suspicious and maladaptive personality patterns",
-        resultAr:
-          "مؤشر مرتفع على أنماط التفكير الشكاك والأنماط السلوكية غير التكيفية",
-        order: 4,
-      },
-      {
-        testId: test.id,
-        minScore: 180,
-        maxScore: 225,
-        result:
-          "Very high indication of suspicious and maladaptive personality patterns",
-        resultAr:
-          "مؤشر مرتفع جدًا على أنماط التفكير الشكاك والأنماط السلوكية غير التكيفية",
-        order: 5,
-      },
-    ],
+    },
+    update: {
+      approval: true,
+    },
+    create: {
+      userId: patient.id,
+      testId: test.id,
+      approval: true,
+    },
   });
+
+  // ==========================================
+  // REMOVE PREVIOUS SEEDED ATTEMPT
+  // ==========================================
+
+  await prisma.patientTest.deleteMany({
+    where: {
+      patientId: patient.id,
+      testId: test.id,
+    },
+  });
+
+  // ==========================================
+  // CREATE COMPLETED ASSESSMENT
+  // ==========================================
+
+  const completedAt = new Date();
+
+  const patientTest = await prisma.patientTest.create({
+    data: {
+      patientId: patient.id,
+      testId: test.id,
+      status: "COMPLETED",
+      score: null,
+      result: JSON.stringify(
+        groups.map((_, index) => ({
+          group: index + 1,
+          score: null,
+          result: null,
+          resultAr: null,
+        })),
+      ),
+      completedAt,
+    },
+  });
+
+  // ==========================================
+  // GET QUESTIONS + YES/NO OPTIONS
+  // ==========================================
+
+  const seededQuestions = await prisma.question.findMany({
+    where: {
+      testId: test.id,
+    },
+    include: {
+      options: true,
+    },
+    orderBy: {
+      order: "asc",
+    },
+  });
+
+  if (seededQuestions.length !== 225) {
+    throw new Error(
+      `Expected 225 seeded questions, found ${seededQuestions.length}.`,
+    );
+  }
+
+  // ==========================================
+  // CREATE ANSWERS
+  // ==========================================
+
+  const answerData = seededQuestions.map((question, index) => {
+    const yesOption = question.options.find((option) => option.text === "Yes");
+
+    const noOption = question.options.find((option) => option.text === "No");
+
+    if (!yesOption || !noOption) {
+      throw new Error(`Question ${question.order} is missing Yes/No options.`);
+    }
+
+    const positionInSection = index % GROUP_SIZE;
+
+    const shouldAnswerYes = positionInSection >= 0 && positionInSection < 5;
+
+    const selectedOption = shouldAnswerYes ? yesOption : noOption;
+
+    return {
+      patientTestId: patientTest.id,
+      questionId: question.id,
+      optionId: selectedOption.id,
+      points: selectedOption.points,
+    };
+  });
+
+  await prisma.answer.createMany({
+    data: answerData,
+  });
+
+  // ==========================================
+  // REVOKE ACCESS AFTER COMPLETION
+  // ==========================================
+
+  await prisma.testAccess.update({
+    where: {
+      userId_testId: {
+        userId: patient.id,
+        testId: test.id,
+      },
+    },
+    data: {
+      approval: false,
+    },
+  });
+
+  // ==========================================
+  // FINAL LOG
+  // ==========================================
 
   console.log("");
   console.log("==========================================");
   console.log("✅ Psychological test seeded successfully");
   console.log("==========================================");
-  console.log(`Category : ${category.name}`);
-  console.log(`Category AR : ${category.nameAr}`);
-  console.log(`Test : ${test.title}`);
-  console.log(`Test AR : ${test.titleAr}`);
-  console.log(`Groups : ${groups.length}`);
-  console.log(`Questions : ${totalQuestions}`);
-  console.log(`Options : ${totalQuestions * 2}`);
+  console.log(`Category          : ${category.name}`);
+  console.log(`Category AR       : ${category.nameAr}`);
+  console.log(`Test              : ${test.title}`);
+  console.log(`Test AR           : ${test.titleAr}`);
+  console.log(`Test ID           : ${test.id}`);
+  console.log(`Sections          : ${groups.length}`);
+  console.log(`Questions         : ${totalQuestions}`);
+  console.log(`Questions/Section : ${GROUP_SIZE}`);
+  console.log(`Options           : ${totalQuestions * 2}`);
+  console.log(`Patient Test      : ${patientTest.id}`);
+  console.log(`Status            : COMPLETED`);
+  console.log(`Answers           : ${answerData.length}`);
+  console.log("");
+  console.log("Section scoring:");
+  console.log("1-7   => Weak / ضعيف");
+  console.log("8-10  => Moderate / متوسط");
+  console.log("11-15 => Certain / أكيد");
   console.log("==========================================");
 }
 

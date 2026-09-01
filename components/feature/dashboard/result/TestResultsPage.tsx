@@ -1,10 +1,9 @@
+// components/feature/dashboard/patient/tests/TestResultsPage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download } from "lucide-react";
 import { toast } from "sonner";
-
-import { Button } from "@/components/ui/button";
 
 import LatestResultCard from "./LatestResultCard";
 import ResultCard from "./ResultCard";
@@ -19,30 +18,36 @@ const TestResultsPage = () => {
   const [locale, setLocale] = useState<"en" | "ar">("en");
 
   useEffect(() => {
-    // AR: جلب اللغة من الكوكيز فقط
-    // EN: Get the locale from cookies only
     const cookieLocale = document.cookie
       .split("; ")
       .find((row) => row.startsWith("locale="))
       ?.split("=")[1];
 
-    if (cookieLocale === "ar") {
-      setLocale("ar");
-    } else {
-      setLocale("en");
-    }
+    const currentLocale = cookieLocale === "ar" ? "ar" : "en";
+
+    setLocale(currentLocale);
 
     const loadResults = async () => {
-      const response = await getTestResults();
+      try {
+        const response = await getTestResults();
 
-      if (!response.success) {
-        toast.error(response.message);
+        if (!response.success) {
+          toast.error(response.message);
+          return;
+        }
+
+        setResults(response.data);
+      } catch (error) {
+        console.error("LOAD_TEST_RESULTS_ERROR:", error);
+
+        toast.error(
+          currentLocale === "ar"
+            ? "فشل تحميل نتائج الاختبارات"
+            : "Failed to load test results",
+        );
+      } finally {
         setLoading(false);
-        return;
       }
-
-      setResults(response.data);
-      setLoading(false);
     };
 
     loadResults();

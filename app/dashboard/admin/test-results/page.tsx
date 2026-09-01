@@ -1,3 +1,5 @@
+// app/(dashboard)/dashboard/admin/test-results/page.tsx
+
 import TestResultsPage from "@/components/feature/dashboard/admin/test-results/TestResultsPage";
 
 import { cookies } from "next/headers";

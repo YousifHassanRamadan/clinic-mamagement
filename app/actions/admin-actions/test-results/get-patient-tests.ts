@@ -1,14 +1,53 @@
+// app/actions/admin-actions/test-results/get-patient-tests.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+
+const SPECIAL_GROUPED_TEST_ID = "cmtb7wfhh0000f0tqg6zn7u0j";
+
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
+function parseGroupResults(result: string | null): GroupResult[] | null {
+  if (!result) return null;
+
+  try {
+    const parsed = JSON.parse(result);
+
+    if (!Array.isArray(parsed)) {
+      return null;
+    }
+
+    if (
+      parsed.every(
+        (item) =>
+          typeof item?.group === "number" &&
+          typeof item?.score === "number" &&
+          typeof item?.result === "string" &&
+          typeof item?.resultAr === "string",
+      )
+    ) {
+      return parsed as GroupResult[];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export async function getPatientTests(search = "") {
   const session = await auth();
 
   if (!session?.user?.id || session.user.role !== "DOCTOR") {
     return {
-      success: false,
+      success: false as const,
       message: "Unauthorized",
       data: [],
     };
@@ -99,6 +138,19 @@ export async function getPatientTests(search = "") {
             title: true,
             titleAr: true,
             price: true,
+
+            resultRanges: {
+              select: {
+                minScore: true,
+                maxScore: true,
+                result: true,
+                resultAr: true,
+                order: true,
+              },
+              orderBy: {
+                order: "asc",
+              },
+            },
           },
         },
 
@@ -115,32 +167,67 @@ export async function getPatientTests(search = "") {
     });
 
     return {
-      success: true,
+      success: true as const,
 
-      data: patientTests.map((item) => ({
-        id: item.id,
+      data: patientTests.map((item) => {
+        const isSpecialGroupedTest = item.test.id === SPECIAL_GROUPED_TEST_ID;
 
-        patient: item.patient,
+        const groupResults = isSpecialGroupedTest
+          ? parseGroupResults(item.result)
+          : null;
 
-        test: {
-          ...item.test,
-          price: Number(item.test.price),
-        },
+        const matchedRange =
+          !isSpecialGroupedTest && item.score !== null
+            ? item.test.resultRanges.find(
+                (range) =>
+                  item.score! >= range.minScore &&
+                  item.score! <= range.maxScore,
+              )
+            : null;
 
-        status: item.status,
-        score: item.score,
-        result: item.result,
-        answersCount: item.answers.length,
-        startedAt: item.startedAt,
-        completedAt: item.completedAt,
-        createdAt: item.createdAt,
-      })),
+        return {
+          id: item.id,
+
+          patient: item.patient,
+
+          test: {
+            id: item.test.id,
+            title: item.test.title,
+            titleAr: item.test.titleAr,
+            price: Number(item.test.price),
+          },
+
+          status: item.status,
+
+          score: item.score,
+
+          result: isSpecialGroupedTest
+            ? null
+            : (item.result ?? matchedRange?.result ?? null),
+
+          resultAr: isSpecialGroupedTest
+            ? null
+            : (matchedRange?.resultAr ?? null),
+
+          groupResults,
+
+          isSpecialGroupedTest,
+
+          answersCount: item.answers.length,
+
+          startedAt: item.startedAt,
+
+          completedAt: item.completedAt,
+
+          createdAt: item.createdAt,
+        };
+      }),
     };
   } catch (error) {
     console.error("GET_PATIENT_TESTS_ERROR:", error);
 
     return {
-      success: false,
+      success: false as const,
       message: "Failed to load patient tests",
       data: [],
     };

@@ -1,7 +1,46 @@
+// app/actions/patient-actions/dashboard/get-dashboard-stats.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
+const SPECIAL_GROUPED_TEST_ID = "cmtb7wfhh0000f0tqg6zn7u0j";
+
+function parseGroupResults(result: string | null): GroupResult[] | null {
+  if (!result) return null;
+
+  try {
+    const parsed = JSON.parse(result);
+
+    if (!Array.isArray(parsed)) {
+      return null;
+    }
+
+    if (
+      parsed.every(
+        (item) =>
+          typeof item?.group === "number" &&
+          typeof item?.score === "number" &&
+          typeof item?.result === "string" &&
+          typeof item?.resultAr === "string",
+      )
+    ) {
+      return parsed as GroupResult[];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export async function getDashboardStats() {
   try {
@@ -16,9 +55,6 @@ export async function getDashboardStats() {
 
     const patientId = session.user.id;
 
-    // =========================
-    // Verify Patient
-    // =========================
     const patient = await prisma.user.findUnique({
       where: {
         id: patientId,
@@ -38,10 +74,6 @@ export async function getDashboardStats() {
 
     const now = new Date();
 
-    // =========================
-    // Start / End of Current Week
-    // Saturday -> Friday
-    // =========================
     const startOfWeek = new Date(now);
 
     const day = startOfWeek.getDay();
@@ -53,9 +85,6 @@ export async function getDashboardStats() {
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(endOfWeek.getDate() + 7);
 
-    // =========================
-    // Dashboard Queries
-    // =========================
     const [
       totalAppointments,
       upcomingAppointments,
@@ -64,18 +93,12 @@ export async function getDashboardStats() {
       latestMoodSession,
       latestTest,
     ] = await Promise.all([
-      // =========================
-      // Total Appointments
-      // =========================
       prisma.appointment.count({
         where: {
           userId: patientId,
         },
       }),
 
-      // =========================
-      // Upcoming Appointments
-      // =========================
       prisma.appointment.findMany({
         where: {
           userId: patientId,
@@ -98,9 +121,6 @@ export async function getDashboardStats() {
         },
       }),
 
-      // =========================
-      // Completed Sessions
-      // =========================
       prisma.clinicSession.count({
         where: {
           patientId,
@@ -108,9 +128,6 @@ export async function getDashboardStats() {
         },
       }),
 
-      // =========================
-      // Completed Tests
-      // =========================
       prisma.patientTest.count({
         where: {
           patientId,
@@ -118,9 +135,6 @@ export async function getDashboardStats() {
         },
       }),
 
-      // =========================
-      // Latest Mood This Week
-      // =========================
       prisma.clinicSession.findFirst({
         where: {
           patientId,
@@ -141,9 +155,6 @@ export async function getDashboardStats() {
         },
       }),
 
-      // =========================
-      // Latest Completed Test
-      // =========================
       prisma.patientTest.findFirst({
         where: {
           patientId,
@@ -154,6 +165,7 @@ export async function getDashboardStats() {
         },
         select: {
           id: true,
+          testId: true,
           score: true,
           result: true,
           completedAt: true,
@@ -161,15 +173,13 @@ export async function getDashboardStats() {
           test: {
             select: {
               title: true,
+              titleAr: true,
             },
           },
         },
       }),
     ]);
 
-    // =========================
-    // Mood Map
-    // =========================
     const moodMap = {
       VERY_BAD: "Very Bad",
       BAD: "Bad",
@@ -182,9 +192,24 @@ export async function getDashboardStats() {
       ? moodMap[latestMoodSession.mood]
       : "No Data";
 
-    // =========================
-    // Return Dashboard Data
-    // =========================
+    const latestTestData = latestTest
+      ? {
+          id: latestTest.id,
+          score: latestTest.score,
+          result: latestTest.result,
+          resultAr: null,
+          completedAt: latestTest.completedAt,
+          test: latestTest.test,
+
+          isSpecialGroupedTest: latestTest.testId === SPECIAL_GROUPED_TEST_ID,
+
+          groupResults:
+            latestTest.testId === SPECIAL_GROUPED_TEST_ID
+              ? parseGroupResults(latestTest.result)
+              : null,
+        }
+      : null;
+
     return {
       success: true as const,
 
@@ -196,7 +221,7 @@ export async function getDashboardStats() {
         completedSessions,
         completedTests,
         mood,
-        latestTest,
+        latestTest: latestTestData,
       },
     };
   } catch (error) {

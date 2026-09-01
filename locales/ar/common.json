@@ -1116,7 +1116,10 @@
             "completedAt": "تاريخ الإكمال",
             "inProgress": "قيد التنفيذ",
             "notStarted": "لم يبدأ",
-            "completed": "مكتمل"
+            "completed": "مكتمل",
+            "group": "المجموعة",
+            "groupResults": "نتائج المجموعات",
+            "overallScore": "النتيجة الإجمالية"
           },
           "answers": {
             "title": "إجابات المريض",

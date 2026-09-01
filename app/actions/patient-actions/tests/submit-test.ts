@@ -4,6 +4,10 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
 import { z } from "zod";
 
+const SPECIAL_GROUPED_TEST_ID = "cmtb7wfhh0000f0tqg6zn7u0j";
+
+const GROUP_SIZE = 15;
+
 const submitTestSchema = z.object({
   patientTestId: z.string().min(1, "Patient test ID is required"),
 
@@ -17,6 +21,13 @@ const submitTestSchema = z.object({
     .min(1, "At least one answer is required"),
 });
 
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
 type SubmitTestSuccess = {
   success: true;
   message: string;
@@ -25,6 +36,7 @@ type SubmitTestSuccess = {
     score: number | null;
     result: string | null;
     completedAt: Date | null;
+    groupResults?: GroupResult[];
   };
 };
 
@@ -34,6 +46,37 @@ type SubmitTestError = {
 };
 
 type SubmitTestResponse = SubmitTestSuccess | SubmitTestError;
+
+function getSpecialGroupResult(score: number): {
+  result: string;
+  resultAr: string;
+} {
+  if (score >= 1 && score <= 7) {
+    return {
+      result: "Weak",
+      resultAr: "ضعيف",
+    };
+  }
+
+  if (score >= 8 && score <= 10) {
+    return {
+      result: "Moderate",
+      resultAr: "متوسط",
+    };
+  }
+
+  if (score >= 11 && score <= 15) {
+    return {
+      result: "Certain",
+      resultAr: "أكيد",
+    };
+  }
+
+  return {
+    result: "No Result",
+    resultAr: "لا توجد نتيجة",
+  };
+}
 
 export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
   // ==========================================
@@ -218,27 +261,79 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
     }
 
     // ==========================================
-    // CALCULATE SCORE
+    // SPECIAL 225 QUESTIONS / 15 GROUPS TEST
     // ==========================================
 
-    const score = preparedAnswers.reduce(
-      (total, answer) => total + answer.points,
-      0,
-    );
+    const isSpecialGroupedTest = patientTest.testId === SPECIAL_GROUPED_TEST_ID;
 
-    // ==========================================
-    // FIND RESULT RANGE
-    // ==========================================
+    let score: number;
+    let result: string;
+    let groupResults: GroupResult[] | undefined;
 
-    const resultRange = patientTest.test.resultRanges.find(
-      (range) => score >= range.minScore && score <= range.maxScore,
-    );
+    if (isSpecialGroupedTest) {
+      if (questions.length !== 225) {
+        return {
+          success: false,
+          message: "This special test must contain exactly 225 questions",
+        };
+      }
 
-    if (!resultRange) {
-      return {
-        success: false,
-        message: `No result range found for score ${score}`,
-      };
+      const answersMap = new Map(
+        preparedAnswers.map((answer) => [answer.questionId, answer]),
+      );
+
+      groupResults = [];
+
+      for (let groupIndex = 0; groupIndex < 15; groupIndex++) {
+        const startIndex = groupIndex * GROUP_SIZE;
+        const endIndex = startIndex + GROUP_SIZE;
+
+        const groupQuestions = questions.slice(startIndex, endIndex);
+
+        const groupScore = groupQuestions.reduce((total, question) => {
+          const answer = answersMap.get(question.id);
+
+          return total + (answer?.points ?? 0);
+        }, 0);
+
+        const groupRange = getSpecialGroupResult(groupScore);
+
+        groupResults.push({
+          group: groupIndex + 1,
+          score: groupScore,
+          result: groupRange.result,
+          resultAr: groupRange.resultAr,
+        });
+      }
+
+      score = preparedAnswers.reduce(
+        (total, answer) => total + answer.points,
+        0,
+      );
+
+      result = JSON.stringify(groupResults);
+    } else {
+      // ==========================================
+      // NORMAL TEST SCORING
+      // ==========================================
+
+      score = preparedAnswers.reduce(
+        (total, answer) => total + answer.points,
+        0,
+      );
+
+      const resultRange = patientTest.test.resultRanges.find(
+        (range) => score >= range.minScore && score <= range.maxScore,
+      );
+
+      if (!resultRange) {
+        return {
+          success: false,
+          message: `No result range found for score ${score}`,
+        };
+      }
+
+      result = resultRange.result;
     }
 
     const completedAt = new Date();
@@ -248,7 +343,6 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
     // ==========================================
 
     const completedTest = await prisma.$transaction(async (tx) => {
-      // Save answers
       await tx.answer.createMany({
         data: preparedAnswers.map((answer) => ({
           patientTestId,
@@ -258,7 +352,6 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
         })),
       });
 
-      // Mark test as completed
       const completedTest = await tx.patientTest.update({
         where: {
           id: patientTestId,
@@ -267,12 +360,11 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
         data: {
           status: "COMPLETED",
           score,
-          result: resultRange.result,
+          result,
           completedAt,
         },
       });
 
-      // Revoke access
       await tx.testAccess.update({
         where: {
           userId_testId: {
@@ -301,6 +393,7 @@ export async function submitTest(input: unknown): Promise<SubmitTestResponse> {
         score: completedTest.score,
         result: completedTest.result,
         completedAt: completedTest.completedAt,
+        groupResults,
       },
     };
   } catch (error) {

@@ -1118,7 +1118,10 @@
             "completedAt": "Completed At",
             "inProgress": "In Progress",
             "notStarted": "Not Started",
-            "completed": "Completed"
+            "completed": "Completed",
+            "group": "Group",
+            "groupResults": "Group Results",
+            "overallScore": "Overall Score"
           },
           "answers": {
             "title": "Patient Answers",

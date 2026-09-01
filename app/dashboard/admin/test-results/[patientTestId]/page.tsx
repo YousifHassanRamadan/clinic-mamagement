@@ -65,6 +65,13 @@ const AdminTestResultDetailsPage = async ({ params }: Props) => {
             "dashboard4.admin.testResults.details.result.notStarted",
           ),
           completed: t("dashboard4.admin.testResults.details.result.completed"),
+          overallScore: t(
+            "dashboard4.admin.testResults.details.result.overallScore",
+          ),
+          groupResults: t(
+            "dashboard4.admin.testResults.details.result.groupResults",
+          ),
+          group: t("dashboard4.admin.testResults.details.result.group"),
         },
 
         answers: {

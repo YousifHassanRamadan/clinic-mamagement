@@ -1,6 +1,6 @@
 // components/feature/dashboard/patient/tests/ResultCard.tsx
 
-import { CalendarDays, ClipboardCheck } from "lucide-react";
+import { CalendarDays, ClipboardCheck, Layers3 } from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -28,8 +28,6 @@ const ResultCard = ({ result, locale }: Props) => {
       )
     : "-";
 
-  // AR: استخدام البيانات العربية من السكيمة عند اختيار اللغة العربية
-  // EN: Use Arabic schema fields when Arabic is selected
   const title =
     isArabic && result.test.titleAr ? result.test.titleAr : result.test.title;
 
@@ -44,8 +42,6 @@ const ResultCard = ({ result, locale }: Props) => {
   return (
     <Card className="group overflow-hidden rounded-3xl border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       <CardContent className="p-0">
-        {/* AR: الرأس */}
-        {/* EN: Header */}
         <div className="flex items-start justify-between gap-4 border-b p-6">
           <div className="flex min-w-0 items-center gap-4">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
@@ -66,13 +62,11 @@ const ResultCard = ({ result, locale }: Props) => {
           <ResultBadge status={result.status as TestStatus} />
         </div>
 
-        {/* AR: الدرجة */}
-        {/* EN: Score */}
         <div className="p-6">
           <div className="flex items-end justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-muted-foreground">
-                {isArabic ? "درجتك" : "Your Score"}
+                {isArabic ? "الدرجة الإجمالية" : "Overall Score"}
               </p>
 
               <div className="mt-1 flex items-baseline gap-2">
@@ -88,20 +82,76 @@ const ResultCard = ({ result, locale }: Props) => {
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CalendarDays className="h-4 w-4" />
+
               <span>{formattedDate}</span>
             </div>
           </div>
 
-          {/* AR: النتيجة */}
-          {/* EN: Result */}
-          {resultText && (
-            <div className="mt-6 rounded-2xl bg-muted/50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {isArabic ? "النتيجة" : "Result"}
-              </p>
+          {result.isSpecialGroupedTest && result.groupResults?.length ? (
+            <div className="mt-6">
+              <div className="mb-4 flex items-center gap-2">
+                <Layers3 className="h-4 w-4 text-primary" />
 
-              <p className="mt-1 font-medium leading-relaxed">{resultText}</p>
+                <p className="text-sm font-semibold">
+                  {isArabic ? "نتائج المجموعات" : "Group Results"}
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                {result.groupResults.map((group) => {
+                  const groupResult = isArabic
+                    ? group.resultAr || group.result
+                    : group.result;
+
+                  const normalizedResult = groupResult?.trim().toLowerCase();
+
+                  const isNoResult =
+                    normalizedResult === "no result" ||
+                    normalizedResult === "لا توجد نتيجة" ||
+                    normalizedResult === "لا يوجد نتيجة" ||
+                    normalizedResult === "لا نتيجة";
+
+                  const displayResult = isNoResult
+                    ? isArabic
+                      ? "ضعيف"
+                      : "Weak"
+                    : groupResult;
+
+                  return (
+                    <div
+                      key={group.group}
+                      className="rounded-2xl bg-muted/50 p-4"
+                    >
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-sm font-semibold">
+                          {isArabic
+                            ? `المجموعة ${group.group}`
+                            : `Group ${group.group}`}
+                        </span>
+
+                        <span className="rounded-full bg-primary/10 px-2.5 py-1 text-sm font-bold text-primary">
+                          {group.score}
+                        </span>
+                      </div>
+
+                      <p className="mt-2 text-sm font-medium leading-relaxed">
+                        {displayResult}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
+          ) : (
+            resultText && (
+              <div className="mt-6 rounded-2xl bg-muted/50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {isArabic ? "النتيجة" : "Result"}
+                </p>
+
+                <p className="mt-1 font-medium leading-relaxed">{resultText}</p>
+              </div>
+            )
           )}
         </div>
       </CardContent>

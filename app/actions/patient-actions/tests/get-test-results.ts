@@ -1,7 +1,46 @@
+// app/actions/patient-actions/tests/get-test-results.ts
+
 "use server";
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/providers/auth/auth";
+
+const SPECIAL_GROUPED_TEST_ID = "cmtb7wfhh0000f0tqg6zn7u0j";
+
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
+function parseGroupResults(result: string | null): GroupResult[] | null {
+  if (!result) return null;
+
+  try {
+    const parsed = JSON.parse(result);
+
+    if (!Array.isArray(parsed)) {
+      return null;
+    }
+
+    if (
+      parsed.every(
+        (item) =>
+          typeof item?.group === "number" &&
+          typeof item?.score === "number" &&
+          typeof item?.result === "string" &&
+          typeof item?.resultAr === "string",
+      )
+    ) {
+      return parsed as GroupResult[];
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export async function getTestResults() {
   try {
@@ -45,11 +84,9 @@ export async function getTestResults() {
 
       select: {
         id: true,
-
         status: true,
         score: true,
         result: true,
-
         startedAt: true,
         completedAt: true,
 
@@ -88,19 +125,34 @@ export async function getTestResults() {
     });
 
     const data = results.map((item) => {
-      const matchedRange = item.test.resultRanges.find(
-        (range) =>
-          item.score !== null &&
-          item.score >= range.minScore &&
-          item.score <= range.maxScore,
-      );
+      const isSpecialGroupedTest = item.test.id === SPECIAL_GROUPED_TEST_ID;
+
+      const groupResults = isSpecialGroupedTest
+        ? parseGroupResults(item.result)
+        : null;
+
+      const matchedRange = !isSpecialGroupedTest
+        ? item.test.resultRanges.find(
+            (range) =>
+              item.score !== null &&
+              item.score >= range.minScore &&
+              item.score <= range.maxScore,
+          )
+        : null;
 
       return {
         id: item.id,
         status: item.status,
         score: item.score,
-        result: item.result,
-        resultAr: matchedRange?.resultAr ?? null,
+        result: isSpecialGroupedTest ? null : item.result,
+        resultAr: isSpecialGroupedTest
+          ? null
+          : (matchedRange?.resultAr ?? null),
+
+        groupResults,
+
+        isSpecialGroupedTest,
+
         startedAt: item.startedAt,
         completedAt: item.completedAt,
 

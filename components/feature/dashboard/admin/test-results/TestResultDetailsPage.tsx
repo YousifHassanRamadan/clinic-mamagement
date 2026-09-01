@@ -1,8 +1,17 @@
+// app/(dashboard)/dashboard/admin/test-results/[patientTestId]/TestResultDetailsPage.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, CheckCircle2, ClipboardList, User } from "lucide-react";
+
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ClipboardList,
+  Layers3,
+  User,
+} from "lucide-react";
 
 import { getPatientTestById } from "@/app/actions/admin-actions/test-results/get-patient-test-by-id";
 
@@ -34,6 +43,9 @@ interface Translations {
     inProgress: string;
     notStarted: string;
     completed: string;
+    overallScore: string;
+    groupResults: string;
+    group: string;
   };
 
   answers: {
@@ -54,13 +66,32 @@ interface Props {
   translations: Translations;
 }
 
+type GroupResult = {
+  group: number;
+  score: number;
+  result: string;
+  resultAr: string;
+};
+
 type ResultData = {
   id: string;
+
   status: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+
   score: number | null;
+
   result: string | null;
+
+  resultAr: string | null;
+
+  groupResults: GroupResult[] | null;
+
+  isSpecialGroupedTest: boolean;
+
   startedAt: Date | null;
+
   completedAt: Date | null;
+
   createdAt: Date;
 
   patient: {
@@ -179,6 +210,7 @@ const TestResultDetailsPage = ({
     if (isArabic) {
       const firstName =
         data.patient.firstNameAr?.trim() || data.patient.firstName;
+
       const lastName = data.patient.lastNameAr?.trim() || data.patient.lastName;
 
       return `${firstName} ${lastName}`;
@@ -219,6 +251,22 @@ const TestResultDetailsPage = ({
     }
 
     return option.text;
+  };
+
+  const getResultLabel = () => {
+    if (isArabic) {
+      return data.resultAr?.trim() || data.result?.trim() || "—";
+    }
+
+    return data.result?.trim() || "—";
+  };
+
+  const getGroupResultLabel = (group: GroupResult) => {
+    if (isArabic) {
+      return group.resultAr?.trim() || group.result?.trim() || "—";
+    }
+
+    return group.result?.trim() || "—";
   };
 
   const patientName = getPatientName();
@@ -269,6 +317,7 @@ const TestResultDetailsPage = ({
           className="inline-flex h-10 items-center gap-2 self-start rounded-xl border px-4 text-sm font-medium transition hover:bg-muted"
         >
           <ArrowLeft className="h-4 w-4" />
+
           {translations.back}
         </Link>
       </div>
@@ -351,19 +400,21 @@ const TestResultDetailsPage = ({
 
           <div className="rounded-xl bg-muted/50 p-4">
             <p className="text-xs text-muted-foreground">
-              {translations.result.score}
+              {translations.result.overallScore}
             </p>
 
             <p className="mt-2 text-2xl font-bold">{data.score ?? "—"}</p>
           </div>
 
-          <div className="rounded-xl bg-muted/50 p-4 sm:col-span-2">
-            <p className="text-xs text-muted-foreground">
-              {translations.result.result}
-            </p>
+          {!data.isSpecialGroupedTest && (
+            <div className="rounded-xl bg-muted/50 p-4 sm:col-span-2">
+              <p className="text-xs text-muted-foreground">
+                {translations.result.result}
+              </p>
 
-            <p className="mt-2 font-semibold">{data.result ?? "—"}</p>
-          </div>
+              <p className="mt-2 font-semibold">{getResultLabel()}</p>
+            </div>
+          )}
 
           <div className="rounded-xl bg-muted/50 p-4 sm:col-span-2 lg:col-span-4">
             <p className="text-xs text-muted-foreground">
@@ -380,6 +431,53 @@ const TestResultDetailsPage = ({
             </p>
           </div>
         </div>
+
+        {data.isSpecialGroupedTest &&
+          data.groupResults &&
+          data.groupResults.length > 0 && (
+            <div className="mt-8">
+              <div className="mb-5 flex items-center gap-3">
+                <Layers3 className="h-5 w-5 text-primary" />
+
+                <h3 className="font-semibold">
+                  {translations.result.groupResults}
+                </h3>
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {data.groupResults.map((group) => (
+                  <div
+                    key={group.group}
+                    className="rounded-2xl border bg-muted/30 p-5"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">
+                          {translations.result.group}
+                        </p>
+
+                        <p className="mt-1 font-semibold">{group.group}</p>
+                      </div>
+
+                      <div className="rounded-xl bg-primary/10 px-4 py-2 text-lg font-bold text-primary">
+                        {group.score}
+                      </div>
+                    </div>
+
+                    <div className="mt-5 border-t pt-4">
+                      <p className="text-xs text-muted-foreground">
+                        {translations.result.result}
+                      </p>
+
+                      <p className="mt-2 font-semibold leading-relaxed">
+                        {getGroupResultLabel(group)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
       </div>
 
       <div className="rounded-2xl border bg-card shadow-sm">
