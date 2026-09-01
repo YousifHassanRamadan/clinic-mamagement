@@ -16,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { useRouter, useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import { checkEmailVerification } from "@/app/actions/auth/check-email-verification";
 
@@ -48,9 +48,6 @@ interface LoginFormProps {
 
 const LoginForm = ({ setMode, translations }: LoginFormProps) => {
   const router = useRouter();
-  const params = useParams();
-
-  const locale = typeof params?.locale === "string" ? params.locale : "en";
 
   const {
     register,
@@ -62,7 +59,10 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
   const handleLogin = async (data: LoginFormData) => {
     try {
-      const verificationResult = await checkEmailVerification(data.email);
+      const email = data.email.trim().toLowerCase();
+      const password = data.password;
+
+      const verificationResult = await checkEmailVerification(email);
 
       if (!verificationResult.success) {
         toast.error(verificationResult.message);
@@ -75,19 +75,24 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
       }
 
       const result = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
+        email,
+        password,
         redirect: false,
       });
 
-      if (!result?.ok) {
+      if (!result || result.error || result.ok !== true) {
+        toast.error(translations.invalidCredentials);
+        return;
+      }
+
+      if (!result.url) {
         toast.error(translations.invalidCredentials);
         return;
       }
 
       toast.success(translations.success);
 
-      router.push(`/dashboard`);
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error("LOGIN_ERROR:", error);
 
@@ -108,6 +113,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           {...register("email")}
           placeholder={translations.email}
           type="email"
+          autoComplete="email"
           className="h-11 rounded-xl p-3"
         />
 
@@ -121,6 +127,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           <PasswordInput
             {...register("password")}
             placeholder={translations.password}
+            autoComplete="current-password"
           />
 
           {errors.password && (
@@ -131,7 +138,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
           <div className="mt-2 flex justify-end">
             <Link
-              href={`/login/forget-password`}
+              href="/login/forget-password"
               className="text-sm font-medium text-primary hover:underline"
             >
               {translations.forgotPassword}

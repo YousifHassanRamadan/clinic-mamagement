@@ -1,7 +1,9 @@
+// auth.ts
+
 import { prisma } from "@/lib/prisma";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 import { authConfig } from "./auth.config";
 
@@ -11,33 +13,93 @@ const { auth, handlers, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: {
-        email: {},
-        password: {},
-        verificationToken: {},
+        email: {
+          type: "email",
+        },
+        password: {
+          type: "password",
+        },
+        verificationToken: {
+          type: "text",
+        },
       },
 
       async authorize(credentials) {
-        const verificationToken = credentials?.verificationToken as
-          | string
-          | undefined;
+        try {
+          const verificationToken =
+            typeof credentials?.verificationToken === "string"
+              ? credentials.verificationToken
+              : undefined;
 
-        // Login automatically after email verification
-        if (verificationToken) {
-          const token = await prisma.verificationToken.findUnique({
-            where: {
-              token: verificationToken,
-            },
-          });
+          if (verificationToken) {
+            const token = await prisma.verificationToken.findUnique({
+              where: {
+                token: verificationToken,
+              },
+            });
+
+            if (
+              !token ||
+              !token.identifier.startsWith("LOGIN:") ||
+              token.expires <= new Date()
+            ) {
+              return null;
+            }
+
+            const email = token.identifier
+              .replace(/^LOGIN:/, "")
+              .trim()
+              .toLowerCase();
+
+            if (!email) {
+              return null;
+            }
+
+            const user = await prisma.user.findUnique({
+              where: {
+                email,
+              },
+              select: {
+                id: true,
+                email: true,
+                firstName: true,
+                lastName: true,
+                role: true,
+                emailVerified: true,
+              },
+            });
+
+            if (!user || !user.emailVerified) {
+              return null;
+            }
+
+            await prisma.verificationToken.delete({
+              where: {
+                token: verificationToken,
+              },
+            });
+
+            return {
+              id: user.id,
+              email: user.email,
+              name: `${user.firstName} ${user.lastName}`,
+              role: user.role,
+            };
+          }
 
           if (
-            !token ||
-            !token.identifier.startsWith("LOGIN:") ||
-            token.expires < new Date()
+            typeof credentials?.email !== "string" ||
+            typeof credentials?.password !== "string"
           ) {
             return null;
           }
 
-          const email = token.identifier.replace("LOGIN:", "");
+          const email = credentials.email.trim().toLowerCase();
+          const password = credentials.password;
+
+          if (!email || !password) {
+            return null;
+          }
 
           const user = await prisma.user.findUnique({
             where: {
@@ -49,19 +111,28 @@ const { auth, handlers, signIn, signOut } = NextAuth({
               firstName: true,
               lastName: true,
               role: true,
+              password: true,
               emailVerified: true,
             },
           });
 
-          if (!user || !user.emailVerified) {
+          if (!user) {
             return null;
           }
 
-          await prisma.verificationToken.delete({
-            where: {
-              token: verificationToken,
-            },
-          });
+          if (!user.password) {
+            return null;
+          }
+
+          const isPasswordValid = await bcrypt.compare(password, user.password);
+
+          if (!isPasswordValid) {
+            return null;
+          }
+
+          if (!user.emailVerified) {
+            return null;
+          }
 
           return {
             id: user.id,
@@ -69,44 +140,10 @@ const { auth, handlers, signIn, signOut } = NextAuth({
             name: `${user.firstName} ${user.lastName}`,
             role: user.role,
           };
-        }
-
-        // Normal login
-        if (!credentials?.email || !credentials?.password) {
+        } catch (error) {
+          console.error("AUTHORIZE_ERROR:", error);
           return null;
         }
-
-        const email = credentials.email as string;
-        const password = credentials.password as string;
-
-        const user = await prisma.user.findUnique({
-          where: {
-            email,
-          },
-        });
-
-        if (!user) {
-          return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        // Do NOT throw here.
-        // LoginForm checks email verification separately.
-        if (!user.emailVerified) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
-          role: user.role,
-        };
       },
     }),
   ],
