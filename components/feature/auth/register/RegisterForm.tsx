@@ -1,5 +1,3 @@
-// components/feature/auth/register/RegisterForm.tsx
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -15,7 +13,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "@/app/actions/auth/register";
 
 import { toast } from "sonner";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { Check, ChevronDown } from "lucide-react";
@@ -89,26 +86,12 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
   const handleRegister = async (data: RegisterFormData) => {
     try {
       const result = await registerUser(data);
-
       if (!result.success) {
         toast.error(result.message);
         return;
       }
-
-      const loginResult = await signIn("credentials", {
-        email: data.email,
-        password: data.password,
-        redirect: false,
-      });
-
-      if (!loginResult?.ok) {
-        toast.error(translations.automaticLoginFailed);
-        return;
-      }
-
-      toast.success(translations.success);
-
-      router.push("/dashboard");
+      toast.success(result.message);
+      router.push("/login");
     } catch {
       toast.error(translations.error);
     }
@@ -168,7 +151,6 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         <p className="text-sm text-destructive">{errors.email.message}</p>
       )}
 
-      {/* Gender Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button

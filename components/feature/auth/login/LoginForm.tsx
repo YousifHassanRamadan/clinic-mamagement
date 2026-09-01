@@ -1,8 +1,4 @@
-// components/feature/auth/login/LoginForm.tsx
-
 "use client";
-
-import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +13,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+
+import { checkEmailVerification } from "@/app/actions/auth/check-email-verification";
 
 const loginSchema = z.object({
   email: z.email("Please enter a valid email"),
@@ -57,13 +55,25 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
   const handleLogin = async (data: LoginFormData) => {
     try {
+      const verificationResult = await checkEmailVerification(data.email);
+
+      if (!verificationResult.success) {
+        toast.error(verificationResult.message);
+        return;
+      }
+
+      if (!verificationResult.verified) {
+        toast.error(verificationResult.message);
+        return;
+      }
+
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
         redirect: false,
       });
 
-      if (result?.error) {
+      if (!result?.ok) {
         toast.error(translations.invalidCredentials);
         return;
       }
@@ -71,7 +81,9 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
       toast.success(translations.success);
 
       router.push("/dashboard");
-    } catch {
+    } catch (error) {
+      console.error("LOGIN_ERROR:", error);
+
       toast.error(translations.error);
     }
   };
@@ -109,15 +121,6 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           </p>
         )}
       </div>
-
-      {/* <div className="flex items-center justify-end">
-        <Link
-          href="/login/forget-password"
-          className="text-sm font-medium text-primary hover:underline"
-        >
-          {translations.forgotPassword}
-        </Link>
-      </div> */}
 
       <Button
         type="submit"

@@ -1,5 +1,3 @@
-// AppointmentsPage.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -73,6 +71,18 @@ const AppointmentsPage = () => {
     loadAppointments();
   }, []);
 
+  const handleAppointmentCancelled = (appointmentId: string) => {
+    setAppointments((currentAppointments) =>
+      currentAppointments.map((appointment) =>
+        appointment.id === appointmentId
+          ? { ...appointment, status: "CANCELLED" }
+          : appointment,
+      ),
+    );
+
+    setActiveTab("cancelled");
+  };
+
   const upcomingAppointments = appointments.filter(
     (appointment) =>
       appointment.status === "PENDING" || appointment.status === "CONFIRMED",
@@ -135,7 +145,10 @@ const AppointmentsPage = () => {
         cancelledCount={cancelledAppointments.length}
       />
 
-      <AppointmentList appointments={filteredAppointments} />
+      <AppointmentList
+        appointments={filteredAppointments}
+        onAppointmentCancelled={handleAppointmentCancelled}
+      />
     </div>
   );
 };

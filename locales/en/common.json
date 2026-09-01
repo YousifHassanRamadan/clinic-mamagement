@@ -197,7 +197,7 @@
     "noUpcoming": "No upcoming appointments",
     "noScheduled": "You don't have any scheduled appointments.",
     "psychology": "Psychology Appointment",
-    "clinic": "Clinic",
+    "clinic": "Office",
     "duration": "{{duration}} minutes"
   },
   "appointmentStatus": {
@@ -219,7 +219,7 @@
     "noDateSelected": "No date selected",
     "noTimeSelected": "No time selected",
     "minutes": "minutes",
-    "onsiteClinic": "On-site at the clinic",
+    "onsiteClinic": "On-site at the Office",
     "googleMeet": "Google Meet",
     "freeCancellation": "Free cancellation up to 24 hours before the session.",
     "booking": "Booking...",
@@ -230,7 +230,7 @@
   },
   "sessionType2": {
     "onsite": "On-site",
-    "onsiteDescription": "Attend the session at the clinic.",
+    "onsiteDescription": "Attend the session at the Office.",
     "online": "Online",
     "onlineDescription": "Attend the session online via Google Meet."
   },
@@ -283,7 +283,7 @@
   },
   "profile": {
     "title": "My Profile",
-    "description": "Keep your details up to date so the clinic can reach you.",
+    "description": "Keep your details up to date so the Office can reach you.",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
     "somethingWentWrong": "Something went wrong",
@@ -321,7 +321,7 @@
           "patients": "Patients",
           "patientsSubtitle": "Total registered patients",
           "sessions": "Sessions",
-          "sessionsSubtitle": "Total clinic sessions",
+          "sessionsSubtitle": "Total Office sessions",
           "tests": "Tests",
           "testsSubtitle": "Total psychological tests"
         },
@@ -1180,7 +1180,7 @@
         }
       },
       "image": {
-        "alt": "Serene Mind Clinic",
+        "alt": "Serene Mind Office",
         "nextOpening": "Next opening",
         "nextOpeningDetails": "Saturday 09:00 · On-site or Google Meet"
       }
@@ -1201,9 +1201,9 @@
         },
         "credentials": {
           "professionalDoctorate": "Professional Doctorate:",
-          "doctorateValue": "Mental Health — United Ford College, London, UK",
+          "doctorateValue": "Mental Health ",
           "professionalMasters": "Professional Master's:",
-          "mastersValue": "Family & Educational Counseling",
+          "mastersValue": "Family & Educational Counseling — United Ford College, London, UK",
           "lifeCoach": "Life Coach:",
           "lifeCoachValue": "CPD Certified",
           "internationalTraining": "International Training of Trainers:",
@@ -1344,12 +1344,12 @@
       "items": {
         "sessionDuration": {
           "question": "How long is a session?",
-          "answer": "Standard sessions are 50 minutes. Initial assessments take 80 minutes, while couples sessions last 75 minutes."
+          "answer": "Standard sessions are 60 minutes. "
         },
 
         "onlineSessions": {
           "question": "Do you offer online sessions?",
-          "answer": "Yes. You can have your sessions securely through Google Meet if remote therapy is more convenient for you."
+          "answer": "Yes. You can have your sessions securely through phone calls if remote therapy is more convenient for you."
         },
 
         "confidentiality": {
@@ -1364,14 +1364,14 @@
 
         "psychologicalTests": {
           "question": "Do psychological tests replace a diagnosis?",
-          "answer": "No. Psychological assessments provide useful information to better understand your situation, but every result is reviewed with the psychologist before any conclusions are made."
+          "answer": "No. Psychological assessments provide useful information to better understand your situation, but every result is reviewed with in session  by  Dr Yasmin before any conclusions are made."
         }
       }
     },
     "footer": {
       "brand": {
         "name": "Dr. Yasmin Madeh",
-        "description": "Evidence-based psychology, delivered with warmth. A single-practitioner psychology clinic with a patient portal for appointments, session records and assessments."
+        "description": "Evidence-based psychology, delivered with warmth. A single-practitioner psychology Office with a patient portal for appointments, session records and assessments."
       },
       "links": {
         "title": "Explore",
@@ -1380,10 +1380,10 @@
         "createAccount": "Create account"
       },
       "contact": {
-        "title": "Clinic"
+        "title": "Office"
       },
       "bottom": {
-        "copyright": "© 2026 Serene Mind Clinic. All rights reserved.",
+        "copyright": "© 2026 Serene Mind Office. All rights reserved.",
         "privacyPolicy": "Privacy Policy",
         "terms": "Terms",
         "accessibility": "Accessibility"

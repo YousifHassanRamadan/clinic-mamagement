@@ -1,30 +1,26 @@
-// AppointmentItem.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { CalendarDays, Clock3, MapPin } from "lucide-react";
+import { CalendarDays, Clock3, Loader2, MapPin, XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 import AppointmentStatus from "./AppointmentStatus";
 
 import type { PatientAppointment } from "./AppointmentsPage";
+
+import { cancelAppointment } from "@/app/actions/patient-actions/appoinments/cancel-appointment";
 
 import enCommon from "@/locales/en/common.json";
 import arCommon from "@/locales/ar/common.json";
 
 interface Props {
   appointment: PatientAppointment;
+  onAppointmentCancelled: (appointmentId: string) => void;
 }
 
-/**
- * The appointment date is stored as UTC,
- * but the UTC clock values represent Egypt local time.
- *
- * Therefore we read UTC values directly and never
- * apply the browser timezone.
- */
 const formatAppointmentDate = (date: Date, locale: "en" | "ar") => {
   const year = date.getUTCFullYear();
   const month = date.getUTCMonth();
@@ -56,8 +52,9 @@ const formatAppointmentTime = (date: Date, locale: "en" | "ar") => {
   });
 };
 
-const AppointmentItem = ({ appointment }: Props) => {
+const AppointmentItem = ({ appointment, onAppointmentCancelled }: Props) => {
   const [locale, setLocale] = useState<"en" | "ar">("en");
+  const [isCancelling, setIsCancelling] = useState(false);
 
   useEffect(() => {
     const updateLocale = () => {
@@ -83,6 +80,28 @@ const AppointmentItem = ({ appointment }: Props) => {
   const formattedDate = formatAppointmentDate(appointmentDate, locale);
 
   const formattedTime = formatAppointmentTime(appointmentDate, locale);
+
+  const canCancel =
+    (appointment.status === "PENDING" || appointment.status === "CONFIRMED") &&
+    appointmentDate.getTime() - Date.now() >= 24 * 60 * 60 * 1000;
+
+  const handleCancel = async () => {
+    setIsCancelling(true);
+
+    const result = await cancelAppointment(appointment.id);
+
+    if (!result.success) {
+      toast.error(result.message);
+      setIsCancelling(false);
+      return;
+    }
+
+    toast.success(result.message);
+
+    onAppointmentCancelled(appointment.id);
+
+    setIsCancelling(false);
+  };
 
   return (
     <Card className="rounded-3xl p-6 transition hover:shadow-md">
@@ -125,6 +144,23 @@ const AppointmentItem = ({ appointment }: Props) => {
             <AppointmentStatus status={appointment.status} />
           </div>
         </div>
+
+        {canCancel && (
+          <Button
+            variant="destructive"
+            onClick={handleCancel}
+            disabled={isCancelling}
+            className="w-full lg:w-auto"
+          >
+            {isCancelling ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <XCircle className="h-4 w-4" />
+            )}
+
+            {isCancelling ? "Cancelling..." : "Cancel Appointment"}
+          </Button>
+        )}
       </div>
     </Card>
   );

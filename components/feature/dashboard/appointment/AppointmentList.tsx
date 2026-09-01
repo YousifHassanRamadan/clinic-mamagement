@@ -1,5 +1,3 @@
-// AppointmentList.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,9 +11,10 @@ import arCommon from "@/locales/ar/common.json";
 
 interface Props {
   appointments: PatientAppointment[];
+  onAppointmentCancelled: (appointmentId: string) => void;
 }
 
-const AppointmentList = ({ appointments }: Props) => {
+const AppointmentList = ({ appointments, onAppointmentCancelled }: Props) => {
   const [locale, setLocale] = useState<"en" | "ar">("en");
 
   useEffect(() => {
@@ -50,7 +49,11 @@ const AppointmentList = ({ appointments }: Props) => {
   return (
     <div className="space-y-5">
       {appointments.map((appointment) => (
-        <AppointmentItem key={appointment.id} appointment={appointment} />
+        <AppointmentItem
+          key={appointment.id}
+          appointment={appointment}
+          onAppointmentCancelled={onAppointmentCancelled}
+        />
       ))}
     </div>
   );
