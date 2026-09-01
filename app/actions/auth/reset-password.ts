@@ -95,16 +95,30 @@ export async function resetPassword(
       },
       select: {
         id: true,
+        password: true,
       },
     });
 
-    if (!user) {
+    if (!user || !user.password) {
       return {
         success: false,
         message:
           locale === "ar"
             ? "رابط إعادة تعيين كلمة المرور غير صالح."
             : "Invalid or expired reset link.",
+      };
+    }
+
+    // Check if the new password is the same as the current password
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+
+    if (isSamePassword) {
+      return {
+        success: false,
+        message:
+          locale === "ar"
+            ? "لا يمكنك استخدام كلمة المرور القديمة. يرجى اختيار كلمة مرور جديدة."
+            : "You cannot use your old password. Please choose a new password.",
       };
     }
 
