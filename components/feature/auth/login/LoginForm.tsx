@@ -136,7 +136,18 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
             </p>
           )}
 
-          <div className="mt-2 flex justify-end">
+          <div
+            className={`mt-2 flex ${
+              translations.forgotPassword === "نسيت كلمة المرور؟"
+                ? "justify-start"
+                : "justify-end"
+            }`}
+            dir={
+              translations.forgotPassword === "نسيت كلمة المرور؟"
+                ? "rtl"
+                : "ltr"
+            }
+          >
             <Link
               href="/login/forget-password"
               className="text-sm font-medium text-primary hover:underline"
