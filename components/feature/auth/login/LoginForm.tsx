@@ -131,7 +131,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
           <div className="mt-2 flex justify-end">
             <Link
-              href={`/${locale}/login/forgot-password`}
+              href={`/login/forgot-password`}
               className="text-sm font-medium text-primary hover:underline"
             >
               {translations.forgotPassword}
