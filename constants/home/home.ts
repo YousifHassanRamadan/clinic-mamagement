@@ -198,7 +198,7 @@ export const contactInfo = [
   },
   {
     icon: MapPin,
-    text: "Suez",
+    text: "Cairo, Egypt",
   },
 ];
 
