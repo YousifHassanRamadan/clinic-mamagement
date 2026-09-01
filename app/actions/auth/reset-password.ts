@@ -1,3 +1,5 @@
+// app/actions/auth/reset-password.ts
+
 "use server";
 
 import bcrypt from "bcryptjs";
@@ -6,19 +8,29 @@ import { prisma } from "@/lib/prisma";
 
 const RESET_TOKEN_IDENTIFIER = "password-reset:";
 
-export async function resetPassword(token: string, newPassword: string) {
+export async function resetPassword(
+  token: string,
+  newPassword: string,
+  locale: string = "en",
+) {
   try {
     if (!token || !newPassword) {
       return {
         success: false,
-        message: "Invalid reset request.",
+        message:
+          locale === "ar"
+            ? "طلب إعادة التعيين غير صالح."
+            : "Invalid reset request.",
       };
     }
 
     if (newPassword.length < 8) {
       return {
         success: false,
-        message: "Password must be at least 8 characters.",
+        message:
+          locale === "ar"
+            ? "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل."
+            : "Password must be at least 8 characters.",
       };
     }
 
@@ -39,7 +51,10 @@ export async function resetPassword(token: string, newPassword: string) {
     if (!verificationToken) {
       return {
         success: false,
-        message: "Invalid or expired reset link.",
+        message:
+          locale === "ar"
+            ? "رابط إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية."
+            : "Invalid or expired reset link.",
       };
     }
 
@@ -53,7 +68,10 @@ export async function resetPassword(token: string, newPassword: string) {
 
       return {
         success: false,
-        message: "This reset link has expired. Please request a new one.",
+        message:
+          locale === "ar"
+            ? "انتهت صلاحية رابط إعادة التعيين. يرجى طلب رابط جديد."
+            : "This reset link has expired. Please request a new one.",
       };
     }
 
@@ -64,7 +82,10 @@ export async function resetPassword(token: string, newPassword: string) {
     if (!email) {
       return {
         success: false,
-        message: "Invalid or expired reset link.",
+        message:
+          locale === "ar"
+            ? "رابط إعادة تعيين كلمة المرور غير صالح."
+            : "Invalid or expired reset link.",
       };
     }
 
@@ -80,7 +101,10 @@ export async function resetPassword(token: string, newPassword: string) {
     if (!user) {
       return {
         success: false,
-        message: "Invalid or expired reset link.",
+        message:
+          locale === "ar"
+            ? "رابط إعادة تعيين كلمة المرور غير صالح."
+            : "Invalid or expired reset link.",
       };
     }
 
@@ -106,14 +130,20 @@ export async function resetPassword(token: string, newPassword: string) {
 
     return {
       success: true,
-      message: "Password reset successfully.",
+      message:
+        locale === "ar"
+          ? "تم تغيير كلمة المرور بنجاح."
+          : "Password reset successfully.",
     };
   } catch (error) {
     console.error("RESET_PASSWORD_ERROR:", error);
 
     return {
       success: false,
-      message: "Something went wrong. Please try again.",
+      message:
+        locale === "ar"
+          ? "حدث خطأ ما. يرجى المحاولة مرة أخرى."
+          : "Something went wrong. Please try again.",
     };
   }
 }

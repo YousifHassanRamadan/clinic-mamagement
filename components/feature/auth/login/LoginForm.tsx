@@ -1,4 +1,8 @@
+// components/feature/auth/login/LoginForm.tsx
+
 "use client";
+
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,7 +16,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
 
 import { checkEmailVerification } from "@/app/actions/auth/check-email-verification";
 
@@ -44,6 +48,9 @@ interface LoginFormProps {
 
 const LoginForm = ({ setMode, translations }: LoginFormProps) => {
   const router = useRouter();
+  const params = useParams();
+
+  const locale = typeof params?.locale === "string" ? params.locale : "en";
 
   const {
     register,
@@ -80,14 +87,13 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
       toast.success(translations.success);
 
-      router.push("/dashboard");
+      router.push(`/${locale}/dashboard`);
     } catch (error) {
       console.error("LOGIN_ERROR:", error);
 
       toast.error(translations.error);
     }
   };
-  console.log("hello");
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
@@ -111,16 +117,27 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           </p>
         )}
 
-        <PasswordInput
-          {...register("password")}
-          placeholder={translations.password}
-        />
+        <div>
+          <PasswordInput
+            {...register("password")}
+            placeholder={translations.password}
+          />
 
-        {errors.password && (
-          <p className="mt-1 text-sm text-destructive">
-            {errors.password.message}
-          </p>
-        )}
+          {errors.password && (
+            <p className="mt-1 text-sm text-destructive">
+              {errors.password.message}
+            </p>
+          )}
+
+          <div className="mt-2 flex justify-end">
+            <Link
+              href={`/${locale}/login/forgot-password`}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              {translations.forgotPassword}
+            </Link>
+          </div>
+        </div>
       </div>
 
       <Button
