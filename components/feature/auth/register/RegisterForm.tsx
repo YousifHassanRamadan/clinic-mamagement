@@ -1,3 +1,5 @@
+// components/feature/auth/register/RegisterForm.tsx
+
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +15,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { registerUser } from "@/app/actions/auth/register";
 
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 import { Check, ChevronDown } from "lucide-react";
 
@@ -69,13 +70,12 @@ interface RegisterFormProps {
 }
 
 const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
-  const router = useRouter();
-
   const {
     register,
     setValue,
     watch,
     handleSubmit,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
@@ -86,12 +86,17 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
   const handleRegister = async (data: RegisterFormData) => {
     try {
       const result = await registerUser(data);
+
       if (!result.success) {
         toast.error(result.message);
         return;
       }
+
       toast.success(result.message);
-      router.push("/login");
+
+      reset();
+
+      setMode("login");
     } catch {
       toast.error(translations.error);
     }
