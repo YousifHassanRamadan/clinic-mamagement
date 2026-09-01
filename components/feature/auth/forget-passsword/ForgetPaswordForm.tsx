@@ -99,7 +99,7 @@ const ForgotPasswordForm = () => {
           </p>
 
           <Button asChild className="mt-6 w-full">
-            <Link href={`/${locale}/login`}>
+            <Link href={`/login`}>
               {isArabic ? "العودة لتسجيل الدخول" : "Back to login"}
             </Link>
           </Button>
@@ -120,7 +120,7 @@ const ForgotPasswordForm = () => {
           size="sm"
           className="w-fit text-muted-foreground"
         >
-          <Link href={`/${locale}/login`}>
+          <Link href={`/login`}>
             <ArrowLeft
               className={`${isArabic ? "ml-2 rotate-180" : "mr-2"} h-4 w-4`}
             />

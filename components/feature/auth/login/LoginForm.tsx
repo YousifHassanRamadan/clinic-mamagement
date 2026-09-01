@@ -87,7 +87,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
 
       toast.success(translations.success);
 
-      router.push(`/${locale}/dashboard`);
+      router.push(`/dashboard`);
     } catch (error) {
       console.error("LOGIN_ERROR:", error);
 

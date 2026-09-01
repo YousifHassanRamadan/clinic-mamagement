@@ -15,12 +15,13 @@ const RESET_TOKEN_EXPIRATION = 15 * 60 * 1000;
 export async function forgotPassword(email: string, locale: string = "en") {
   try {
     const normalizedEmail = email.trim().toLowerCase();
+    const safeLocale = locale === "ar" ? "ar" : "en";
 
     if (!normalizedEmail) {
       return {
         success: false,
         message:
-          locale === "ar"
+          safeLocale === "ar"
             ? "يرجى إدخال بريد إلكتروني صالح."
             : "Please provide a valid email address.",
       };
@@ -37,11 +38,12 @@ export async function forgotPassword(email: string, locale: string = "en") {
       },
     });
 
+    // Prevent email enumeration
     if (!user) {
       return {
         success: true,
         message:
-          locale === "ar"
+          safeLocale === "ar"
             ? "إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، فسيتم إرسال رابط لإعادة تعيين كلمة المرور."
             : "If an account exists with this email, a reset link has been sent.",
       };
@@ -56,6 +58,7 @@ export async function forgotPassword(email: string, locale: string = "en") {
     });
 
     const token = crypto.randomBytes(32).toString("hex");
+
     const expires = new Date(Date.now() + RESET_TOKEN_EXPIRATION);
 
     await prisma.verificationToken.create({
@@ -83,17 +86,16 @@ export async function forgotPassword(email: string, locale: string = "en") {
       return {
         success: false,
         message:
-          locale === "ar"
+          safeLocale === "ar"
             ? "تعذر إرسال بريد إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى لاحقًا."
             : "Unable to send reset email. Please try again later.",
       };
     }
 
-    const cleanAppUrl = appUrl.replace(/\/$/, "");
-    const safeLocale = locale === "ar" ? "ar" : "en";
+    const cleanAppUrl = appUrl.replace(/\/+$/, "");
 
     const resetUrl =
-      `${cleanAppUrl}/${safeLocale}/login/reset-password` +
+      `${cleanAppUrl}/login/reset-password` +
       `?token=${encodeURIComponent(token)}`;
 
     const isArabic = safeLocale === "ar";
@@ -113,7 +115,7 @@ export async function forgotPassword(email: string, locale: string = "en") {
     const buttonText = isArabic ? "إعادة تعيين كلمة المرور" : "Reset Password";
 
     const expirationText = isArabic
-      ? "سينتهي صلاحية هذا الرابط خلال 15 دقيقة."
+      ? "ستنتهي صلاحية هذا الرابط خلال 15 دقيقة."
       : "This link will expire in 15 minutes.";
 
     const ignoreText = isArabic
@@ -121,15 +123,26 @@ export async function forgotPassword(email: string, locale: string = "en") {
       : "If you didn't request a password reset, you can safely ignore this email.";
 
     const { error } = await resend.emails.send({
-      from: `Dr. Yasmin <${fromEmail}>`,
+      // RESEND_FROM_EMAIL already contains:
+      // Dr Yasmin Madeh <noreply@dryasminmadeh.com>
+      from: fromEmail,
+
       to: [user.email],
+
       subject,
+
       html: `
         <!DOCTYPE html>
-        <html lang="${safeLocale}" dir="${isArabic ? "rtl" : "ltr"}">
+        <html
+          lang="${safeLocale}"
+          dir="${isArabic ? "rtl" : "ltr"}"
+        >
           <head>
             <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            />
             <title>${escapeHtml(subject)}</title>
           </head>
 
@@ -152,7 +165,12 @@ export async function forgotPassword(email: string, locale: string = "en") {
                 border:1px solid #e2e8f0;
               "
             >
-              <h2 style="margin:0 0 16px;color:#0f172a;">
+              <h2
+                style="
+                  margin:0 0 16px;
+                  color:#0f172a;
+                "
+              >
                 ${escapeHtml(subject)}
               </h2>
 
@@ -160,11 +178,21 @@ export async function forgotPassword(email: string, locale: string = "en") {
                 ${greeting}
               </p>
 
-              <p style="color:#475569;line-height:1.7;">
+              <p
+                style="
+                  color:#475569;
+                  line-height:1.7;
+                "
+              >
                 ${escapeHtml(description)}
               </p>
 
-              <div style="margin:28px 0;text-align:center;">
+              <div
+                style="
+                  margin:28px 0;
+                  text-align:center;
+                "
+              >
                 <a
                   href="${resetUrl}"
                   style="
@@ -181,11 +209,23 @@ export async function forgotPassword(email: string, locale: string = "en") {
                 </a>
               </div>
 
-              <p style="color:#64748b;font-size:14px;line-height:1.7;">
+              <p
+                style="
+                  color:#64748b;
+                  font-size:14px;
+                  line-height:1.7;
+                "
+              >
                 ${escapeHtml(expirationText)}
               </p>
 
-              <p style="color:#64748b;font-size:14px;line-height:1.7;">
+              <p
+                style="
+                  color:#64748b;
+                  font-size:14px;
+                  line-height:1.7;
+                "
+              >
                 ${escapeHtml(ignoreText)}
               </p>
             </div>
@@ -207,7 +247,7 @@ export async function forgotPassword(email: string, locale: string = "en") {
       return {
         success: false,
         message:
-          locale === "ar"
+          safeLocale === "ar"
             ? "تعذر إرسال بريد إعادة تعيين كلمة المرور. يرجى المحاولة مرة أخرى لاحقًا."
             : "Unable to send reset email. Please try again later.",
       };
@@ -216,7 +256,7 @@ export async function forgotPassword(email: string, locale: string = "en") {
     return {
       success: true,
       message:
-        locale === "ar"
+        safeLocale === "ar"
           ? "إذا كان هناك حساب مرتبط بهذا البريد الإلكتروني، فسيتم إرسال رابط لإعادة تعيين كلمة المرور."
           : "If an account exists with this email, a reset link has been sent.",
     };
