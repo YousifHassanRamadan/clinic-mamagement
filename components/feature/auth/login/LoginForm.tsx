@@ -87,6 +87,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
       toast.error(translations.error);
     }
   };
+  console.log("hello");
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
