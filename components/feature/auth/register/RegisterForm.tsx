@@ -82,6 +82,8 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
 
   const selectedGender = watch("gender");
 
+  const isArabic = translations.email === "البريد الإلكتروني";
+
   const handleRegister = async (data: RegisterFormData) => {
     try {
       const result = await registerUser(data);
@@ -166,9 +168,13 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         type="email"
         inputMode="email"
         autoComplete="email"
-        dir="ltr"
+        dir={isArabic ? "rtl" : "ltr"}
         placeholder={translations.email}
-        className="h-11 rounded-xl p-3 text-left placeholder:text-left rtl:placeholder:text-right"
+        className={`h-11 rounded-xl p-3 ${
+          isArabic
+            ? "text-right placeholder:text-right"
+            : "text-left placeholder:text-left"
+        }`}
       />
 
       {errors.email && (
@@ -242,8 +248,13 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         {...register("phone")}
         type="tel"
         inputMode="tel"
+        dir={isArabic ? "rtl" : "ltr"}
         placeholder={translations.phone}
-        className="h-11 rounded-xl p-3 text-left placeholder:text-left rtl:placeholder:text-right"
+        className={`h-11 rounded-xl p-3 ${
+          isArabic
+            ? "text-right placeholder:text-right"
+            : "text-left placeholder:text-left"
+        }`}
       />
 
       {errors.phone && (
