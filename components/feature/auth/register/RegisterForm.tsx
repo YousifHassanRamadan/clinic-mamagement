@@ -30,7 +30,7 @@ const registerSchema = z
     firstName: z.string().min(2, "First name is required"),
     lastName: z.string().min(2, "Last name is required"),
     address: z.string().min(2, "Address is required"),
-    email: z.email("Please enter a valid email"),
+    email: z.string().trim().email("Please enter a valid email"),
     gender: z.enum(["MALE", "FEMALE"]),
     phone: z.string().min(10, "Please enter a valid phone number"),
     password: z.string().min(8, "Password must be at least 8 characters"),
@@ -122,7 +122,11 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         : translations.gender;
 
   return (
-    <form className="space-y-5" onSubmit={handleSubmit(handleRegister)}>
+    <form
+      noValidate
+      className="space-y-5"
+      onSubmit={handleSubmit(handleRegister)}
+    >
       <div>
         <h2 className="text-3xl font-bold">{translations.title}</h2>
       </div>
@@ -160,6 +164,9 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
       <Input
         {...register("email")}
         type="email"
+        inputMode="email"
+        autoComplete="email"
+        dir="ltr"
         placeholder={translations.email}
         className="h-11 rounded-xl p-3"
       />
@@ -234,6 +241,7 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
       <Input
         {...register("phone")}
         type="tel"
+        inputMode="tel"
         placeholder={translations.phone}
         className="h-11 rounded-xl p-3"
       />

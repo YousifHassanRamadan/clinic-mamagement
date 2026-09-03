@@ -35,7 +35,7 @@ interface LoginFormProps {
 }
 
 const loginSchema = z.object({
-  email: z.email("Please enter a valid email"),
+  email: z.string().trim().email("Please enter a valid email"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -82,7 +82,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
+    <form noValidate className="space-y-6" onSubmit={handleSubmit(handleLogin)}>
       <div>
         <h2 className="text-3xl font-bold">{translations.title}</h2>
 
@@ -94,7 +94,9 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           {...register("email")}
           placeholder={translations.email}
           type="email"
+          inputMode="email"
           autoComplete="email"
+          dir="ltr"
           className="h-11 rounded-xl p-3"
         />
 
