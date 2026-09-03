@@ -1,5 +1,3 @@
-// components/feature/auth/login/LoginForm.tsx
-
 "use client";
 
 import Link from "next/link";
@@ -16,16 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-
-import { checkEmailVerification } from "@/app/actions/auth/check-email-verification";
-
-const loginSchema = z.object({
-  email: z.email("Please enter a valid email"),
-  password: z.string().min(1, "Password is required"),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
 
 interface LoginFormProps {
   setMode: (mode: "login" | "register") => void;
@@ -46,9 +34,14 @@ interface LoginFormProps {
   };
 }
 
-const LoginForm = ({ setMode, translations }: LoginFormProps) => {
-  const router = useRouter();
+const loginSchema = z.object({
+  email: z.email("Please enter a valid email"),
+  password: z.string().min(1, "Password is required"),
+});
 
+type LoginFormData = z.infer<typeof loginSchema>;
+
+const LoginForm = ({ setMode, translations }: LoginFormProps) => {
   const {
     register,
     handleSubmit,
@@ -61,18 +54,6 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
     try {
       const email = data.email.trim().toLowerCase();
       const password = data.password;
-
-      const verificationResult = await checkEmailVerification(email);
-
-      if (!verificationResult.success) {
-        toast.error(verificationResult.message);
-        return;
-      }
-
-      if (!verificationResult.verified) {
-        toast.error(verificationResult.message);
-        return;
-      }
 
       const result = await signIn("credentials", {
         email,

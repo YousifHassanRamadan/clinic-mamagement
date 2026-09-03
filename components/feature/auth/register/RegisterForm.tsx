@@ -1,5 +1,3 @@
-// components/feature/auth/register/RegisterForm.tsx
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -14,6 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { registerUser } from "@/app/actions/auth/register";
 
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 
 import { Check, ChevronDown } from "lucide-react";
@@ -92,12 +91,25 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         return;
       }
 
-      toast.success(result.message);
+      const loginResult = await signIn("credentials", {
+        email: result.email,
+        password: result.password,
+        redirect: false,
+      });
+
+      if (!loginResult || loginResult.error || loginResult.ok !== true) {
+        toast.error(translations.automaticLoginFailed);
+        return;
+      }
+
+      toast.success(translations.success);
 
       reset();
 
-      setMode("login");
-    } catch {
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("REGISTER_ERROR:", error);
+
       toast.error(translations.error);
     }
   };
