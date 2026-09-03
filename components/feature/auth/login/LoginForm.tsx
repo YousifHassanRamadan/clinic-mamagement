@@ -97,7 +97,7 @@ const LoginForm = ({ setMode, translations }: LoginFormProps) => {
           inputMode="email"
           autoComplete="email"
           dir="ltr"
-          className="h-11 rounded-xl p-3"
+          className="h-11 rounded-xl p-3 text-left placeholder:text-left rtl:placeholder:text-right"
         />
 
         {errors.email && (

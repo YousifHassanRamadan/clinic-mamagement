@@ -168,7 +168,7 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         autoComplete="email"
         dir="ltr"
         placeholder={translations.email}
-        className="h-11 rounded-xl p-3"
+        className="h-11 rounded-xl p-3 text-left placeholder:text-left rtl:placeholder:text-right"
       />
 
       {errors.email && (
@@ -243,7 +243,7 @@ const RegisterForm = ({ setMode, translations }: RegisterFormProps) => {
         type="tel"
         inputMode="tel"
         placeholder={translations.phone}
-        className="h-11 rounded-xl p-3"
+        className="h-11 rounded-xl p-3 text-left placeholder:text-left rtl:placeholder:text-right"
       />
 
       {errors.phone && (
